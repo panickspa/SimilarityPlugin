@@ -65,10 +65,6 @@ class SimilarityPlugin:
         self.previewLayer = 0
         self.previewLayer2 = 0
 
-        self.fileOut = os.path.join(os.path.dirname(os.path.realpath(__file__)), "engine", "f.txt") 
-        self.fileOut2 = os.path.join(os.path.dirname(os.path.realpath(__file__)), "engine", "f2.txt") 
-        self.enginePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "engine", "_score.exe")
-
         self.signals = pyqtSignal()
         self.similarLayer = []
 
