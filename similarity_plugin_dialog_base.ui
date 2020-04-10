@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SimilarityPluginDialogBase</class>
+ <widget class="QDialog" name="SimilarityPluginDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>864</width>
+    <height>566</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Calculate Similarity Map</string>
+  </property>
+  <widget class="QTabWidget" name="tabWidget">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>851</width>
+     <height>551</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="mainTab">
+    <attribute name="title">
+     <string>Main Tab</string>
+    </attribute>
+    <widget class="QgsMapCanvas" name="widgetCanvas" native="true">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>190</y>
+       <width>331</width>
+       <height>311</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="previewBtn">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>470</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Preview</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="nextBtn">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>470</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelScore">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>170</y>
+       <width>331</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Score : 0</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="methodComboBox">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>170</y>
+       <width>341</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="saveBtn">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>470</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="previewAttr_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>70</y>
+       <width>141</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>50</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Layer 1</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Attributes Value :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>0</y>
+       <width>91</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Input</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="verticalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>71</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QLabel" name="labelSelectLay1">
+        <property name="text">
+         <string>Select Layer 1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelSelectLay2">
+        <property name="text">
+         <string>Select Layer 2</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="previousBtn">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>470</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Previous</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_5">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>50</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Layer 2</string>
+     </property>
+    </widget>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>210</y>
+       <width>431</width>
+       <height>241</height>
+      </rect>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>412</width>
+        <height>239</height>
+       </rect>
+      </property>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>50</y>
+         <width>21</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>%</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelOutOption_8">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>100</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Layer 2 Query</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelOutOption_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>91</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Treshold</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelOutOption">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>91</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Output Option</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="textEditSQL">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>120</y>
+         <width>181</width>
+         <height>111</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelOutOption_7">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>100</y>
+         <width>141</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Layer 1 Query</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEditTreshold">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>50</y>
+         <width>261</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="whatsThis">
+        <string>set Treshold, in percent</string>
+       </property>
+       <property name="text">
+        <string>99</string>
+       </property>
+      </widget>
+      <widget class="QTextEdit" name="textEditSQL_2">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>210</x>
+         <y>120</y>
+         <width>181</width>
+         <height>111</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="filterCheck">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>80</y>
+         <width>111</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Filter by Query</string>
+       </property>
+       <property name="tristate">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="verticalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>40</y>
+       <width>341</width>
+       <height>119</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsMapLayerComboBox" name="layerSel1"/>
+      </item>
+      <item>
+       <widget class="QgsMapLayerComboBox" name="layerSel2"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="calcBtn">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>470</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Calculate</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Method</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="previewAttr">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>70</y>
+       <width>151</width>
+       <height>91</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="consoleTab">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <attribute name="title">
+     <string>Console Tab</string>
+    </attribute>
+    <widget class="QTextEdit" name="consoleTextEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>821</width>
+       <height>511</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapCanvas</class>
+   <extends>QWidget</extends>
+   <header location="global">qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

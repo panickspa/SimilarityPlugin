@@ -1,0 +1,5 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.analysis.memory.keepLibraryLocalVariables": true,
+    "python.analysis.memory.keepLibraryAst": true
+}
