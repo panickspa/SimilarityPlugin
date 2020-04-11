@@ -38,8 +38,6 @@ from .checker_thread import CheckThread
 import sys, os
 from copy import copy
 
-import threading
-
 from timeit import default_timer as timer 
 
 from numpy import *
@@ -106,7 +104,6 @@ class SimilarityPlugin:
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('SimilarityPlugin', message)
-
 
     def add_action(
         self,
@@ -195,7 +192,6 @@ class SimilarityPlugin:
         # will be set False in run()
         self.first_start = True
 
-
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
@@ -204,7 +200,7 @@ class SimilarityPlugin:
                 action)
             self.iface.removeToolBarIcon(action)
 
-
+    # gui interaction (general item)
     def pkCheckBox(self, int):
         if self.dlg.checkBoxPk.isChecked():
             self.dlg.lineEditPK.setEnabled(True)
@@ -213,8 +209,16 @@ class SimilarityPlugin:
 
     def methodChange(self):
         if self.dlg.methodComboBox.currentIndex() == 2:
+            self.dlg.mergeCenterCheck.setChecked(False)
+            self.dlg.mergeCenterCheck.setEnabled(True)
             self.dlg.lineEditTreshold.setEnabled(False)
-        else:
+        elif self.dlg.methodComboBox.currentIndex() == 0:
+            self.dlg.mergeCenterCheck.setChecked(False)
+            self.dlg.mergeCenterCheck.setEnabled(False)
+            self.dlg.lineEditTreshold.setEnabled(True)
+        elif self.dlg.methodComboBox.currentIndex() == 1:
+            self.dlg.mergeCenterCheck.setChecked(True)
+            self.dlg.mergeCenterCheck.setEnabled(False)
             self.dlg.lineEditTreshold.setEnabled(True)
 
     def filterCheckBox(self):
@@ -225,6 +229,7 @@ class SimilarityPlugin:
             self.dlg.textEditSQL.setEnabled(False)
             self.dlg.textEditSQL_2.setEnabled(False)
 
+    # canvas interaction
     def resultPreview(self):
         self.previewLayer = 0
         self.previewLayer2 = 0
@@ -237,7 +242,6 @@ class SimilarityPlugin:
 
         self.canvas.show()
         
-
     def attrPrinter(self, fieldsList, feature, place):
         temp = ''
 
@@ -292,7 +296,6 @@ class SimilarityPlugin:
 
             self.dlg.widgetCanvas.refresh()
 
-
     def nextPreview(self):
         # f2 = open("engine/f2.txt", "w")
         if(self.previewLayer+1 < len(self.similarLayer)
@@ -307,9 +310,20 @@ class SimilarityPlugin:
         self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str(self.similarLayer[self.previewLayer]))
         self.refreshPreview()
 
+    # manipulating geom
+    def translateCenterGeom(self, g, target):
+        # duplicating
+        g_new = QgsGeometry(g)
+        target_new = QgsGeometry(target)
+        
+        c = target_new.centroid().asQPointF()
+        c2 = g_new.centroid().asQPointF()
+        transX = c.x() - c2.x()
+        transY = c.y() - c2.y()
+        g.translate(transX, transY)
+        return g
+
     # calculating score
-
-
     def calcMapCurvesGeom(self, g, g2):
         inter = g.intersection(g2)
         if(inter.isEmpty()):
@@ -317,10 +331,15 @@ class SimilarityPlugin:
         else:
             score = (inter.area()/g.area())*(inter.area()/g2.area())
             return round(score, 4)
-
-    
+ 
     def calcMapCurves(self, feature, feature2):
-        score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
+        if self.dlg.mergeCenterCheck.isChecked():
+            score = self.calcMapCurvesGeom(
+                        feature.geometry(),
+                        self.translateCenterGeom(feature2.geometry(),feature.geometry()) 
+                    )
+        else:
+            score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
         if score > float(
                     self.dlg.lineEditTreshold.text()
                 )/100:
@@ -328,15 +347,6 @@ class SimilarityPlugin:
     
     def calculateWK(self, layer, layer2):
         ids = [f.id() for f in layer.getFeatures()]
-        # self.listThread = []
-        # for i in range(1, 5):
-        #     firstI = int((len(ids))*i/4)-int((len(ids)/4))
-        #     lastI = int((len(ids))*i/4)
-        #     t = threading.Thread(
-        #         target=self.targetWkMethod, args=(ids, firstI, lastI, )
-        #     )
-        #     self.listThread.append(t)
-        #     t.start()
         start = timer()
         for i in ids:
             # Querying 
@@ -357,12 +367,21 @@ class SimilarityPlugin:
             feat2Id = [f.id() for f in layer2.getFeatures()]
             # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n"+str(feat2Id))
             if layer2.featureCount() > 0:
-                for j in feat2Id: 
-                    score = self.calcMapCurvesGeom(
-                        layer.getFeature(i).geometry(), layer2.getFeature(j).geometry()
-                    )
-                    if(score > -1):
-                        self.similarLayer.append([i,j, score])
+                if self.dlg.mergeCenterCheck:
+                    for j in feat2Id:
+                        score = self.calcMapCurvesGeom(
+                            layer.getFeature(i).geometry(),
+                            self.translateCenterGeom(layer2.getFeature(i).geometry(), layer.getFeature(j).geometry())
+                        )
+                        if(score > -1):
+                            self.similarLayer.append([i,j, score])
+                else:
+                    for j in feat2Id: 
+                        score = self.calcMapCurvesGeom(
+                            layer.getFeature(i).geometry(), layer2.getFeature(j).geometry()
+                        )
+                        if(score > -1):
+                            self.similarLayer.append([i,j, score])
             que.clear()
             que.setSql(queTemp)
             que.accept()
@@ -421,7 +440,6 @@ class SimilarityPlugin:
                 i = i+1
             return nearestIter
  
-
     def calculateKNN(self, layer, layer2):
 
         neightbourList = self.getCheckPointList(layer, layer2)
@@ -506,67 +524,6 @@ class SimilarityPlugin:
         if len(self.similarLayer) > 0 :
             self.dlg.previewBtn.setEnabled(True)
             self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n Similar Layer Result index :  "+str(self.similarLayer))
-
-    def layerBoxChange(self):
-        self.currentLayer = QgsProject.instance().layerTreeRoot().children()[
-                        self.dlg.layerSel1.currentIndex()
-                    ].layer()
-        self.dlg.provnoList.clear()
-        u = [l for l in unique([ 
-                f.attribute("PROVNO") for f in self.currentLayer.getFeatures()
-            ])]
-        self.dlg.provnoList.addItems(
-            u
-        )
-
-        self.provnoListChange()
-    
-    def layerBoxChange2(self):
-
-        self.currentLayer2 = QgsProject.instance().layerTreeRoot().children()[
-                        self.dlg.layerSel2.currentIndex()
-                    ].layer()
-        self.dlg.provnoList_2.clear()
-        u = [l for l in unique([ 
-                f.attribute("PROVNO") for f in self.currentLayer2.getFeatures()
-            ])]
-        self.dlg.provnoList_2.addItems(
-            u
-        )
-        self.provnoListChange2()
-
-    def provnoListChange(self):
-        self.dlg.kabkotnoList.clear()
-        q = QgsQueryBuilder(self.currentLayer)
-        sql = '"PROVNO" LIKE '+"'"+self.dlg.provnoList.currentText()+"' "
-        q.setSql(sql)
-        q.accept()
-        listK = [l for l in unique([ 
-                f.attribute("KABKOTNO") for f in self.currentLayer.getFeatures()
-            ])]
-        self.dlg.kabkotnoList.addItems(
-            listK
-        )
-        q.clear()
-            
-    def provnoListChange2(self):
-        self.dlg.kabkotnoList_2.clear()
-        q2 = QgsQueryBuilder(self.currentLayer2)
-        sql2 = '"PROVNO" LIKE '+"'"+self.dlg.provnoList_2.currentText()+"' "
-        q2.setSql(sql2)
-        q2.accept()
-        listK = [l for l in unique([ 
-                f.attribute("KABKOTNO") for f in self.currentLayer2.getFeatures()
-            ])]
-        self.dlg.kabkotnoList_2.addItems(
-            listK
-        )
-
-        q2.clear()
-
-    # def writeConsoleTextBox(self, textConsole):
-    #     inpConsole = self.dlg.consoleTextEdit.toPlainText()+"\n"+textConsole
-    #     self.dlg.consoleTextEdit.setText(inpConsole)
 
     def run(self):
         """Run method that performs all the real work"""
