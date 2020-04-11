@@ -54,3 +54,11 @@ untuk Windows
 
         *harus mengaktifkan environment QGIS atau OSGeoW di Vs Code*
         pyrcc5 -o resources.py resources.qrc
+        
+        *install pb_tool dengan command `pip install pb-tools`*
+        `pb_tool deploy`
+        
+        untuk building dengan output instalasi plugin zip, berikan perintah `pb_tool zip`
+        instalasi akan menghasilkan output di direktory .\zip_build
+        
+# SELAMAT MENCOBA
