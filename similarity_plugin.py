@@ -25,7 +25,7 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction
 
-from qgis.core import QgsProject, QgsVectorLayer, QgsGeometry
+from qgis.core import QgsProject, QgsVectorLayer, QgsGeometry, QgsFeature, QgsField
 
 from qgis.gui import QgsMapCanvas, QgsQueryBuilder
 
@@ -34,7 +34,7 @@ from subprocess import Popen, PIPE
 from .resources import *
 # Import the code for the dialog
 from .similarity_plugin_dialog import SimilarityPluginDialog
-from .checker_thread import CheckThread
+
 import sys, os
 from copy import copy
 
@@ -221,26 +221,25 @@ class SimilarityPlugin:
             self.dlg.mergeCenterCheck.setEnabled(False)
             self.dlg.lineEditTreshold.setEnabled(True)
 
-    def filterCheckBox(self):
-        if self.dlg.filterCheck.isChecked():
-            self.dlg.textEditSQL.setEnabled(True)
-            self.dlg.textEditSQL_2.setEnabled(True)
-        else:
-            self.dlg.textEditSQL.setEnabled(False)
-            self.dlg.textEditSQL_2.setEnabled(False)
+    # def filterCheckBox(self):
+    #     if self.dlg.filterCheck.isChecked():
+    #         self.dlg.textEditSQL.setEnabled(True)
+    #         self.dlg.textEditSQL_2.setEnabled(True)
+    #     else:
+    #         self.dlg.textEditSQL.setEnabled(False)
+    #         self.dlg.textEditSQL_2.setEnabled(False)
 
     # canvas interaction
     def resultPreview(self):
         self.previewLayer = 0
         self.previewLayer2 = 0
         self.refreshPreview()
+
         self.dlg.widgetCanvas.enableAntiAliasing(True)
-        self.canvas.enableAntiAliasing(True)
 
         self.dlg.nextBtn.setEnabled(True)
         self.dlg.previousBtn.setEnabled(True)
-
-        self.canvas.show()
+        self.dlg.removeBtn.setEnabled(True)
         
     def attrPrinter(self, fieldsList, feature, place):
         temp = ''
@@ -261,23 +260,42 @@ class SimilarityPlugin:
             self.previewLayerFeature = self.layer.getFeature(self.similarLayer[self.previewLayer][0])
             self.previewLayerFeature2 = self.layer2.getFeature(self.similarLayer[self.previewLayer][1])
 
-            self.dlg.labelScore.setText("Score : " + str(self.similarLayer[self.previewLayer][2]))
+            scoreLabel = "Score : " + str(self.similarLayer[self.previewLayer][2])
+            if(self.dlg.methodComboBox.currentIndex() == 1) :
+                distance = QgsGeometry.distance(
+                            self.previewLayerFeature.geometry().centroid(), self.previewLayerFeature2.geometry().centroid()
+                        )
+                if distance < 0.00001:
+                    distance = 0
+                self.dlg.labelScore.setText(scoreLabel+ " - Distance : "+str(
+                        round(distance, 4)
+                    )+ " meter"
+                )
+            else:
+                self.dlg.labelScore.setText(scoreLabel)
 
             self.attrPrinter(self.layer.dataProvider().fields().toList(), self.previewLayerFeature, self.dlg.previewAttr)
             self.attrPrinter(self.layer2.dataProvider().fields().toList(), self.previewLayerFeature2, self.dlg.previewAttr_2)
 
 
             self.layerCanvas.dataProvider().addFeature(self.previewLayerFeature)
-            self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature added count : \n "+str(
-                   self.layerCanvas.featureCount()
-                ))
+            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature added count : \n "+str(
+            #        self.layerCanvas.featureCount()
+            #     ))
                 
-            
-            self.layer2Canvas.dataProvider().addFeature(self.previewLayerFeature2)
-            self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature2 added count : \n "+str(
-                    self.layer2Canvas.featureCount()
-                ))
-                
+            if self.dlg.mergeCenterCheck.isChecked():
+                self.tGeom = self.translateCenterGeom(
+                    self.previewLayerFeature2.geometry(),
+                    self.previewLayerFeature.geometry()
+                )
+                self.nFeat = QgsFeature(self.previewLayerFeature2)
+                self.nFeat.setGeometry(self.tGeom)
+                self.layer2Canvas.dataProvider().addFeature(self.nFeat)
+            else:
+                self.layer2Canvas.dataProvider().addFeature(self.previewLayerFeature2)
+            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature2 added count : \n "+str(
+            #         self.layer2Canvas.featureCount()
+            #     ))
 
             self.dlg.widgetCanvas.setExtent(self.previewLayerFeature.geometry().boundingBox(), True)
             
@@ -301,14 +319,17 @@ class SimilarityPlugin:
         if(self.previewLayer+1 < len(self.similarLayer)
             ):
             self.previewLayer = self.previewLayer+1
-        self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str(self.similarLayer[self.previewLayer]))
+        self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
 
     def previousPreview(self):
         if(self.previewLayer-1 > -1):
             self.previewLayer = self.previewLayer-1
-        self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str(self.similarLayer[self.previewLayer]))
+        self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
+
+    def rmFeatResult(self):
+        self.similarLayer.pop(self.previewLayer)
 
     # manipulating geom
     def translateCenterGeom(self, g, target):
@@ -333,16 +354,22 @@ class SimilarityPlugin:
             return round(score, 4)
  
     def calcMapCurves(self, feature, feature2):
-        if self.dlg.mergeCenterCheck.isChecked():
+        if self.dlg.methodComboBox.currentIndex() == 1:
             score = self.calcMapCurvesGeom(
+                        feature.geometry(),
+                        feature2.geometry()
+                    )
+            if score <= self.dlg.lineEditTreshold.value():
+                score = self.calcMapCurvesGeom(
                         feature.geometry(),
                         self.translateCenterGeom(feature2.geometry(),feature.geometry()) 
                     )
         else:
             score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
-        if score > float(
-                    self.dlg.lineEditTreshold.text()
-                )/100:
+        
+        treshold = self.dlg.lineEditTreshold.value()/100
+
+        if score >= treshold:
             self.similarLayer.append([feature.id(), feature2.id(), score])
     
     def calculateWK(self, layer, layer2):
@@ -352,13 +379,13 @@ class SimilarityPlugin:
             # Querying 
             que = QgsQueryBuilder(layer2)
             queTemp = que.sql()
-            queText = '"PROVNO"' + "LIKE '"
+            queText = '"PROVNO"' + " LIKE '"
             queText += layer.getFeature(i).attribute("PROVNO")
-            queText += "'"+' AND "KABKOTNO"' + "LIKE '"
+            queText += "'"+' AND "KABKOTNO" ' + " LIKE '"
             queText += layer.getFeature(i).attribute("KABKOTNO")
-            queText += "'"+' AND "KECNO"' + "LIKE '"
+            queText += "'"+' AND "KECNO" ' + "LIKE '"
             queText += layer.getFeature(i).attribute("KECNO")
-            queText += "'"+' AND "DESANO"' + "LIKE '"
+            queText += "'"+' AND "DESANO" ' + "LIKE '"
             queText += layer.getFeature(i).attribute("DESANO")+"' "
             que.clear()
             que.setSql(queText)
@@ -367,13 +394,20 @@ class SimilarityPlugin:
             feat2Id = [f.id() for f in layer2.getFeatures()]
             # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n"+str(feat2Id))
             if layer2.featureCount() > 0:
-                if self.dlg.mergeCenterCheck:
+                if self.dlg.mergeCenterCheck.isChecked():
                     for j in feat2Id:
                         score = self.calcMapCurvesGeom(
-                            layer.getFeature(i).geometry(),
-                            self.translateCenterGeom(layer2.getFeature(i).geometry(), layer.getFeature(j).geometry())
-                        )
-                        if(score > -1):
+                                layer.getFeature(i).geometry(),
+                                layer2.getFeature(i).geometry()
+                            )
+                        # translate if only needed
+                        if score <= 0:
+                            score = self.calcMapCurvesGeom(
+                                layer.getFeature(i).geometry(),
+                                self.translateCenterGeom(layer2.getFeature(i).geometry(), layer.getFeature(j).geometry())
+                            )
+                            self.similarLayer.append([i,j, score])
+                        else:
                             self.similarLayer.append([i,j, score])
                 else:
                     for j in feat2Id: 
@@ -385,93 +419,209 @@ class SimilarityPlugin:
             que.clear()
             que.setSql(queTemp)
             que.accept()
+        
         elapsed = timer() - start
         self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\nElapsedTime"+str(
             elapsed
         ))
 
     def calculateSq(self, layer, layer2):
-        ids = [f.id() for f in layer.getFeatures()]
-        ids2 = [f.id() for f in layer2.getFeatures()]
+        start = timer()
+
+        longest = layer
+        shortest = layer2
+        switchState = False
+
+        if longest.featureCount() < shortest.featureCount():
+            longest = layer2
+            shortest = layer
+            switchState = True
+
+        ids = [f.id() for f in longest.getFeatures()]
+        ids2 = [f.id() for f in shortest.getFeatures()]
+        
+        
         for i in range(0, len(ids)):
-            if i < len(ids2):
-                for j in range(i, len(ids2)):
-                    self.calcMapCurves(layer.getFeature(ids[i]), layer2.getFeature(ids[j]))
+            for j in range(i, len(ids2)):
+                # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\nIter"+str(
+                #     [i,j]
+                # ))
+                if switchState:
+                    self.calcMapCurves(layer.getFeature(ids[j]), layer2.getFeature(ids2[i]))
+                else:
+                    self.calcMapCurves(layer.getFeature(ids[i]), layer2.getFeature(ids2[j]))
+        
+        elapsed = timer() - start
+        self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\nElapsedTime"+str(
+            elapsed
+        )+" "+str([i,j]))
 
     # get nearest neightbour list
-    def getCheckPointList(self, layer, layer2):    
+    def getCheckPointList(self, layer, layer2):
+        
+        longest = layer
+        shortest = layer2
+        switched = False
+        
+        if(layer.featureCount() < layer2.featureCount()):
+            longest = layer2
+            shortest = layer   
+            switched = True
+        
         checkList = []
-        ids = [f.id() for f in layer.getFeatures()]
-        for i in range(0, len):
+        ids = [f.id() for f in shortest.getFeatures()]
+        ids_ = [f.id() for f in longest.getFeatures()]
+        
+        for i in range(0, len(ids)):
             nearestI = self.getNearestIter(
-                        layer2, 
-                        layer.getFeature(ids[i]), 
-                        ids[i]
+                        longest, 
+                        ids_,
+                        shortest.getFeature(ids[i]),
+                        i
                     )
-            checkList.append(
-                [
-                    ids[i], nearestI
-                ]
-            )
+            if (nearestI is not None) :
+                if switched:
+                    checkList.append(
+                        [
+                            ids[i], ids_[nearestI] 
+                        ]
+                    )
+                else:
+                    checkList.append(
+                        [
+                            ids_[nearestI], ids[i]
+                        ]
+                    )
+        # self.dlg.consoleTextEdit.setText(
+        #     self.dlg.consoleTextEdit.toPlainText()+"\n\n checkpoint : "+str(checkList)
+        # )
         return checkList
+
     # get nearest iter
-    def getNearestIter(self, layer, feature, last):
+    def getNearestIter(self, layer, ids_, feature, last):
         # count = 101
-        ids_ = [f.id() for f in layer.getFeatures()]
-        count = len(ids_)
         nearestDist = QgsGeometry.distance(
-            layer.getFeature(0).geometry().centroid(),
+            layer.getFeature(ids_[last]).geometry().centroid(),
             feature.geometry().centroid()
         )
-        i = last
-        if(i < last):
-            while i < count:
-                dist = QgsGeometry.distance(
-                        feature.geometry().centroid(),
-                        layer.getFeature(ids_[i]).geometry().centroid()
-                    )
-                if(
-                    dist
-                    <
-                    nearestDist
-                ):
-                    nearestDist = dist
-                    nearestIter = i
-                i = i+1
-            return nearestIter
+        nearestIter = last
+        for j in range(last, len(ids_)):
+            dist = QgsGeometry.distance(
+                    feature.geometry().centroid(),
+                    layer.getFeature(ids_[j]).geometry().centroid()
+                )
+            # self.dlg.consoleTextEdit.setText(
+            #     self.dlg.consoleTextEdit.toPlainText()+"\n\n check process : "+str([
+            #         layer.getFeature(ids_[j]).attributes(),
+            #         feature.attributes(),
+            #         dist
+            #     ])
+            # )
+            if(
+                abs(dist) < abs(nearestDist)
+            ):
+                nearestDist = dist
+                nearestIter = j
+
+        # self.dlg.consoleTextEdit.setText(
+        #     self.dlg.consoleTextEdit.toPlainText()+"\n\n iter nearest : "+str([last, nearestIter, nearestDist])
+        # )
+        return nearestIter
  
     def calculateKNN(self, layer, layer2):
-
+        start = timer()
         neightbourList = self.getCheckPointList(layer, layer2)
         
         for i in neightbourList :
-            # writing dump on f.txt
-            self.calcMapCurves(layer.getFeature(i[0]), layer.getFeature(i[1]))
+            # writing dump on f.txt 
+            self.calcMapCurves(layer.getFeature(i[0]), layer2.getFeature(i[1]))
+        
+        elapsed = timer() - start
+        self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\nElapsedTime"+str(
+            elapsed
+        ))
+
+    def addScoreItem(self):
+        self.layer.commitChanges()
+        self.layer2.commitChanges()
+
+        scoreFieldIndex = self.layer.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
+        scoreFieldIndex2 = self.layer2.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
+
+        idIndex = self.layer.dataProvider().fieldNameIndex('id')
+        idIndex2 = self.layer2.dataProvider().fieldNameIndex('id')
+
+        matchIndex = self.layer.dataProvider().fieldNameIndex('match')
+        matchIndex2 = self.layer2.dataProvider().fieldNameIndex('match')
+
+        self.layer.startEditing()
+        self.layer2.startEditing()
+
+        for sim in self.similarLayer:
+            self.dlg.consoleTextEdit.setText(
+                self.dlg.consoleTextEdit.toPlainText()+"\n\n editing value "+
+                    str([
+                        [sim[0], scoreFieldIndex, sim[2]],
+                        self.layer.changeAttributeValue(sim[0], scoreFieldIndex, sim[2]),
+                        [sim[0], idIndex, sim[0]],
+                        self.layer.changeAttributeValue(sim[0], idIndex, sim[0]),
+                        [sim[0], matchIndex, sim[1]],
+                        self.layer.changeAttributeValue(sim[0], matchIndex, sim[1]),
+                        self.layer2.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2]),
+                        self.layer2.changeAttributeValue(sim[1], idIndex2, sim[1]),
+                        self.layer2.changeAttributeValue(sim[1], matchIndex2, sim[0])
+                    ])
+                 +" \n\n"
+            )
+            self.layer.changeAttributeValue(sim[0], scoreFieldIndex, sim[2])
+            self.layer.changeAttributeValue(sim[0], idIndex, sim[0])
+            self.layer.changeAttributeValue(sim[0], matchIndex, sim[1])
+            self.layer2.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2])
+            self.layer2.changeAttributeValue(sim[1], idIndex2, sim[1])
+            self.layer2.changeAttributeValue(sim[1], matchIndex2, sim[0])
+        
+        self.dlg.consoleTextEdit.setText(
+                self.dlg.consoleTextEdit.toPlainText()+"\n\n commiting "+str(
+                    [
+                        self.layer.commitChanges(),
+                        self.layer.commitErrors(),
+                        self.layer2.commitChanges(),
+                        self.layer2.commitErrors()
+                    ]
+                )
+        )
+
+        self.layer.commitChanges()
+        self.layer2.commitChanges()
 
     def calculateScore(self):
+        
+        # self.dlg.previewBtn.setEnabled(False)
+        self.dlg.saveBtn.setEnabled(False)
+        self.dlg.nextBtn.setEnabled(False)
+        self.dlg.removeBtn.setEnabled(False)
 
         self.similarLayer = []
-
         self.currentCheckLayer = [self.dlg.layerSel1.currentIndex(), self.dlg.layerSel2.currentIndex()]
 
-        qkab = QgsQueryBuilder(
-            QgsProject.instance().layerTreeRoot().children()[self.currentCheckLayer[0]].layer()
-        )
-        qkab_temp = qkab.sql()
-        qkab_2 = QgsQueryBuilder(
-            QgsProject.instance().layerTreeRoot().children()[self.currentCheckLayer[1]].layer()
-        )
-        qkab_2_temp = qkab_2.sql()
+        # qkab = QgsQueryBuilder(
+        #     QgsProject.instance().layerTreeRoot().children()[self.currentCheckLayer[0]].layer()
+        # )
+        # qkab_temp = qkab.sql()
+        # qkab_2 = QgsQueryBuilder(
+        #     QgsProject.instance().layerTreeRoot().children()[self.currentCheckLayer[1]].layer()
+        # )
+        # qkab_2_temp = qkab_2.sql()
 
-        if(self.dlg.filterCheck.isChecked()):
-            qkab.clear()
-            sqlkab = self.dlg.textEditSQL.toPlainText().decode("utf-8")
-            qkab.setSql(sqlkab)
-            qkab.accept()
-            qkab_2.clear()
-            sqlkab2 = self.dlg.textEditSQL.toPlainText().decode("utf-8")
-            qkab_2.setSql(sqlkab2)
-            qkab_2.accept()
+        # if(self.dlg.filterCheck.isChecked()):
+        #     qkab.clear()
+        #     sqlkab = self.dlg.textEditSQL.toPlainText().decode("utf-8")
+        #     qkab.setSql(sqlkab)
+        #     qkab.accept()
+        #     qkab_2.clear()
+        #     sqlkab2 = self.dlg.textEditSQL.toPlainText().decode("utf-8")
+        #     qkab_2.setSql(sqlkab2)
+        #     qkab_2.accept()
 
         # layer = QgsProject.instance().layerTreeRoot().children()[
         #     self.currentCheckLayer[0]
@@ -481,12 +631,26 @@ class SimilarityPlugin:
         # ].layer()
 
         # duplicating layer for better performance
-
-        self.layer = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
+        layername = str(self.dlg.prefLineEdit.text())+str(QgsProject.instance().layerTreeRoot().children()[self.currentCheckLayer[0]].layer().name())
+        self.layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
+                        layername,
+                        'memory')
+        self.layer.setCrs(
+            QgsProject.instance().layerTreeRoot().children()[
+                self.currentCheckLayer[0]
+            ].layer().sourceCrs()
+        )
         self.layer.dataProvider().addAttributes(
             QgsProject.instance().layerTreeRoot().children()[
                 self.currentCheckLayer[0]
             ].layer().dataProvider().fields().toList()
+        )
+        self.layer.dataProvider().addAttributes(
+            [
+                QgsField(self.dlg.attrOutLineEdit.text(), QVariant.Double),
+                QgsField('id', QVariant.Int),
+                QgsField('match', QVariant.Int)
+            ]
         )
         self.layer.updateFields()
         self.layer.dataProvider().addFeatures(
@@ -498,13 +662,26 @@ class SimilarityPlugin:
         # layer.dataProvider().addFeatures(QgsProject.instance().layerTreeRoot().children()[
         #     self.currentCheckLayer[0]
         # ].layer().getFeatures())
-        
-        self.layer2 = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
-
+        layername = str(self.dlg.prefLineEdit.text())+str(QgsProject.instance().layerTreeRoot().children()[self.currentCheckLayer[1]].layer().name())
+        self.layer2 = QgsVectorLayer("Polygon?crs=ESPG:4326",
+                        layername,
+                        'memory')
+        self.layer2.setCrs(
+            QgsProject.instance().layerTreeRoot().children()[
+                self.currentCheckLayer[1]
+            ].layer().sourceCrs()
+        )
         self.layer2.dataProvider().addAttributes(
             QgsProject.instance().layerTreeRoot().children()[
                 self.currentCheckLayer[1]
             ].layer().dataProvider().fields().toList()
+        )
+        self.layer2.dataProvider().addAttributes(
+            [
+                QgsField(self.dlg.attrOutLineEdit.text(), QVariant.Double),
+                QgsField('id', QVariant.Int),
+                QgsField('match', QVariant.Int)
+            ]
         )
         self.layer2.updateFields()
         self.layer2.dataProvider().addFeatures(
@@ -521,9 +698,48 @@ class SimilarityPlugin:
             #self.threadCalc = CalculateThread(layer, layer2, 2) 
             self.calculateWK(self.layer, self.layer2)
 
+        cText = "Feature Count of Result: "+str(len(self.similarLayer))
+        
         if len(self.similarLayer) > 0 :
-            self.dlg.previewBtn.setEnabled(True)
-            self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n Similar Layer Result index :  "+str(self.similarLayer))
+            self.addScoreItem()
+            self.previewLayer = 0
+            self.dlg.saveBtn.setEnabled(True)
+            self.dlg.counterLabel.setText(cText)
+            self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Similar Layer Result index :  "+str(self.similarLayer))
+            self.resultPreview()
+        else:
+            self.previewLayer = 0
+            self.dlg.counterLabel.setText(cText)
+    
+    def registerToProject(self):
+        layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
+                        self.layer.name(),
+                        'memory')
+        layer.setCrs(
+            self.layer.sourceCrs()
+        )
+        layer.dataProvider().addAttributes(
+            self.layer.dataProvider().fields().toList()
+        )
+        layer.updateFields()
+        layer.dataProvider().addFeatures(
+            [self.layer.getFeature(f[0]) for f in self.similarLayer]
+        )
+
+        layer2 = QgsVectorLayer("Polygon?crs=ESPG:4326",
+                        self.layer2.name(),
+                        'memory')
+        layer2.setCrs(
+            self.layer2.sourceCrs()
+        )
+        layer2.dataProvider().addAttributes(
+            self.layer2.dataProvider().fields().toList()
+        )
+        layer2.updateFields()
+        layer2.dataProvider().addFeatures(
+            [self.layer2.getFeature(f[1]) for f in self.similarLayer]
+        )
+        QgsProject.instance().addMapLayers([layer, layer2])
 
     def run(self):
         """Run method that performs all the real work"""
@@ -551,24 +767,26 @@ class SimilarityPlugin:
         self.dlg.layerSel2.clear()
         self.dlg.layerSel2.addItems(layer_list)
 
-        self.dlg.filterCheck.stateChanged.connect(self.filterCheckBox)
+        # self.dlg.filterCheck.stateChanged.connect(self.filterCheckBox)
         
         self.dlg.methodComboBox.addItems(
             [
                 'Squential',
-                'K-Nearest Neightbour',
+                'Nearest Neightbour',
                 'Wilkerstat BPS'
             ]
         )
 
         self.dlg.methodComboBox.currentIndexChanged.connect(self.methodChange)
 
-        self.dlg.previewBtn.clicked.connect(self.resultPreview)
-
         self.dlg.nextBtn.clicked.connect(self.nextPreview)
         self.dlg.previousBtn.clicked.connect(self.previousPreview)
 
         self.dlg.calcBtn.clicked.connect(self.calculateScore)
+
+        self.dlg.saveBtn.clicked.connect(self.registerToProject)
+
+        self.dlg.removeBtn.clicked.connect(self.rmFeatResult)
 
         # show the dialog
         self.dlg.show()
