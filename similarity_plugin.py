@@ -490,8 +490,9 @@ class SimilarityPlugin:
 
                 que.clear()
                 que.accept()
-            except expression as identifier:
-                pass    
+            except KeyError as identifier:
+                # show error message
+                warnDlg = self.warnDialogInit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required") 
 
     # squential mechanism
     def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
