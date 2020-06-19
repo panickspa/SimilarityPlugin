@@ -11,11 +11,17 @@ from qgis.core import (QgsProject,
 )
 
 class CalculationModule(object):
-    def __init__(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, treshold:double, method=0, translate=False, radius=0):
+    def __init__(
+        self,
+        treshold:double, 
+        method=0
+        ):
+        
         super().__init__()
         similarLayer = []
 
     def translateCenterGeom(self, g, target):
+        
         # duplicating
         g_new = QgsGeometry(g)
         target_new = QgsGeometry(target)
@@ -27,8 +33,8 @@ class CalculationModule(object):
         g.translate(transX, transY)
         return g
 
-    # calculating score
-    def calcMapCurvesGeom(self, g, g2):
+    def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
+        
         inter = g.intersection(g2)
         if(inter.isEmpty()):
             return 0
@@ -36,7 +42,8 @@ class CalculationModule(object):
             score = (inter.area()/g.area())*(inter.area()/g2.area())
             return round(score, 4)
  
-    def calcMapCurves(self, feature, feature2):
+    def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
+        
         treshold = treshold/100
 
         if self.method == 1:
@@ -50,9 +57,8 @@ class CalculationModule(object):
         if score >= treshold:
             self.similarLayer.append([feature.id(), feature2.id(), score])
 
-    def calculateWK(self, layer, layer2):
-        print("WK method")
-
+    def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
+        
         for i in layer.getFeatures():
             # Querying 
             if(pkCheck.count(False) > 3 ):
@@ -88,13 +94,19 @@ class CalculationModule(object):
             que.clear()
             que.accept()
 
-    def calculateSq(self, layer, layer2):
+        return self.similarLayer
+
+    def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+        
         for i in layer.getFeatures():
             for j in layer2.getFeatures(i.geometry().boundingBox()):
                 if(i.hasGeometry()):
                     self.calcMapCurves(i, j)
 
-    def calculateKNN(self, layer, layer2):
+        return self.similarLayer
+
+    def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, radius:double):
+        
         for i in layer.getFeatures() :
             if(i.hasGeometry()):
                 centroid = i.geometry().centroid().asQPointF()
@@ -106,6 +118,8 @@ class CalculationModule(object):
                 )
                 for j in layer2.getFeatures(bbFilter):
                     self.calcMapCurves(i, j)
+
+        return self.similarLayer
     
 
 

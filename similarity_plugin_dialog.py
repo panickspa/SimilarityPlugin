@@ -32,7 +32,6 @@ from qgis.PyQt.QtCore import QObject
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'similarity_plugin_dialog_base.ui'))
 
-
 class SimilarityPluginDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self, parent=None):
         """Constructor."""

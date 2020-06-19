@@ -10,7 +10,7 @@
 
 __author__ = '16.9350@stis.ac.id'
 __date__ = '2020-03-20'
-__copyright__ = 'Copyright 2020, STIS'
+__copyright__ = 'Copyright 2020, Politeknik Statistika STIS'
 
 import unittest
 

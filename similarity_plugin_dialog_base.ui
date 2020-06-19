@@ -10,6 +10,18 @@
     <height>566</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>864</width>
+    <height>566</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>864</width>
+    <height>566</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Calculate Similarity Map</string>
   </property>
@@ -222,7 +234,7 @@
       </item>
       <item>
        <widget class="QgsMapLayerComboBox" name="layerSel2">
-        <property name="showCrs">
+        <property name="showCrs" stdset="0">
          <bool>false</bool>
         </property>
        </widget>
