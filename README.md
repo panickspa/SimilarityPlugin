@@ -29,7 +29,7 @@ atau menggunakan perintah pb_tool
         set PYTHONPATH=%PYTHONPATH%;%QGIS_DIRECTORY%\apps\qgis\python
         set PYTHONHOME=%QGIS_DIRECTORY%\apps\Python37  
         
-        start "VisualStudioCode for QGIS" /B  "%PATH_PROJECT% %*
+        start "VisualStudioCode for QGIS" /B  "%PATH_VSCODE" %PATH_PROJECT% %*
 
 
 
