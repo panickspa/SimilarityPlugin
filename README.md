@@ -12,7 +12,8 @@ untuk Windows
     %OS_DIRECTORY%\Users\%Username%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins
     
 atau menggunakan perintah pb_tool
-    `pb_tool deploy`
+    
+    pb_tool deploy
     
 # Development
 
