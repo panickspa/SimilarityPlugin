@@ -1,5 +1,10 @@
 {
     "python.linting.pylintEnabled": true,
     "python.analysis.memory.keepLibraryLocalVariables": true,
-    "python.analysis.memory.keepLibraryAst": true
+    "python.analysis.memory.keepLibraryAst": true,
+    "python.autoComplete.extraPaths": [
+        "C:\\OSGeo4W64\\apps",
+        "C:\\Program Files\\QGIS 3.10",
+        "C:\\Program Files\\QGIS 3.10\\apps"
+    ]
 }
