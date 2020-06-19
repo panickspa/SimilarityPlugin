@@ -36,18 +36,14 @@ untuk Windows
         call "%QGIS_DIRECTORY%\bin\o4w_env.bat"
         call "%QGIS_DIRECTORY&\bin\qt5_env.bat"
         call "%QGIS_DIRECTORY&\bin\py3_env.bat"
+        @echo off
+        call "%OSGeo4W64%\bin\o4w_env.bat"
+        call "%OSGeo4W64%\bin\qt5_env.bat"
+        call "%OSGeo4W64%\bin\py3_env.bat"
+        call "%OSGeo4W64%\bin\gdal-dev-env.bat"
+        call "%OSGeo4W64%\bin\gdal-dev-py3-env.bat"
+        call "%OSGeo4W64%\bin\proj-dev-env.bat"
         @echo on
-        
-        optional
-        
-            @echo off
-            call "%OSGeo4W64%\bin\o4w_env.bat"
-            call "%OSGeo4W64%\bin\qt5_env.bat"
-            call "%OSGeo4W64%\bin\py3_env.bat"
-            call "%OSGeo4W64%\bin\gdal-dev-env.bat"
-            call "%OSGeo4W64%\bin\gdal-dev-py3-env.bat"
-            call "%OSGeo4W64%\bin\proj-dev-env.bat"
-            @echo on
 
 
 *  Cara untuk building code di terminal
