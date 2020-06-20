@@ -57,6 +57,7 @@ from .similarity_plugin_dialog import SimilarityPluginDialog
 # Import additional dialog
 from .calcWarn_plugin_dialog import CalcDialog
 from .warn_plugin_dialog import WarnDialog
+from .CaculationModule import *
 
 import sys, os, time
 from timeit import default_timer as timer
@@ -493,7 +494,7 @@ class SimilarityPlugin:
             except KeyError as identifier:
                 # show error message
                 warnDlg = self.warnDialogInit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required") 
-
+    
     # squential mechanism
     def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
         # print("layer 1 count : "+str(layer.featureCount()))
@@ -575,6 +576,20 @@ class SimilarityPlugin:
 
         return layer  
 
+    # progress
+    # def updateProgress(self, value):
+    #     print("progress"+str(value*100))
+
+    # thread finish
+    # def finishedThread(self, value):
+    #     self.similarLayer = value
+    #     self.addScoreItem()
+    #     self.previewLayer = 0
+    #     self.dlg.saveBtn.setEnabled(True)
+    #     cText = "Feature Count of Result: "+str(len(self.similarLayer))
+    #     self.dlg.counterLabel.setText(cText)
+    #     self.resultPreview()
+
     # executing calculation
     def calculateScore(self):
         if(isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer) and isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer)):
@@ -619,6 +634,12 @@ class SimilarityPlugin:
             #     elapsed
             # ))
 
+            # multithreading (experimental)
+            # treshold = self.dlg.lineEditTreshold.value()/100
+            # self.threadCalc = CalculationThread(self.layer, self.layer2, treshold, self.dlg.methodComboBox.currentIndex())
+            # self.dlg.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
+            # self.dlg.connect(QtCore.Signal("CALC_FINISHED"), self.threadCalc, self.finishedThread)
+            
             # select the method mechanism
             if self.dlg.methodComboBox.currentIndex() == 0:
                 self.calculateSq(self.layer, self.layer2)

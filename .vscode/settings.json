@@ -4,6 +4,8 @@
     "python.analysis.memory.keepLibraryAst": true,
     "python.autoComplete.extraPaths": [
         "C:\\OSGeo4W64\\apps",
+        "C:\\OSGeo4W64\\apps\\Python37\\lib",
+        "C:\\Program Files\\QGIS 3.10\\apps\\Python37\\Lib",
         "C:\\Program Files\\QGIS 3.10",
         "C:\\Program Files\\QGIS 3.10\\apps"
     ]
