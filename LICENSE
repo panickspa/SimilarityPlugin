@@ -292,6 +292,7 @@ the "copyright" line and a pointer to where the full notice is found.
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     This plugin using Mapcurves Algorithm (Hargove et al. 2006) to
     check between the similarity maps.
     Copyright (C) <2020>  Pandu Wicaksono and Takdir
@@ -303,6 +304,11 @@ the "copyright" line and a pointer to where the full notice is found.
 >>>>>>> Update LICENSE
     Copyright (C) <2020>  <Pandu Wicaksono and Takdir>
 >>>>>>> Create LICENSE
+=======
+    This plugin using Mapcurves Algorithm (Hargove et al. 2006) to
+    check between the similarity maps.
+    Copyright (C) <2020>  Pandu Wicaksono and Takdir
+>>>>>>> Update LICENSE
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
