@@ -1,24 +1,24 @@
 # Similarity Plugin
 
+Checking similarity maps with Mapcurves Method
 Pengecekan kesamaan peta dengan Metode Mapcurves
 
 
-# Instalasi
+# Instalation
 
-Instalasi bisa dengan mennyalin seluruh fail pada direktori plugin QGIS terinstall
-dengan direktori baru
-untuk Windows 
-   
+Copy/clone all fail to QGIS directory
+for Windows
+
     %OS_DIRECTORY%\Users\%Username%\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins
-    
-atau menggunakan perintah pb_tool
+
+or using pb_tool command
     
     pb_tool deploy
     
 # Development
 
 
-*  Mengintegrasikan QGIS Environtment ke VS Code menggunakan commanline
+*  Integrating QGIS Env to Vs Code using CMD
 
         @echo off
         path %PATH%;%QGIS_DIRECTORY%\bin
@@ -34,7 +34,7 @@ atau menggunakan perintah pb_tool
 
 
 
-*  Mengaktifkan environment QGIS dan OSGeoW di VS Code menggunakan terminal
+*  Activating QGIS and OSGeoW in VS Code Terminal
 
         @echo off
         call "%QGIS_DIRECTORY%\bin\o4w_env.bat"
@@ -50,15 +50,15 @@ atau menggunakan perintah pb_tool
         @echo on
 
 
-*  Cara untuk building code di terminal
+*  How to build
 
-        *harus mengaktifkan environment QGIS atau OSGeoW di Vs Code*
+        *you must activating QGIS Env in VS Code first*
         pyrcc5 -o resources.py resources.qrc
         
         *install pb_tool dengan command `pip install pb-tools`*
         `pb_tool deploy`
         
-        untuk building dengan output instalasi plugin zip, berikan perintah `pb_tool zip`
-        instalasi akan menghasilkan output di direktory .\zip_build
+        for building with zip output, you can command `pb_tool zip`
+        it will be give you an output ./zip_build directory
+
         
-# SELAMAT MENCOBA
