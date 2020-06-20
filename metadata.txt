@@ -25,11 +25,11 @@ hasProcessingProvider=no
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=https://git.stis.ac.id/pandu1881/similarity-plugin
+homepage=https://github.com/panickspa/QGIS-Similarity-Plugin-GOF-Mapcurves
 category=Vector
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
