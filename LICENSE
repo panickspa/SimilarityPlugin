@@ -1,11 +1,7 @@
                     GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 
-<<<<<<< HEAD
- Copyright (C) 1989, 1991 Free Software Foundation, Inc., <http://fsf.org/>
-=======
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.,
->>>>>>> Create LICENSE
  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  Everyone is permitted to copy and distribute verbatim copies
  of this license document, but changing it is not allowed.
@@ -295,11 +291,16 @@ convey the exclusion of warranty; and each file should have at least
 the "copyright" line and a pointer to where the full notice is found.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     This plugin using Mapcurves Algorithm (Hargove et al. 2006) to
     check between the similarity maps.
     Copyright (C) <2020>  Pandu Wicaksono and Takdir
 =======
     <one line to give the program's name and a brief idea of what it does.>
+=======
+    This program using Mapcurves Algorithm (Hargove et al. 2006) to
+    check between the similarity maps.
+>>>>>>> Update LICENSE
     Copyright (C) <2020>  <Pandu Wicaksono and Takdir>
 >>>>>>> Create LICENSE
 
