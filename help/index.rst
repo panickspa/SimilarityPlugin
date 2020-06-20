@@ -6,10 +6,11 @@
 Welcome to Similarity Plugin's documentation!
 =============================================
 
-
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
+   concept
+   tutorial
    dialog_classes
    dialog_interaction
    similarity_method

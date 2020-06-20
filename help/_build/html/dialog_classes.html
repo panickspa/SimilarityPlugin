@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plugin Dialog Classes &mdash; Similarity Plugin  documentation</title>
+  <title>Plugin Attribut Dialog Classes &mdash; Similarity Plugin  documentation</title>
   
 
   
@@ -30,6 +30,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -38,7 +39,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Plugin Dialog Interaction" href="dialog_interaction.html" />
-    <link rel="prev" title="Welcome to Similarity Plugin’s documentation!" href="index.html" /> 
+    <link rel="prev" title="How to use the plugin" href="tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -84,11 +85,13 @@
             
             
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Plugin Dialog Classes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#calcdialog">CalcDialog</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#similarityplugin">SimilarityPlugin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#similarityplugindialog">SimilarityPluginDialog</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#warndialog">WarnDialog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concept.html">Concept Algorithm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">How to use the plugin</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plugin Attribut Dialog Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#class-calcdialog">Class: CalcDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#class-similarityplugin">Class: SimilarityPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#class-similarityplugindialog">Class: SimilarityPluginDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#class-warndialog">Class: WarnDialog</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
@@ -140,7 +143,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Plugin Dialog Classes</li>
+      <li>Plugin Attribut Dialog Classes</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -159,52 +162,201 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="plugin-dialog-classes">
-<h1>Plugin Dialog Classes<a class="headerlink" href="#plugin-dialog-classes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="calcdialog">
-<h2>CalcDialog<a class="headerlink" href="#calcdialog" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="plugin-attribut-dialog-classes">
+<h1>Plugin Attribut Dialog Classes<a class="headerlink" href="#plugin-attribut-dialog-classes" title="Permalink to this headline">¶</a></h1>
+<p>All attribute in this plugin classes</p>
+<div class="section" id="class-calcdialog">
+<h2>Class: CalcDialog<a class="headerlink" href="#class-calcdialog" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>msgLabel  : QLabel</p>
-<p>msgLabel2 : QLabel</p>
-<p>buttonBox : QDialogButton</p>
+<div><dl class="py attribute">
+<dt>
+<code class="sig-name descname">msgLabel  : QLabel</code></dt>
+<dd><p>First line message in dialog</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">msgLabel2 : QLabel</code></dt>
+<dd><p>Second line message in dialog</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">buttonBox : QDialogButton</code></dt>
+<dd><p>Button dialog to accept and reject the condition on the message</p>
+</dd></dl>
+
 </div></blockquote>
 </div>
-<div class="section" id="similarityplugin">
-<h2>SimilarityPlugin<a class="headerlink" href="#similarityplugin" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="class-similarityplugin">
+<h2>Class: SimilarityPlugin<a class="headerlink" href="#class-similarityplugin" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>dlg : SimilarityPluginDialog</p>
-<p>dialogCalc : CalcDialog</p>
-<p>similarLayer : list=[]</p>
-<p>previewLayer : int=0</p>
+<div><dl class="py attribute">
+<dt>
+<code class="sig-name descname">dlg : SimilarityPluginDialog</code></dt>
+<dd><p>Main plugin dialog</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">dialogCalc : CalcDialog</code></dt>
+<dd><p>Caution dialog to convincing the user of large data checking</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">similarLayer : list=[]</code></dt>
+<dd><p>The result of calculation process</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">previewLayer : int=0</code></dt>
+<dd><p>Current index similarLayer that previewed in canvas</p>
+</dd></dl>
+
 </div></blockquote>
 </div>
-<div class="section" id="similarityplugindialog">
-<h2>SimilarityPluginDialog<a class="headerlink" href="#similarityplugindialog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="class-similarityplugindialog">
+<h2>Class: SimilarityPluginDialog<a class="headerlink" href="#class-similarityplugindialog" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>attrOutlineEdit : QLineEdit</p>
-<p>calcBtn : QPushButton</p>
-<p>layerSel1 : QgsMapComboBox</p>
-<p>layerSel2 : QgsMapComboBox</p>
-<p>lineEditTreshold : QDoubleSpinBox</p>
-<p>mainTab   : QWidget</p>
-<p>mergeCenterCheck : QCheckBox</p>
-<p>methodComboBox : QCheckBox</p>
-<p>nextBtn : QPushButton</p>
-<p>nnRadiusEdit : QDoubleSpinBox</p>
-<p>prefLineEdit  : QLineEdit</p>
-<p>previewAttr : QLineEdit</p>
-<p>previewAttr_2 : QLineEdit</p>
-<p>SimilarityPluginDialogBase : QDialog</p>
-<p>tabWidget : QTabWidget</p>
-<p>widgetCanvas : QgsMapCanvas</p>
+<div><dl class="py attribute">
+<dt>
+<code class="sig-name descname">attrOutlineEdit : QLineEdit</code></dt>
+<dd><p>Inputation interface for attribute name score in attribute table in string (text)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">calcBtn : QPushButton</code></dt>
+<dd><p>Button for exceuting calculation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">layerSel1 : QgsMapComboBox</code></dt>
+<dd><p>Combo Box for selecting first layer</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">layerSel2 : QgsMapComboBox</code></dt>
+<dd><p>Combo Box for selecting second layer</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">lineEditTreshold : QDoubleSpinBox</code></dt>
+<dd><p>Inputation for similarity score treshold in float (number)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">mainTab   : QWidget</code></dt>
+<dd><p>Tab for the main menu</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">mergeCenterCheck : QCheckBox</code></dt>
+<dd><p>Check box for calculation with centering the geometry to another geometry</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">methodComboBox : QCheckBox</code></dt>
+<dd><p>Combo box for selecting the checking similarity method</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">nextBtn : QPushButton</code></dt>
+<dd><p>Button for preview the next feature in similarity list result</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">nnRadiusEdit : QDoubleSpinBox</code></dt>
+<dd><p>Inputation the radius tolerance (The number is according to the projection unit scale)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">prefLineEdit  : QLineEdit</code></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">previewAttr : QLineEdit</code></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">previewAttr_2 : QLineEdit</code></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">previousBtn : QPushButton</code></dt>
+<dd><p>Button for preview the previous feature in similarity list result</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">SimilarityPluginDialogBase : QDialog</code></dt>
+<dd><p>Base plugin window dialog</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">tabWidget : QTabWidget</code></dt>
+<dd><p>Tab widget in the plugin</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">widgetCanvas : QgsMapCanvas</code></dt>
+<dd><p>Canvas widget in preview section for previewing the result</p>
+</dd></dl>
+
 </div></blockquote>
 </div>
-<div class="section" id="warndialog">
-<h2>WarnDialog<a class="headerlink" href="#warndialog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="class-warndialog">
+<h2>Class: WarnDialog<a class="headerlink" href="#class-warndialog" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><p>msgLabel : QLabel</p>
-<p>noBtn : QPushButton</p>
-<p>yesBtn : QPushButton</p>
+<div><dl class="py attribute">
+<dt>
+<code class="sig-name descname">msgLabel : QLabel</code></dt>
+<dd><p>The warning message</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">noBtn : QPushButton</code></dt>
+<dd><p>Button for reject the condition</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">yesBtn : QPushButton</code></dt>
+<dd><p>Button for accept the condition</p>
+</dd></dl>
+
+</div></blockquote>
+<p>Class: SimpleWarningDialog</p>
+<blockquote>
+<div><dl class="py attribute">
+<dt>
+<code class="sig-name descname">msgLabel : QLabel</code></dt>
+<dd><p>The warning message</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt>
+<code class="sig-name descname">okBtn : QPushButton</code></dt>
+<dd><p>Ok condition</p>
+</dd></dl>
+
 </div></blockquote>
 </div>
 </div>
@@ -220,7 +372,7 @@
         <a href="dialog_interaction.html" class="btn btn-neutral float-right" title="Plugin Dialog Interaction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Similarity Plugin’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tutorial.html" class="btn btn-neutral float-left" title="How to use the plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

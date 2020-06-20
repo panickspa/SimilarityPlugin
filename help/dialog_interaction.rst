@@ -1,65 +1,71 @@
+==========================
 Plugin Dialog Interaction
-=========================
+==========================
+Interaction method is stored in SimilarityPlugin Class as its method
 
 .. toctree::
    :maxdepth: 2
 
 Input section
 ------------------------------
-   methodChange(self)
+   .. py:attribute:: methodChange(self)
 
-      change on interaction method combobox
+      Change on interaction method combobox
 
 
 Preview section
 -------------------------------
-   resultPreview(self)
+   .. py:attribute:: resultPreview(self)
 
       Activate preview section
 
-   attrPrinter(self, fieldList:object, feature:QgsFeature, place:QTextEdit)
+   .. py:attribute:: attrPrinter(self, fieldList:object, feature:QgsFeature, place:QTextEdit)
 
-      Print atrribute info on text edit in preview section
+      Print feature atrribute info on text edit in preview section
 
-   refreshPreview(self)
+      :param object fieldList: Iterable field value object
+      :param QgsFeature feature: The feature will be printed
+      :param QTextEdit place: The place atrribute will be printed
+
+   .. py:attribute:: refreshPreview(self)
 
       redraw Canvas preview
 
-   nextPreview(self)
+   .. py:attribute:: nextPreview(self)
 
       next result features
 
-   nextPrevious(self)
+   .. py:attribute:: nextPrevious(self)
 
       previous result features
 
-   rmFeatResult(self)
+   .. py:attribute:: rmFeatResult(self)
 
       Remove the current result
 
-   rmWarn(self)
+   .. py:attribute:: rmWarn(self)
 
       Warning dialog to prevent accidentally remove result
 
 Action section
 -------------------------------
-   addScoreItem(self)
+   .. py:attribute:: addScoreItem(self)
 
-      adding result score
+      Adding result score
 
-   calculateDialogAccepted(self)
+   .. py:attribute:: calculateDialogAccepted(self)
 
       Interaction when self.dialogCalc accepted
 
-   calculateClicked(self)
+   .. py:attribute:: calculateClicked(self)
 
-      interaction when self.dlg.calcBtn clicked
+      Interaction when self.dlg.calcBtn clicked
 
 
-   calculateDialogRejected(self)
+   .. py:attribute:: calculateDialogRejected(self)
 
        Interaction when self.dialogCalc rejected
 
-   registerToProject(self)
+   .. py:attribute:: registerToProject(self)
 
-      Interaction when saveBtn clicked
+      Interaction when self.dlg.saveBtn clicked

@@ -1,65 +1,126 @@
-Plugin Dialog Classes
-=====================
+==============================
+Plugin Attribut Dialog Classes
+==============================
+All attribute in this plugin classes
 
-CalcDialog
+Class: CalcDialog
 ----------
 
-    msgLabel  : QLabel
+    .. py:attribute:: msgLabel  : QLabel
 
-    msgLabel2 : QLabel
+        First line message in dialog
 
-    buttonBox : QDialogButton
+    .. py:attribute:: msgLabel2 : QLabel
 
+        Second line message in dialog
 
-SimilarityPlugin
+    .. py:attribute:: buttonBox : QDialogButton
+
+        Button dialog to accept and reject the condition on the message
+
+Class: SimilarityPlugin
 -----------------
 
-    dlg : SimilarityPluginDialog
+    .. py:attribute:: dlg : SimilarityPluginDialog
+
+        Main plugin dialog
     
-    dialogCalc : CalcDialog
+    .. py:attribute:: dialogCalc : CalcDialog
 
-    similarLayer : list=[]
+        Caution dialog to convincing the user of large data checking
 
-    previewLayer : int=0
+    .. py:attribute:: similarLayer : list=[]
 
-SimilarityPluginDialog
+        The result of calculation process
+
+    .. py:attribute:: previewLayer : int=0
+
+        Current index similarLayer that previewed in canvas
+
+Class: SimilarityPluginDialog
 ----------------------
-    attrOutlineEdit : QLineEdit
+    .. py:attribute:: attrOutlineEdit : QLineEdit
 
-    calcBtn : QPushButton
+        Inputation interface for attribute name score in attribute table in string (text)
 
-    layerSel1 : QgsMapComboBox
-    
-    layerSel2 : QgsMapComboBox
+    .. py:attribute:: calcBtn : QPushButton
 
-    lineEditTreshold : QDoubleSpinBox 
+        Button for exceuting calculation
 
-    mainTab   : QWidget
+    .. py:attribute:: layerSel1 : QgsMapComboBox
 
-    mergeCenterCheck : QCheckBox
+        Combo Box for selecting first layer
 
-    methodComboBox : QCheckBox
+    .. py:attribute:: layerSel2 : QgsMapComboBox
 
-    nextBtn : QPushButton
+        Combo Box for selecting second layer
 
-    nnRadiusEdit : QDoubleSpinBox
+    .. py:attribute:: lineEditTreshold : QDoubleSpinBox 
 
-    prefLineEdit  : QLineEdit
+        Inputation for similarity score treshold in float (number)
 
-    previewAttr : QLineEdit
+    .. py:attribute:: mainTab   : QWidget
 
-    previewAttr_2 : QLineEdit
+        Tab for the main menu
 
-    SimilarityPluginDialogBase : QDialog
+    .. py:attribute:: mergeCenterCheck : QCheckBox
 
-    tabWidget : QTabWidget
+        Check box for calculation with centering the geometry to another geometry
 
-    widgetCanvas : QgsMapCanvas
+    .. py:attribute:: methodComboBox : QCheckBox
 
-WarnDialog
+        Combo box for selecting the checking similarity method
+
+    .. py:attribute:: nextBtn : QPushButton
+
+        Button for preview the next feature in similarity list result
+
+    .. py:attribute:: nnRadiusEdit : QDoubleSpinBox
+
+        Inputation the radius tolerance (The number is according to the projection unit scale)
+
+    .. py:attribute:: prefLineEdit  : QLineEdit
+
+    .. py:attribute:: previewAttr : QLineEdit
+
+    .. py:attribute:: previewAttr_2 : QLineEdit
+
+    .. py:attribute:: previousBtn : QPushButton
+
+        Button for preview the previous feature in similarity list result
+
+    .. py:attribute:: SimilarityPluginDialogBase : QDialog
+
+        Base plugin window dialog
+
+    .. py:attribute:: tabWidget : QTabWidget
+
+        Tab widget in the plugin
+
+    .. py:attribute:: widgetCanvas : QgsMapCanvas
+
+        Canvas widget in preview section for previewing the result
+
+Class: WarnDialog
 ----------------------
-    msgLabel : QLabel
+    .. py:attribute:: msgLabel : QLabel
 
-    noBtn : QPushButton
+        The warning message
 
-    yesBtn : QPushButton
+    .. py:attribute:: noBtn : QPushButton
+
+        Button for reject the condition
+
+    .. py:attribute:: yesBtn : QPushButton
+
+        Button for accept the condition
+
+Class: SimpleWarningDialog
+
+    .. py:attribute:: msgLabel : QLabel
+
+        The warning message
+
+    .. py:attribute:: okBtn : QPushButton
+
+        Ok condition

@@ -234,7 +234,7 @@
       </item>
       <item>
        <widget class="QgsMapLayerComboBox" name="layerSel2">
-        <property name="showCrs" stdset="0">
+        <property name="showCrs">
          <bool>false</bool>
         </property>
        </widget>
@@ -284,6 +284,9 @@
      </property>
     </widget>
     <widget class="QCheckBox" name="mergeCenterCheck">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>160</x>
@@ -312,7 +315,7 @@
       <string>Output Option</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="percentLabel">
      <property name="geometry">
       <rect>
        <x>290</x>

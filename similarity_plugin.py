@@ -58,6 +58,7 @@ from .similarity_plugin_dialog import SimilarityPluginDialog
 from .calcWarn_plugin_dialog import CalcDialog
 from .warn_plugin_dialog import WarnDialog
 from .CaculationModule import *
+from .simple_warning_dialog import SimpleWarnDialog
 
 import sys, os, time
 from timeit import default_timer as timer
@@ -493,8 +494,8 @@ class SimilarityPlugin:
                 que.accept()
             except KeyError as identifier:
                 # show error message
-                warnDlg = self.warnDialogInit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required") 
-    
+                warnDlg = self.simpleWarnDialogInit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required") 
+
     # squential mechanism
     def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
         # print("layer 1 count : "+str(layer.featureCount()))
@@ -741,6 +742,13 @@ class SimilarityPlugin:
         #set the message
         dialog.msgLabel.setText(msg)
         return dialog
+
+    def simpleWarnDialogInit(self, msg:str):
+        dialog = SimpleWarnDialog()
+        # Set the message
+        dialog.msgLabel.setText(msg)
+        dialog.okBtn.connect(dialog.accepted)
+        dialog.show()
 
     def run(self):
         """Run method that performs all the real work"""
