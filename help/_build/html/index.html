@@ -35,9 +35,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="similarity_plugin" href="modules.html" /> 
+    <link rel="next" title="Plugin Dialog Classes" href="dialog_classes.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -82,9 +83,11 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">similarity_plugin</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="dialog_classes.html">Plugin Dialog Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="similarity_method.html">Plugin Calculation Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
 </ul>
 
             
@@ -153,22 +156,38 @@
   <div class="section" id="welcome-to-similarity-plugin-s-documentation">
 <h1>Welcome to Similarity Plugin’s documentation!<a class="headerlink" href="#welcome-to-similarity-plugin-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">similarity_plugin</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.html">similarity_plugin package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialog_classes.html">Plugin Dialog Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dialog_classes.html#calcdialog">CalcDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialog_classes.html#similarityplugin">SimilarityPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialog_classes.html#similarityplugindialog">SimilarityPluginDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialog_classes.html#warndialog">WarnDialog</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dialog_interaction.html#input-section">Input section</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialog_interaction.html#preview-section">Preview section</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dialog_interaction.html#action-section">Action section</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="similarity_method.html">Plugin Calculation Method</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="similarity_method.html#calcmapcurvesgeom">calcMapCurvesGeom</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity_method.html#calcmapcurves">calcMapCurves</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity_method.html#calcsq">calcSq</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity_method.html#calcknn">calcKNN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity_method.html#calcwk">calcWK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="similarity_method.html#translatecentergeom">translateCenterGeom</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="about.html#mapcurve-hargrove-et-al-2016">Mapcurve (Hargrove et al. 2016)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#squential">Squential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#nearest-neighbour">Nearest Neighbour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html#wilkerstat">Wilkerstat</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
 </div>
 
 
@@ -179,7 +198,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="modules.html" class="btn btn-neutral float-right" title="similarity_plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dialog_classes.html" class="btn btn-neutral float-right" title="Plugin Dialog Classes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -190,7 +209,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2020, Pandu Wicaksono and Takdir
+        &copy; Copyright 2020, Politeknik Statistika STIS
 
     </p>
   </div>

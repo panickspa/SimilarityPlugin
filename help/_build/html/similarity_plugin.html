@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>similarity_plugin package &mdash; Similarity Plugin  documentation</title>
+  <title>Plugin Method &mdash; Similarity Plugin  documentation</title>
   
 
   
@@ -36,9 +36,7 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="similarity_plugin.test package" href="similarity_plugin.test.html" />
-    <link rel="prev" title="similarity_plugin" href="modules.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -83,31 +81,16 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="modules.html">similarity_plugin</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">similarity_plugin package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="similarity_plugin.test.html">similarity_plugin.test package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-caculationmodule-module">similarity_plugin.CaculationModule module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-calcwarn-plugin-dialog-module">similarity_plugin.calcWarn_plugin_dialog module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-calc-worker-module">similarity_plugin.calc_worker module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-plugin-upload-module">similarity_plugin.plugin_upload module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-resources-module">similarity_plugin.resources module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-similarity-plugin-module">similarity_plugin.similarity_plugin module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-similarity-plugin-dialog-module">similarity_plugin.similarity_plugin_dialog module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-test-module">similarity_plugin.test module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarity-plugin-warn-plugin-dialog-module">similarity_plugin.warn_plugin_dialog module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-contents">Module contents</a></li>
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Plugin Method</a><ul>
+<li><a class="reference internal" href="#similarity-method-calcsq">similarity method calcSq</a></li>
+<li><a class="reference internal" href="#similarity-method-calcknn">similarity method calcKNN</a></li>
+<li><a class="reference internal" href="#similarity-method-calcwk">similarity method calcWK</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-
+</div>
             
           
         </div>
@@ -152,9 +135,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="modules.html">similarity_plugin</a> &raquo;</li>
-        
-      <li>similarity_plugin package</li>
+      <li>Plugin Method</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -173,59 +154,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="similarity-plugin-package">
-<h1>similarity_plugin package<a class="headerlink" href="#similarity-plugin-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="plugin-method">
+<h1>Plugin Method<a class="headerlink" href="#plugin-method" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="similarity_plugin.test.html">similarity_plugin.test package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-qgis-interface-module">similarity_plugin.test.qgis_interface module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-test-init-module">similarity_plugin.test.test_init module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-test-qgis-environment-module">similarity_plugin.test.test_qgis_environment module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-test-resources-module">similarity_plugin.test.test_resources module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-test-similarity-plugin-dialog-module">similarity_plugin.test.test_similarity_plugin_dialog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-test-translations-module">similarity_plugin.test.test_translations module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#similarity-plugin-test-utilities-module">similarity_plugin.test.utilities module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="similarity_plugin.test.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
 </div>
+<div class="section" id="similarity-method-calcsq">
+<h2>similarity method calcSq<a class="headerlink" href="#similarity-method-calcsq" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>calcSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)</p>
+</div></blockquote>
 </div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="similarity-method-calcknn">
+<h2>similarity method calcKNN<a class="headerlink" href="#similarity-method-calcknn" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>calcKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)</p>
+</div></blockquote>
 </div>
-<div class="section" id="similarity-plugin-caculationmodule-module">
-<h2>similarity_plugin.CaculationModule module<a class="headerlink" href="#similarity-plugin-caculationmodule-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-calcwarn-plugin-dialog-module">
-<h2>similarity_plugin.calcWarn_plugin_dialog module<a class="headerlink" href="#similarity-plugin-calcwarn-plugin-dialog-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-calc-worker-module">
-<h2>similarity_plugin.calc_worker module<a class="headerlink" href="#similarity-plugin-calc-worker-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-plugin-upload-module">
-<h2>similarity_plugin.plugin_upload module<a class="headerlink" href="#similarity-plugin-plugin-upload-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-resources-module">
-<h2>similarity_plugin.resources module<a class="headerlink" href="#similarity-plugin-resources-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-similarity-plugin-module">
-<h2>similarity_plugin.similarity_plugin module<a class="headerlink" href="#similarity-plugin-similarity-plugin-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-similarity-plugin-dialog-module">
-<h2>similarity_plugin.similarity_plugin_dialog module<a class="headerlink" href="#similarity-plugin-similarity-plugin-dialog-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-test-module">
-<h2>similarity_plugin.test module<a class="headerlink" href="#similarity-plugin-test-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="similarity-plugin-warn-plugin-dialog-module">
-<h2>similarity_plugin.warn_plugin_dialog module<a class="headerlink" href="#similarity-plugin-warn-plugin-dialog-module" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="similarity-method-calcwk">
+<h2>similarity method calcWK<a class="headerlink" href="#similarity-method-calcwk" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>calcWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -234,15 +183,6 @@
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="similarity_plugin.test.html" class="btn btn-neutral float-right" title="similarity_plugin.test package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="modules.html" class="btn btn-neutral float-left" title="similarity_plugin" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

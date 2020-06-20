@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Plugin Calculation Method &mdash; Similarity Plugin  documentation</title>
+  <title>About Plugin &mdash; Similarity Plugin  documentation</title>
   
 
   
@@ -34,11 +34,10 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="author" title="About these documents" href="#" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="About Plugin" href="about.html" />
-    <link rel="prev" title="Plugin Dialog Interaction" href="dialog_interaction.html" /> 
+    <link rel="prev" title="Plugin Calculation Method" href="similarity_method.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,16 +85,14 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="dialog_classes.html">Plugin Dialog Classes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Plugin Calculation Method</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#calcmapcurvesgeom">calcMapCurvesGeom</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calcmapcurves">calcMapCurves</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calcsq">calcSq</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calcknn">calcKNN</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#calcwk">calcWK</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#translatecentergeom">translateCenterGeom</a></li>
+<li class="toctree-l1"><a class="reference internal" href="similarity_method.html">Plugin Calculation Method</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">About Plugin</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mapcurve-hargrove-et-al-2016">Mapcurve (Hargrove et al. 2016)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squential">Squential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nearest-neighbour">Nearest Neighbour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wilkerstat">Wilkerstat</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
 </ul>
 
             
@@ -142,13 +139,13 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Plugin Calculation Method</li>
+      <li>About Plugin</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/similarity_method.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/about.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -161,80 +158,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="plugin-calculation-method">
-<h1>Plugin Calculation Method<a class="headerlink" href="#plugin-calculation-method" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-</div>
-<div class="section" id="calcmapcurvesgeom">
-<h2>calcMapCurvesGeom<a class="headerlink" href="#calcmapcurvesgeom" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="about-plugin">
+<h1>About Plugin<a class="headerlink" href="#about-plugin" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="mapcurve-hargrove-et-al-2016">
+<h2>Mapcurve (Hargrove et al. 2016)<a class="headerlink" href="#mapcurve-hargrove-et-al-2016" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><dl>
-<dt>calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry)</dt><dd><p>return int</p>
-<blockquote>
-<div><p>calculate the score in geometry</p>
-</div></blockquote>
-</dd>
-</dl>
+<div><p>Mapcurves adalah metode untuk mengetahui persamaan peta dengan menggunakan metode GOF. Metode Mapcurves dikembangkan oleh Hargrove et al. (2006). Mapcurves dapat memberikan tingkat kesamaan peta tanpa memperhatikan resolusi gambar. Mapcurves juga dapat diaplikasikan pada peta berbentuk raster dan vektor. Berikut rumus dan konsep pada metode Mapcurves.</p>
+<p>〖GOF〗_mapcurves= ∑〖Intersection/(B)×Intersection/(A)〗</p>
+<p>Mapcurve memiliki konsep perbandingan luas irisan peta dengan peta yang dibandingkan. Irisan tersebut disebut sebagai insideness yang menunjukkan kesepakatan persamaan peta. Ketika luas irisan peta tersebut semakin tinggi maka peta perbandingan peta akan dianggap semakin mirip.</p>
 </div></blockquote>
 </div>
-<div class="section" id="calcmapcurves">
-<h2>calcMapCurves<a class="headerlink" href="#calcmapcurves" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="squential">
+<h2>Squential<a class="headerlink" href="#squential" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><dl>
-<dt>calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature)</dt><dd><p>return null</p>
-<blockquote>
-<div><p>calculate the socre and save to self.similarLayer</p>
-</div></blockquote>
-</dd>
-</dl>
+<div><p>Metode squential akan menggunakan penyaringan kelompok peta pada layer dengan batas kotak pada setiap fitur peta. Kotak tersebut akan menyaring peta yang berpotongan dengan kotak tersebut. Berikut ilustrasi untuk penyaringan peta dengan metode tersebut. Algoritma akan lebih cepat dengan dari O(nC2) pada prototipe pertama menjadi O(n.m). Variabel n adalah jumlah peta yang akan dilakukan pemeriksaan pada layer pertama dan Variabel m adalah jumlah peta yang disaring dengan kotak</p>
 </div></blockquote>
 </div>
-<div class="section" id="calcsq">
-<h2>calcSq<a class="headerlink" href="#calcsq" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="nearest-neighbour">
+<h2>Nearest Neighbour<a class="headerlink" href="#nearest-neighbour" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><dl>
-<dt>calcSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)</dt><dd><p>return null</p>
-<blockquote>
-<div><p>calculate squentially</p>
-</div></blockquote>
-</dd>
-</dl>
+<div><p>Metode Nearest Neighbour memiliki konsep penyaringan batas kotak juga tetapi metode ini menggunakan batas kotak yang ditentukan. Batas kotak tersebut akan dibuat sesuai radius yang diinginkan pada pengguna. Radius tersebut akan menunjukkan berapa jauh toleransi pergeseran data peta yang dibandingkan.</p>
+<p>Prinsip kotak tersebut seperti mengelompokkan data layer kedua menjadi kelompok yang terdekat pada fitur yang akan dibandingkan pada layer pertama. Kelompok tersebut akan menjadi fitur yang dibandingkan seperti pada metode squential. Selanjutnya fitur peta yang akan dibandingkan digeser ke tengah-tengah peta yang dikelompokkan untuk mencari skor tingkat kemiripannya dengan metode Mapcurves.</p>
 </div></blockquote>
 </div>
-<div class="section" id="calcknn">
-<h2>calcKNN<a class="headerlink" href="#calcknn" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="wilkerstat">
+<h2>Wilkerstat<a class="headerlink" href="#wilkerstat" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><dl>
-<dt>calcKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)</dt><dd><p>return null</p>
-<blockquote>
-<div><p>Calculate within radius bounding box. Radius distance using euclidean</p>
-</div></blockquote>
-</dd>
-</dl>
-</div></blockquote>
-</div>
-<div class="section" id="calcwk">
-<h2>calcWK<a class="headerlink" href="#calcwk" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><dl>
-<dt>calcWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)</dt><dd><p>return null</p>
-<blockquote>
-<div><p>Match the primary key map, see <a class="reference external" href="https://sig.bps.go.id/">https://sig.bps.go.id/</a></p>
-</div></blockquote>
-</dd>
-</dl>
-</div></blockquote>
-</div>
-<div class="section" id="translatecentergeom">
-<h2>translateCenterGeom<a class="headerlink" href="#translatecentergeom" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><dl>
-<dt>translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry)</dt><dd><p>return QgsGeometry</p>
-<blockquote>
-<div><p>translate geometry</p>
-</div></blockquote>
-</dd>
-</dl>
+<div><p>Metode Wilkerstat menggunakan matching primary key dalam sistem database Wilkersat yaitu provno, kabkotno, kecno, dan desano. Struktur tersebut dapat dilihat di <a class="reference external" href="https://sig.bps.go.id/">https://sig.bps.go.id/</a></p>
 </div></blockquote>
 </div>
 </div>
@@ -247,10 +197,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="about.html" class="btn btn-neutral float-right" title="About Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="dialog_interaction.html" class="btn btn-neutral float-left" title="Plugin Dialog Interaction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="similarity_method.html" class="btn btn-neutral float-left" title="Plugin Calculation Method" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

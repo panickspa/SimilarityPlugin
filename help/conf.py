@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'Similarity Plugin'
-copyright = '2020, Pandu Wicaksono and Takdir'
+copyright = '2020, Politeknik Statistika STIS'
 author = 'Pandu Wicaksono and Takdir'
 
 
@@ -28,6 +28,7 @@ author = 'Pandu Wicaksono and Takdir'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'recommonmark', 'sphinx.ext.autodoc'
 ]
 
 # Add any paths that contain templates here, relative to this directory.

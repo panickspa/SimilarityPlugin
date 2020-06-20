@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Search &mdash; Similarity Plugin  documentation</title>
+  <title>Plugin Dialog Classes &mdash; Similarity Plugin  documentation</title>
   
 
   
@@ -20,7 +20,6 @@
   
 
   
-    
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -31,15 +30,15 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
     
-    <script type="text/javascript" src="_static/searchtools.js"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Plugin Dialog Interaction" href="dialog_interaction.html" />
+    <link rel="prev" title="Welcome to Similarity Plugin’s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -66,7 +65,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="#" method="get">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -84,8 +83,14 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="dialog_classes.html">Plugin Dialog Classes</a></li>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plugin Dialog Classes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#calcdialog">CalcDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#similarityplugin">SimilarityPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#similarityplugindialog">SimilarityPluginDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#warndialog">WarnDialog</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="similarity_method.html">Plugin Calculation Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
@@ -135,12 +140,14 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Search</li>
+      <li>Plugin Dialog Classes</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
+            <a href="_sources/dialog_classes.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -152,23 +159,70 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <noscript>
-  <div id="fallback" class="admonition warning">
-    <p class="last">
-      Please activate JavaScript to enable the search functionality.
-    </p>
-  </div>
-  </noscript>
+  <div class="section" id="plugin-dialog-classes">
+<h1>Plugin Dialog Classes<a class="headerlink" href="#plugin-dialog-classes" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="calcdialog">
+<h2>CalcDialog<a class="headerlink" href="#calcdialog" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>msgLabel  : QLabel</p>
+<p>msgLabel2 : QLabel</p>
+<p>buttonBox : QDialogButton</p>
+</div></blockquote>
+</div>
+<div class="section" id="similarityplugin">
+<h2>SimilarityPlugin<a class="headerlink" href="#similarityplugin" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>dlg : SimilarityPluginDialog</p>
+<p>dialogCalc : CalcDialog</p>
+<p>similarLayer : list=[]</p>
+<p>previewLayer : int=0</p>
+</div></blockquote>
+</div>
+<div class="section" id="similarityplugindialog">
+<h2>SimilarityPluginDialog<a class="headerlink" href="#similarityplugindialog" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>attrOutlineEdit : QLineEdit</p>
+<p>calcBtn : QPushButton</p>
+<p>layerSel1 : QgsMapComboBox</p>
+<p>layerSel2 : QgsMapComboBox</p>
+<p>lineEditTreshold : QDoubleSpinBox</p>
+<p>mainTab   : QWidget</p>
+<p>mergeCenterCheck : QCheckBox</p>
+<p>methodComboBox : QCheckBox</p>
+<p>nextBtn : QPushButton</p>
+<p>nnRadiusEdit : QDoubleSpinBox</p>
+<p>prefLineEdit  : QLineEdit</p>
+<p>previewAttr : QLineEdit</p>
+<p>previewAttr_2 : QLineEdit</p>
+<p>SimilarityPluginDialogBase : QDialog</p>
+<p>tabWidget : QTabWidget</p>
+<p>widgetCanvas : QgsMapCanvas</p>
+</div></blockquote>
+</div>
+<div class="section" id="warndialog">
+<h2>WarnDialog<a class="headerlink" href="#warndialog" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>msgLabel : QLabel</p>
+<p>noBtn : QPushButton</p>
+<p>yesBtn : QPushButton</p>
+</div></blockquote>
+</div>
+</div>
 
-  
-  <div id="search-results">
-  
-  </div>
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="dialog_interaction.html" class="btn btn-neutral float-right" title="Plugin Dialog Interaction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Similarity Plugin’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
@@ -208,14 +262,7 @@
   
   
     
-  
-  <script type="text/javascript">
-    jQuery(function() { Search.loadIndex("searchindex.js"); });
-  </script>
-  
-  <script type="text/javascript" id="searchindexloader"></script>
    
-
 
 </body>
 </html>

@@ -6,15 +6,11 @@
 Welcome to Similarity Plugin's documentation!
 =============================================
 
+
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-   modules
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   dialog_classes
+   dialog_interaction
+   similarity_method
+   about

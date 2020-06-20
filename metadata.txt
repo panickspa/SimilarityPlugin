@@ -10,7 +10,7 @@ version=0.1
 author=Pandu Wicaksono and Takdir
 email=16.9350@stis.ac.id
 
-about=This plugin use Mapcurves Algorithm (Hargrove et al. 2006).
+about=This plugin use Mapcurves Algorithm (Hargrove et al. 2006). This plugin have 3 method, there are Squential, Nearest Neighbour, and Wilkerstat. Wilkerstat Method using primary key on attribute table you can check the structur in https://sig.bps.go.id/.
 
 tracker=https://git.stis.ac.id/pandu1881/similarity-plugin/-/issues
 repository=https://git.stis.ac.id/pandu1881/similarity-plugin/-/tree/master

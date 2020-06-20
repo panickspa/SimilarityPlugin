@@ -1,7 +1,5 @@
-similarity_plugin
+Similarity Plugin
 =================
 
 .. toctree::
-   :maxdepth: 4
-
-   similarity_plugin
+   :maxdepth: 2
