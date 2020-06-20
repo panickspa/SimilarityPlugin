@@ -59,6 +59,7 @@ from .calcWarn_plugin_dialog import CalcDialog
 from .warn_plugin_dialog import WarnDialog
 from .CaculationModule import *
 from .simple_warning_dialog import SimpleWarnDialog
+from .CaculationModule import *
 
 import sys, os, time
 from timeit import default_timer as timer
@@ -581,13 +582,8 @@ class SimilarityPlugin:
     # def updateProgress(self, value):
     #     print("progress"+str(value*100))
 
-    
     # thread finish
-    def executedThread(self):
-        print("executed")
-
-    def finishedThread(self):
-        print("finished")
+    # def finishedThread(self, value):
     #     self.similarLayer = value
     #     self.addScoreItem()
     #     self.previewLayer = 0
@@ -641,21 +637,12 @@ class SimilarityPlugin:
             # ))
 
             # multithreading (experimental)
-            # treshold = self.dlg.lineEditTreshold.value()
-            # task = TaskCalculate(
-            #         self.layer, 
-            #         self.layer2, 
-            #         treshold, 
-            #         self.dlg.methodComboBox.currentIndex()
-            #     )
-            # QgsApplication.taskManager().addTask(
-            #     task
-            # )
+            # treshold = self.dlg.lineEditTreshold.value()/100
+            # self.threadCalc = CalculationThread(self.layer, self.layer2, treshold, self.dlg.methodComboBox.currentIndex())
+            # self.dlg.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
+            # self.dlg.connect(QtCore.Signal("CALC_FINISHED"), self.threadCalc, self.finishedThread)
             
-            # self.threadCalc.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
-            # self.threadCalc.connect(QtCore.Signal("CALC_FINISHED"), self.threadCalc, self.finishedThread)
-            
-            select the method mechanism
+            # select the method mechanism
             if self.dlg.methodComboBox.currentIndex() == 0:
                 self.calculateSq(self.layer, self.layer2)
             elif self.dlg.methodComboBox.currentIndex() == 1:
