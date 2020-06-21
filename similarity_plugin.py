@@ -656,7 +656,7 @@ class SimilarityPlugin:
             # self.threadCalc.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
             # self.threadCalc.connect(QtCore.Signal("CALC_FINISHED"), self.threadCalc, self.finishedThread)
             
-            select the method mechanism
+            # select the method mechanism
             if self.dlg.methodComboBox.currentIndex() == 0:
                 self.calculateSq(self.layer, self.layer2)
             elif self.dlg.methodComboBox.currentIndex() == 1:
