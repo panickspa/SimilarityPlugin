@@ -1,5 +1,0 @@
-Similarity Plugin
-=================
-
-.. toctree::
-   :maxdepth: 2
