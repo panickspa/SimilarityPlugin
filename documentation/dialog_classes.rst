@@ -81,9 +81,15 @@ Class: SimilarityPluginDialog
 
     .. py:attribute:: prefLineEdit  : QLineEdit
 
+        Inputation for prefix result layer name
+
     .. py:attribute:: previewAttr : QLineEdit
 
+        Previewing attribute current feature in first layer
+
     .. py:attribute:: previewAttr_2 : QLineEdit
+
+        Previewing attribute current feature in second layer
 
     .. py:attribute:: previousBtn : QPushButton
 
