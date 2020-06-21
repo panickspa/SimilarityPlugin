@@ -10,7 +10,7 @@ Input section
 ------------------------------
    .. py:attribute:: methodChange(self)
 
-      Change on interaction method combobox
+      Change on interaction method combo box
 
 
 Preview section

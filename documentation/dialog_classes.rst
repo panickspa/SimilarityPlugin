@@ -1,10 +1,10 @@
 ==============================
-Plugin Attribut Dialog Classes
+Plugin Classes
 ==============================
-All attribute in this plugin classes
+All attribute in this plugin dialog and object classes
 
 Class: CalcDialog
-----------
+-----------------
 
     .. py:attribute:: msgLabel  : QLabel
 
@@ -19,7 +19,7 @@ Class: CalcDialog
         Button dialog to accept and reject the condition on the message
 
 Class: SimilarityPlugin
------------------
+------------------------
 
     .. py:attribute:: dlg : SimilarityPluginDialog
 
@@ -38,7 +38,7 @@ Class: SimilarityPlugin
         Current index similarLayer that previewed in canvas
 
 Class: SimilarityPluginDialog
-----------------------
+------------------------------
     .. py:attribute:: attrOutlineEdit : QLineEdit
 
         Inputation interface for attribute name score in attribute table in string (text)
