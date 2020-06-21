@@ -363,6 +363,12 @@ class SimilarityPlugin:
 
     # manipulating geom
     def translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry):
+        """
+            :params: g QgsGeometry
+                The geometry will be translated
+            :params: target QgsGeometry
+                Destination
+        """
         # duplicate geometry due to data integrity
         g_new = QgsGeometry(g)
         target_new = QgsGeometry(target)
@@ -373,8 +379,14 @@ class SimilarityPlugin:
         g.translate(transX, transY)
         return g
 
-    # calculating score
+    # calculating score between two geometry
     def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
+        """
+            :params: feature QgsGeometry
+                First geometry will be checked
+            :params: feature2 QgsGeometry
+                Second geometry will be checked
+        """
         inter = g.intersection(g2)
         if(inter.isEmpty()):
             return 0
@@ -382,8 +394,14 @@ class SimilarityPlugin:
             score = (inter.area()/g.area())*(inter.area()/g2.area())
             return round(score, 4)
  
-    # calculating score and store to list
+    # calculating the score between two feature and store it to list : self.similarityList
     def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
+        """
+            :params: feature QgsFeature
+                First feature will be checked
+            :params: feature2 QgsFeature
+                Second feature will be checked
+        """
         # make treshold to decimal
         treshold = self.dlg.lineEditTreshold.value()/100
 
@@ -402,6 +420,12 @@ class SimilarityPlugin:
 
     # wilkerstat mechanism
     def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+        """
+            :params: layer QgsVectorLayer
+                First layer will be checked
+            :params: layer2 QgsVectorLayer
+                Second layer will be checked
+        """
         print("WK method")
         # start = timer()
 
@@ -499,6 +523,12 @@ class SimilarityPlugin:
 
     # squential mechanism
     def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+        """
+            :params: layer QgsVectorLayer
+                First layer will be checked
+            :params: layer2 QgsVectorLayer
+                Second layer will be checked
+        """
         # print("layer 1 count : "+str(layer.featureCount()))
         # print("layer 2 count : "+str(layer2.featureCount()))
         print("Squential Method")
@@ -508,6 +538,13 @@ class SimilarityPlugin:
 
     # knn mechanism            
     def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+        """
+            :params: layer QgsVectorLayer
+                First layer will be checked
+            :params: layer2 QgsVectorLayer
+                Second layer will be checked
+        """
+
         for i in layer.getFeatures() :
             if(i.hasGeometry()):
                 # making bounding box
@@ -552,6 +589,14 @@ class SimilarityPlugin:
 
     # cloning layer (better performance on WK)
     def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
+        """
+            :params: currentLayer
+                The layer will be duplicated
+            :params: suffix str
+                Suffix name
+            :params: scoreName
+                Attribute name of score in attribute table
+        """
         layername = str(suffix)+str(currentLayer.name())
         layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
                         layername,
@@ -739,12 +784,24 @@ class SimilarityPlugin:
 
     # warning dialog for error or prevention
     def warnDialogInit(self, msg:str):
+        """ 
+            This dialog have Yes and No button.
+           :param: msg: str
+                Display the warning message 
+        """
+
         dialog = WarnDialog()
         #set the message
         dialog.msgLabel.setText(msg)
         return dialog
 
     def simpleWarnDialogInit(self, msg:str):
+        """ 
+            This dialog have ok button only
+           :param: msg: str
+                Display the warning message 
+        """
+        
         dialog = SimpleWarnDialog()
         # Set the message
         dialog.msgLabel.setText(msg)
