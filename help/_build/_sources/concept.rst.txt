@@ -1,0 +1,32 @@
+==================
+Concept Algorithm
+==================
+
+This plugin has four concept there are Mapcurve, Squential, Nearest Neighbour, and Wilkersat. Mapcurve method is used for similarity calculation. The other method is used for searching the matching feature on layer. User determine the treshold of similarity to make sure the map is similar in some confidence interval.
+
+Mapcurve (Hargrove et al. 2006)
+-------------------------------
+Mapcurves is method for checking similarity between two maps. Mapcurves Algorithm is developed by Hargrove et al. (2006). Mapcurves can calculate the similarity proportion. Mapcurve can be applied in vector maps. 
+
+:math:`GOF_{Mapcurves} = \sum{\frac{C}{C+A} \times \frac{C}{C+B}}`
+    
+Squential
+-------------------------------
+Squential Method will checking the features in layer within each bounding box (bb) features. 
+
+.. image:: ./squential.png
+    :width: 400
+
+
+Nearest Neighbour
+-------------------------------
+Nearest Neighbour Method will checking the features in layer within determined box. Box will contructed in a radius. Radius is determined by user.
+
+.. image:: ./nn.png
+    :width: 400
+
+The geometry feature will translated to the center of neighbour before calculating the similarity score.
+
+Wilkerstat
+-------------------------------
+Wilkerstat Method depends on database system in BPS. The method is matching the primary keys. The keys are PROVNO, KABKOTNO, KECNO, DESANO (see https://sig.bps.go.id/)

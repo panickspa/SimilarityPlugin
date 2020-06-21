@@ -580,8 +580,13 @@ class SimilarityPlugin:
     # def updateProgress(self, value):
     #     print("progress"+str(value*100))
 
+    
     # thread finish
-    # def finishedThread(self, value):
+    def executedThread(self):
+        print("executed")
+
+    def finishedThread(self):
+        print("finished")
     #     self.similarLayer = value
     #     self.addScoreItem()
     #     self.previewLayer = 0
@@ -635,12 +640,21 @@ class SimilarityPlugin:
             # ))
 
             # multithreading (experimental)
-            # treshold = self.dlg.lineEditTreshold.value()/100
-            # self.threadCalc = CalculationThread(self.layer, self.layer2, treshold, self.dlg.methodComboBox.currentIndex())
-            # self.dlg.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
-            # self.dlg.connect(QtCore.Signal("CALC_FINISHED"), self.threadCalc, self.finishedThread)
+            # treshold = self.dlg.lineEditTreshold.value()
+            # task = TaskCalculate(
+            #         self.layer, 
+            #         self.layer2, 
+            #         treshold, 
+            #         self.dlg.methodComboBox.currentIndex()
+            #     )
+            # QgsApplication.taskManager().addTask(
+            #     task
+            # )
             
-            # select the method mechanism
+            # self.threadCalc.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
+            # self.threadCalc.connect(QtCore.Signal("CALC_FINISHED"), self.threadCalc, self.finishedThread)
+            
+            select the method mechanism
             if self.dlg.methodComboBox.currentIndex() == 0:
                 self.calculateSq(self.layer, self.layer2)
             elif self.dlg.methodComboBox.currentIndex() == 1:

@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Concept Algorithm &mdash; Similarity Plugin  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User Guide" href="tutorial.html" />
+    <link rel="prev" title="Welcome to Similarity Plugin’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> Similarity Plugin
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Concept Algorithm</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mapcurve-hargrove-et-al-2006">Mapcurve (Hargrove et al. 2006)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#squential">Squential</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nearest-neighbour">Nearest Neighbour</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wilkerstat">Wilkerstat</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialog_classes.html">Plugin Attribut Dialog Classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="similarity_method.html">Plugin Calculation Method</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Similarity Plugin</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Concept Algorithm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/concept.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="concept-algorithm">
+<h1>Concept Algorithm<a class="headerlink" href="#concept-algorithm" title="Permalink to this headline">¶</a></h1>
+<p>This plugin has four concept there are Mapcurve, Squential, Nearest Neighbour, and Wilkersat. Mapcurve method is used for similarity calculation. The other method is used for searching the matching feature on layer. User determine the treshold of similarity to make sure the map is similar in some confidence interval.</p>
+<div class="section" id="mapcurve-hargrove-et-al-2006">
+<h2>Mapcurve (Hargrove et al. 2006)<a class="headerlink" href="#mapcurve-hargrove-et-al-2006" title="Permalink to this headline">¶</a></h2>
+<p>Mapcurves is method for checking similarity between two maps. Mapcurves Algorithm is developed by Hargrove et al. (2006). Mapcurves can calculate the similarity proportion. Mapcurve can be applied in vector maps.</p>
+<p><span class="math notranslate nohighlight">\(GOF_{Mapcurves} = \sum{\frac{C}{C+A} \times \frac{C}{C+B}}\)</span></p>
+</div>
+<div class="section" id="squential">
+<h2>Squential<a class="headerlink" href="#squential" title="Permalink to this headline">¶</a></h2>
+<p>Squential Method will checking the features in layer within each bounding box (bb) features.</p>
+<a class="reference internal image-reference" href="_images/squential.png"><img alt="_images/squential.png" src="_images/squential.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="nearest-neighbour">
+<h2>Nearest Neighbour<a class="headerlink" href="#nearest-neighbour" title="Permalink to this headline">¶</a></h2>
+<p>Nearest Neighbour Method will checking the features in layer within determined box. Box will contructed in a radius. Radius is determined by user.</p>
+<a class="reference internal image-reference" href="_images/nn.png"><img alt="_images/nn.png" src="_images/nn.png" style="width: 400px;" /></a>
+<p>The geometry feature will translated to the center of neighbour before calculating the similarity score.</p>
+</div>
+<div class="section" id="wilkerstat">
+<h2>Wilkerstat<a class="headerlink" href="#wilkerstat" title="Permalink to this headline">¶</a></h2>
+<p>Wilkerstat Method depends on database system in BPS. The method is matching the primary keys. The keys are PROVNO, KABKOTNO, KECNO, DESANO (see <a class="reference external" href="https://sig.bps.go.id/">https://sig.bps.go.id/</a>)</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="User Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Similarity Plugin’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Politeknik Statistika STIS
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
