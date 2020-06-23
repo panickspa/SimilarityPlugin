@@ -57,7 +57,7 @@ Plugin ini *open source*. Anda dapat mengedit dan mendistribusikan ini tetapi ha
 
 ```
 
-Here some command for integrating terminal with PyQGIS and OSGeoW in Visual Studio Code
+Berikut beberapa perintah untuk mengintegrasikan *terminal* di *Visual Studio Code* dengan PyQGIS dan OSGeoW
 
 ```
 
