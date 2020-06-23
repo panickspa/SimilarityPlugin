@@ -10,10 +10,12 @@ from qgis.core import (QgsProject,
     QgsRectangle,
     QgsTaskManager,
     QgsTask,
-    QgsMessageLog
+    QgsMessageLog,
+    Qgis
 )
 
 from qgis.gui import QgsQueryBuilder
+import datetime
 
 class CalculationModule(QObject):
     def __init__(
@@ -207,7 +209,6 @@ class TaskCalculate(QgsTask):
             self.similarLayer.append([feature.id(), feature2.id(), score])
 
     def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
-        self.featureCounter.emit("FEATURE_COUNT", layer.featureCount())
         progress = 0
         
         attrName = layer.dataProvider().fields().names()
@@ -302,25 +303,20 @@ class TaskCalculate(QgsTask):
             except KeyError as identifier:
                 # show error message
                 self.emit("CALC_ERR", "It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required")
-        
-        return self.similarLayer
 
     def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
-        self.featureCounter.emit("FEATURE_COUNT", layer.featureCount())
-        progress = 0
+        
+        # progress = 0
         for i in layer.getFeatures():
             for j in layer2.getFeatures(i.geometry().boundingBox()):
                 if(i.hasGeometry()):
                     self.calcMapCurves(i, j)
-            progress = progress+((1/layer.featureCount())*100)
-            QgsMessageLog.logMessage("Progress : "+str(progress))
-            self.setProgress(progress)
-
-        return self.similarLayer
+            # progress = progress+((1/layer.featureCount())*100)
+            # QgsMessageLog.logMessage("Progress : "+str(progress))
+            # self.setProgress(progress)
 
     def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, radius:float):
-        
-        self.featureCounter.emit("FEATURE_COUNT", layer.featureCount())
+    
         progress = 0
         for i in layer.getFeatures() :
             if(i.hasGeometry()):
@@ -334,15 +330,20 @@ class TaskCalculate(QgsTask):
                 for j in layer2.getFeatures(bbFilter):
                     self.calcMapCurves(i, j)
             progress = progress+((1/layer.featureCount())*100)
-            self.setProgress(progress)
-
-        return self.similarLayer
+            # print("setting progress")
+            # self.setProgress(progress)
+            # print("progress setted")
     
     def run(self):
-        print("runnnningggg.....!!!")
-        QgsMessageLog.logMessage("runninggggggg..........!!!!")
+        # print("runnnningggg.....!!!")
+        # QgsMessageLog.logMessage("runninggggggg..........!!!!", 'TaskFromFunction', Qgis.Success)
+        print(datetime.datetime.now())
         if(self.method == 0):
-            self.calculateSq(self.layer, self.layer2)
+            print("sq method")
+            print([self.layer.featureCount(), self.layer2.featureCount()])
+            self.calculateSq(self.layer, self.layer2)            
+            print("executed")
+            print(self.similarLayer)
         elif (self.method == 1):
             self.calculateKNN(self.layer, self.layer2)
         else:
@@ -351,10 +352,10 @@ class TaskCalculate(QgsTask):
 
     def finished(self, result):
         if result:
-            QgsMessageLog.logMessage("finished")
+            # QgsMessageLog.logMessage("finished")
             print("finished")
         else:
-            QgsMessageLog.logMessage("not finished")
+            # QgsMessageLog.logMessage("not finished")
             print("not finished")
 
     def cancel(self):

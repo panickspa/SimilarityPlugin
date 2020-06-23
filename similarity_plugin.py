@@ -597,7 +597,7 @@ class SimilarityPlugin:
             :params: scoreName
                 Attribute name of score in attribute table
         """
-        layername = str(suffix)+str(currentLayer.name())
+        layername = str(currentLayer.name())+"_"+str(suffix)
         layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
                         layername,
                         'memory')
@@ -632,7 +632,7 @@ class SimilarityPlugin:
     def executedThread(self):
         print("executed")
 
-    def finishedThread(self):
+    def finishedThread(self, itemVal):
         print("finished")
     #     self.similarLayer = value
     #     self.addScoreItem()
@@ -660,7 +660,7 @@ class SimilarityPlugin:
             
             # duplicating layer
             # start = timer()
-            self.layer = self.duplicateLayer(
+            layer = self.duplicateLayer(
                 self.dlg.layerSel1.currentLayer(),
                 str(self.dlg.prefLineEdit.text()),
                 str(self.dlg.attrOutLineEdit.text())
@@ -675,7 +675,7 @@ class SimilarityPlugin:
             # ))
             
             # start = timer()
-            self.layer2 = self.duplicateLayer(
+            layer2 = self.duplicateLayer(
                 self.dlg.layerSel2.currentLayer(),
                 str(self.dlg.prefLineEdit.text()),
                 self.dlg.attrOutLineEdit.text()        
@@ -687,15 +687,26 @@ class SimilarityPlugin:
             # ))
 
             # multithreading (experimental)
-            # treshold = self.dlg.lineEditTreshold.value()
+            # treshold = float(self.dlg.lineEditTreshold.value())
             # task = TaskCalculate(
-            #         self.layer, 
-            #         self.layer2, 
+            #         layer, 
+            #         layer2, 
             #         treshold, 
-            #         self.dlg.methodComboBox.currentIndex()
+            #         int(self.dlg.methodComboBox.currentIndex())
             #     )
-            # QgsApplication.taskManager().addTask(
+            # thread = QThread()
+
+            # thread.start()
+            # task.moveToThread(thread)            
+            # manager = QgsApplication.taskManager()
+            # manager.addTask(
             #     task
+            # )
+            
+            # print(manager.countActiveTasks())
+
+            # manager.allTasksFinished(
+            #     self.finishedThread
             # )
             
             # self.threadCalc.connect(QtCore.Signal("CALC_PROGRESS"), self.threadCalc, self.updateProgress)
