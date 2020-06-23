@@ -104,35 +104,35 @@ Plugin created by Pandu Wicaksono and Takdir. There is no external library inclu
 
 Minimum requirement
 
-    1. QGIS 3.10 A Coruna LTS
+- **QGIS 3.10 A Coruna LTS**
 
 Here some steps for installing QGIS
 
-    1. Extract the plugin.zip fail to an directory
-    2. Open your QGIS
-    3. Click *Plugins* menu on Menu Bar
+1. Extract the plugin.zip fail to an directory
+2. Open your QGIS
+3. Click *Plugins* menu on Menu Bar
 
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/db49312a38f98846a2783260826384e2/image.png)
 
-    4. Click *Manage and Install Plugins...* menu
+4. Click *Manage and Install Plugins...* menu
 
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/be7220e560ed1b167fbba5ca4a523b60/image.png)
 
-    5. Select and click the Install from Zip section
+5. Select and click the Install from Zip section
 
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/18c153a368b85ff528c953b41c6a40a7/image.png)
 
-    6. Click the ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7bbdff1818aa2193bc9d46cda71f3d6e/image.png) button
-    7. Find your plugin installation on step one
-    8. Click *Install Plugin* button
+6. Click the ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7bbdff1818aa2193bc9d46cda71f3d6e/image.png) button
+7. Find your plugin installation on step one
+8. Click *Install Plugin* button
 
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/b2606bcad2e8f7a8a8dc270aea03896b/image.png)
 
-    9. Move to Installed section by clicking it then check the box on the left of Calculate Similarity Map menu
+9. Move to Installed section by clicking it then check the box on the left of Calculate Similarity Map menu
 
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/d9116e47554603ebf9cf186b29d57c58/image.png)
 
-    10. **Plugin ready to use !!!**
+10. **Plugin ready to use !!!**
     
 
 ## How to build from source
