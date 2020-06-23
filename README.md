@@ -111,12 +111,27 @@ Here some steps for installing QGIS
     1. Extract the plugin.zip fail to an directory
     2. Open your QGIS
     3. Click *Plugins* menu on Menu Bar
+
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/db49312a38f98846a2783260826384e2/image.png)
+
     4. Click *Manage and Install Plugins...* menu
+
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/be7220e560ed1b167fbba5ca4a523b60/image.png)
+
     5. Select and click the Install from Zip section
-    6. Click the [...] button
+
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/18c153a368b85ff528c953b41c6a40a7/image.png)
+
+    6. Click the ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7bbdff1818aa2193bc9d46cda71f3d6e/image.png) button
     7. Find your plugin installation on step one
     8. Click *Install Plugin* button
+
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/b2606bcad2e8f7a8a8dc270aea03896b/image.png)
+
     9. Move to Installed section by clicking it then check the box on the left of Calculate Similarity Map menu
+
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/d9116e47554603ebf9cf186b29d57c58/image.png)
+
     10. **Plugin ready to use !!!**
     
 
@@ -163,16 +178,16 @@ Here some command for integrating terminal with PyQGIS and OSGeoW in Visual Stud
 
 You can choose the layer on Select Layer 1 combo box and Select Layer 2 combo box in input section. Method can be chosen in method combo box. If you choose Wilkerstat Method, merge center check box will activated. If merge center checked, the calculation process will translate geometry to the center of matching geometry.
 
-![InputSection](uploads/3469def04e15cc35cfa2d4b5c3b38ef5/InputSection.png)
+![InputSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/3469def04e15cc35cfa2d4b5c3b38ef5/InputSection.png)
 
 You can edit threshold, KNN Radius (if you using NN Method), attribute name of score in attribute table of result layer, and result layer prefix name in output section. Threshold is defined in percentile.
 
-![OutputSection](uploads/0b4225586e36a12628e329b92e5b1ab8/OutputSection.png)
+![OutputSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/0b4225586e36a12628e329b92e5b1ab8/OutputSection.png)
 
-After you input all option, you can click calculation button. After calculation be done, save button will enabled. You can save your result to layer in QGIS project with clicking save button.
+After you input all option, you can click calculation button ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/8809206cb30f46d730020bcfb1a934ba/image.png). After calculation be done, save button will enabled. You can save your result to layer in QGIS project with clicking save button ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/4fae88aaf29832a2d42f6fe9d1ea3d90/image.png).
 
-![ExcecutionSection](uploads/7d11bd599f79bd00c3a0bdcbafa6d46e/ExcecutionSection.png)
+![ExcecutionSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7d11bd599f79bd00c3a0bdcbafa6d46e/ExcecutionSection.png)
 
 After calculation excecuted you can preview the result in preview section also before save the result into project.
 
-![PreviewSection](uploads/d82c3df65bb9d4937d450407167716b5/PreviewSection.png)
+![PreviewSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/d82c3df65bb9d4937d450407167716b5/PreviewSection.png)
