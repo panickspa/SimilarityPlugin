@@ -1,7 +1,6 @@
 # Similarity Plugin
 
-Checking similarity maps with Mapcurves Method
-Pengecekan kesamaan peta dengan Metode Mapcurves
+Checking similarity between two maps with Mapcurves Method.
 
 
 # Instalation
