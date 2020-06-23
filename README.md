@@ -6,7 +6,7 @@ Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* external yang
 
 Batas minimum sistem
 
-  - **QGIS 3.10 A Coruna LTS**
+  - **QGIS 3.10 A Coruna LTR**
 
 Berikut langkah-langkah untuk menginstal plugin di QGIS
 
