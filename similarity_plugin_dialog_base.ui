@@ -402,7 +402,7 @@
       <string>Output layer suffix</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="prefLineEdit">
+    <widget class="QLineEdit" name="sufLineEdit">
      <property name="geometry">
       <rect>
        <x>160</x>
