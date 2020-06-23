@@ -662,7 +662,7 @@ class SimilarityPlugin:
             # start = timer()
             layer = self.duplicateLayer(
                 self.dlg.layerSel1.currentLayer(),
-                str(self.dlg.prefLineEdit.text()),
+                str(self.dlg.sufLineEdit.text()),
                 str(self.dlg.attrOutLineEdit.text())
             )
             # elapsed = timer() - start
@@ -677,7 +677,7 @@ class SimilarityPlugin:
             # start = timer()
             layer2 = self.duplicateLayer(
                 self.dlg.layerSel2.currentLayer(),
-                str(self.dlg.prefLineEdit.text()),
+                str(self.dlg.sufLineEdit.text()),
                 self.dlg.attrOutLineEdit.text()        
             )
             # elapsed = timer() - start

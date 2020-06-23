@@ -399,7 +399,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Output file prefix</string>
+      <string>Output layer suffix</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="prefLineEdit">
