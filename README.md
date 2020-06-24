@@ -57,7 +57,7 @@ Plugin ini *open source*. Anda dapat mengedit dan mendistribusikan ini tetapi ha
 
 ```
 
-Berikut beberapa perintah untuk mengintegrasikan *terminal* di *Visual Studio Code* dengan PyQGIS dan OSGeoW
+Berikut beberapa perintah untuk mengintegrasikan *terminal* dengan PyQGIS dan OSGeoW di *Visual Studio Code*
 
 ```
 
@@ -77,7 +77,7 @@ Berikut beberapa perintah untuk mengintegrasikan *terminal* di *Visual Studio Co
 
 ```
 
-## Bagaimana cara menggunakan plugin ini
+## Cara penggunaan plugin
 
 Anda dapat memilih layer pada *combo box* *Select Layer 2* dan *combo box* *Selec Layer 2* pada *input section*. Metode untuk pemeriksaan dapat dipilih pada *combo box* *method*. Jika anda memilih *Wilkerstat Method*, katak berlabel *Merge Center* akan aktif. Jika hal tersebut tercentang, proses kalkulasi akan menggeser geometri ke tengah geometri yang sesuai.
 
