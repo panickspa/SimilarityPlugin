@@ -3,23 +3,199 @@ Plugin Classes
 ==============================
 All attribute in this plugin dialog and object classes
 
-Class: CalcDialog
------------------
+CalculationModule
+------------------------
 
-    .. py:data:: msgLabel  
-      :type: QLabel
+    .. py:data:: killed
+      :type: boolean
 
-        First line message in dialog
+        Statement of task is being killed or not
 
-    .. py:data:: msgLabel2 
-      :type: QLabel
+    .. py:data:: layer
+      :type: QgsVectorLayer
 
-        Second line message in dialog
+        First original layer 
 
-    .. py:data:: buttonBox 
-      :type: QDialogButton
+    .. py:data:: layerDup
+      :type: QgsVectorLayer
 
-        Button dialog to accept and reject the condition on the message
+        Clone of the first layer and the first result layer for calculation
+
+    .. py:data:: layer2
+      :type: QgsVectorLayer
+
+        Second original layer
+
+    .. py:data:: layer2Dup
+      :type: QgsVectorLayer
+
+        Clone of the second layer and the second result layer for calculation
+
+    .. py:data:: method 
+      :type: int
+    
+      Selected method index
+    
+    .. py:data:: radius 
+      :type: float
+
+      Radius for NN method
+
+    .. py:data::similarLayer 
+      :type: list=[]
+
+      Result of similarity calculation, Zero index is the first feature id in first layer, First index is the second feature id in second layer, Third index is the score of similarity
+
+    .. py:data:: suffix 
+      :type: str
+
+      Suffix for Cloned layer name
+
+    .. py:data:: scoreName
+    :type: str
+
+      Attribute name for reserving score information in cloned layer
+
+    .. py:data:: translate 
+      :type: bool
+
+      Statement for checking method is translated or not for Wilkerstat method
+
+    .. py:data::treshold 
+      :type: float
+    
+
+    .. py:attribute:: setTreshold(self, treshold:float)
+      
+      Set threshold option
+
+      :param float treshold: determined treshold
+      :return: None
+
+    .. py:atrribute:: setLayers(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
+
+      Set the original layers
+
+      :param QgsVectorLayer layer: The first original layer 
+      :param QgsVectorLayer layer2: The second original layer 
+      :return: None
+
+    .. py:atrribute:: setMethod(self, method:int)
+
+      Set method attribute
+
+      :param int method: Selected method index
+      :return: None
+
+    .. py:atrribute:: setTranslate(self, translate:bool)
+
+      Set translate attribute
+
+      :param bool translate: Translate Statement
+      :return: None
+
+    .. py:atrribute:: setRadius(self, radius:float)
+
+      Set the radius attribute
+
+      :param float radius: Determined radius from user
+      :return: None
+
+    .. py:atrribute: setSuffix(self, suffix:str)
+
+      Set suffix attribute
+
+      :param str suffix: suffix name for duplicated layer
+
+    .. py:atrribute: setScoreName(self, scoreName)
+
+      Set scoreName attribute
+
+      :param str suffix: socre name attribute for duplicated layer
+
+    .. py:atrribute:: getSimilarLayer(self)
+
+      get similar layer result list
+
+      :return: list self.similarLayer: The list
+
+    .. py:atrribute::getLayers(self)
+
+      get the original layer
+
+      :return: list [self.layer, self.layer2]: The list
+
+    .. py:atrribute:: getLayersDup(self)
+
+      get duplicated layer
+
+      :return: list [self.layerDup, self.layer2Dup]: The list
+
+    .. py:atrribute:: setLayer(self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
+
+      Set the original layers
+
+      :param QgsVectorLayer layer: The first layer
+      :param QgsVectorLayer layer2: The second layer
+      :return: None
+
+    .. py:atrribute:: duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str)
+
+      Duplicating layer and stored to temporary layer
+
+      :param QgsVectorLayer currentLayer: Layer target
+      :param str suffix: suffix name layer
+      :param str scoreName: score name attribute in layer
+      :return: QgsVectorLayer
+
+    .. py:attribute:: calcMapCurvesGeom (self, g:QgsGeometry, g2:QgsGeometry)
+         
+      Calculate the score between the geometry in float number using GOF Mapcurves (Hargrove et al. 2006)
+      
+      :param QgsGeometry g: first geometry will be checked
+      :param QgsGeometry g2: second geometry will be checked
+      :return: float
+
+    .. py:attribute:: calcMapCurves (self, feature:QgsFeature, feature2:QgsFeature)
+         
+      Calculate the score and save to self.similarLayer. Score saved in float number using GOF Mapcurves (Hargrove et al. 2006)
+      
+      :param QgsFeature feature: first feature will be checked
+      :param QgsFeature feature2: second feature will be checked
+      :return: None
+
+    .. py:attribute:: calcSq (self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
+         
+      Checking similarity between two layer with squential method
+      
+      :param QgsVectorLayer layer: first layer will checked
+      :param QgsVectorLayer layer2: second layer will checked
+      :return: None
+
+    .. py:attribute:: calcKNN (self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
+         
+      Check each feature between 2 layer within radius bounding box. Radius distance using euclidean.
+
+      :param QgsVectorLayer layer: first layer will checked
+      :param QgsVectorLayer layer2: second layer will checked
+      :return: None
+
+    .. py:attribute:: calcWK (self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
+         
+      Match each feature the primary key in map, see https://sig.bps.go.id/
+
+      :param QgsVectorLayer layer: first layer will checked
+      :param QgsVectorLayer layer2: second layer will checked
+      :return: None
+
+    .. py:attribute:: translateCenterGeom (self, g:QgsGeometry, target:QgsGeometry)
+
+      Translate first geometry to the center of target geometry
+
+      :param QgsVectorLayer layer: first layer will checked
+      :param QgsVectorLayer layer2: second layer will checked
+      :return: QgsGeometry
+    
 
 Class: SimilarityPlugin
 ------------------------
@@ -116,59 +292,18 @@ Class: SimilarityPlugin
 
       Interaction when self.dlg.saveBtn clicked
 
-    .. py:attribute:: calcMapCurvesGeom (self, g:QgsGeometry, g2:QgsGeometry)
-         
-      Calculate the score between the geometry in float number using GOF Mapcurves (Hargrove et al. 2006)
+    .. py:attribute:: finishedCalcThread(self, itemVal)
+
+      Signal when calc worker finished
+
+    .. py:attribute:: stopCalcThread(self)
+
+      Signal when thread stopped
+
+    .. py:attribute:: errorCalcThread(self)
       
-      :param SimilarityPlugin self: class parent
-      :param QgsGeometry g: first geometry will be checked
-      :param QgsGeometry g2: second geometry will be checked
-      :return: float
+      Signal when thread error
 
-    .. py:attribute:: calcMapCurves (self, feature:QgsFeature, feature2:QgsFeature)
-         
-      Calculate the score and save to self.similarLayer. Score saved in float number using GOF Mapcurves (Hargrove et al. 2006)
-      
-      :param SimilarityPlugin self: class parent
-      :param QgsFeature feature: first feature will be checked
-      :param QgsFeature feature2: second feature will be checked
-      :return: null
-
-    .. py:attribute:: calcSq (self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
-         
-      Checking similarity between two layer with squential method
-      
-      :param SimilarityPlugin self: class parent
-      :param QgsVectorLayer layer: first layer will checked
-      :param QgsVectorLayer layer2: second layer will checked
-      :return: null
-
-    .. py:attribute:: calcKNN (self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
-         
-      Check each feature between 2 layer within radius bounding box. Radius distance using euclidean.
-
-      :param SimilarityPlugin self: class parent
-      :param QgsVectorLayer layer: first layer will checked
-      :param QgsVectorLayer layer2: second layer will checked
-      :return: null
-
-    .. py:attribute:: calcWK (self, layer:QgsVectorLayer, layer2:QgsVectorLayer)
-         
-      Match each feature the primary key in map, see https://sig.bps.go.id/
-
-      :param SimilarityPlugin self: class parent
-      :param QgsVectorLayer layer: first layer will checked
-      :param QgsVectorLayer layer2: second layer will checked
-      :return: null
-
-    .. py:attribute:: translateCenterGeom (self, g:QgsGeometry, target:QgsGeometry)
-
-      Translate first geometry to the center of target geometry
-
-      :param SimilarityPlugin self: class parent
-      :param QgsVectorLayer layer: first layer will checked
-      :param QgsVectorLayer layer2: second layer will checked
-      :return: QgsGeometry
 
 Class: SimilarityPluginDialog
 ------------------------------
@@ -241,6 +376,11 @@ Class: SimilarityPluginDialog
       :type: QPushButton
 
         Button for preview the previous feature in similarity list result
+
+    .. py::data:: progressBar
+      :type: QProgressBar
+
+        Show the progress calculation
 
     .. py:data:: SimilarityPluginDialogBase 
       :type: QDialog

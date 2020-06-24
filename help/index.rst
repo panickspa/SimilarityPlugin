@@ -12,6 +12,4 @@ Welcome to Similarity Plugin's documentation!
    concept
    tutorial
    dialog_classes
-   dialog_interaction
-   similarity_method
    about

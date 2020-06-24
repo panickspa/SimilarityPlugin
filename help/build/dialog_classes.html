@@ -88,7 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="concept.html">Concept Algorithm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">User Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Plugin Classes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#class-calcdialog">Class: CalcDialog</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculationmodule">CalculationModule</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#class-similarityplugin">Class: SimilarityPlugin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#class-similarityplugindialog">Class: SimilarityPluginDialog</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#class-warndialog">Class: WarnDialog</a></li>
@@ -96,7 +96,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="similarity_method.html">Plugin Calculation Method</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
 </ul>
 
@@ -166,31 +165,198 @@
   <div class="section" id="plugin-classes">
 <h1>Plugin Classes<a class="headerlink" href="#plugin-classes" title="Permalink to this headline">¶</a></h1>
 <p>All attribute in this plugin dialog and object classes</p>
-<div class="section" id="class-calcdialog">
-<h2>Class: CalcDialog<a class="headerlink" href="#class-calcdialog" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="calculationmodule">
+<h2>CalculationModule<a class="headerlink" href="#calculationmodule" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="py data">
-<dt id="msgLabel">
-<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#msgLabel" title="Permalink to this definition">¶</a></dt>
+<dt id="killed">
+<code class="sig-name descname">killed</code><em class="property">: boolean</em><a class="headerlink" href="#killed" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div><p>First line message in dialog</p>
+<div><p>Statement of task is being killed or not</p>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py data">
-<dt id="msgLabel2">
-<code class="sig-name descname">msgLabel2</code><em class="property">: QLabel</em><a class="headerlink" href="#msgLabel2" title="Permalink to this definition">¶</a></dt>
+<dt id="layer">
+<code class="sig-name descname">layer</code><em class="property">: QgsVectorLayer</em><a class="headerlink" href="#layer" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div><p>Second line message in dialog</p>
+<div><p>First original layer</p>
 </div></blockquote>
 </dd></dl>
 
 <dl class="py data">
-<dt id="buttonBox">
-<code class="sig-name descname">buttonBox</code><em class="property">: QDialogButton</em><a class="headerlink" href="#buttonBox" title="Permalink to this definition">¶</a></dt>
+<dt id="layerDup">
+<code class="sig-name descname">layerDup</code><em class="property">: QgsVectorLayer</em><a class="headerlink" href="#layerDup" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div><p>Button dialog to accept and reject the condition on the message</p>
+<div><p>Clone of the first layer and the first result layer for calculation</p>
 </div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt id="layer2">
+<code class="sig-name descname">layer2</code><em class="property">: QgsVectorLayer</em><a class="headerlink" href="#layer2" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Second original layer</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt id="layer2Dup">
+<code class="sig-name descname">layer2Dup</code><em class="property">: QgsVectorLayer</em><a class="headerlink" href="#layer2Dup" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Clone of the second layer and the second result layer for calculation</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt id="method">
+<code class="sig-name descname">method</code><em class="property">: int</em><a class="headerlink" href="#method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selected method index</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="radius">
+<code class="sig-name descname">radius</code><em class="property">: float</em><a class="headerlink" href="#radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radius for NN method</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="suffix">
+<code class="sig-name descname">suffix</code><em class="property">: str</em><a class="headerlink" href="#suffix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suffix for Cloned layer name</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="scoreName">
+<code class="sig-name descname">scoreName</code><a class="headerlink" href="#scoreName" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="field-list">
+<dt class="field-odd">type</dt>
+<dd class="field-odd"><p>str</p>
+<p>Attribute name for reserving score information in cloned layer</p>
+</dd>
+</dl>
+<dl class="py data">
+<dt id="translate">
+<code class="sig-name descname">translate</code><em class="property">: bool</em><a class="headerlink" href="#translate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Statement for checking method is translated or not for Wilkerstat method</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="setTreshold">
+<code class="sig-name descname">setTreshold</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">treshold</span><span class="p">:</span> <span class="n">float</span></em><span class="sig-paren">)</span><a class="headerlink" href="#setTreshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set threshold option</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>treshold</strong> (<em>float</em>) – determined treshold</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="calcMapCurvesGeom">
+<code class="sig-name descname">calcMapCurvesGeom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">g</span><span class="p">:</span> <span class="n">QgsGeometry</span></em>, <em class="sig-param"><span class="n">g2</span><span class="p">:</span> <span class="n">QgsGeometry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcMapCurvesGeom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the score between the geometry in float number using GOF Mapcurves (Hargrove et al. 2006)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>QgsGeometry</em>) – first geometry will be checked</p></li>
+<li><p><strong>g2</strong> (<em>QgsGeometry</em>) – second geometry will be checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="calcMapCurves">
+<code class="sig-name descname">calcMapCurves</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">feature</span><span class="p">:</span> <span class="n">QgsFeature</span></em>, <em class="sig-param"><span class="n">feature2</span><span class="p">:</span> <span class="n">QgsFeature</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcMapCurves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the score and save to self.similarLayer. Score saved in float number using GOF Mapcurves (Hargrove et al. 2006)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>feature</strong> (<em>QgsFeature</em>) – first feature will be checked</p></li>
+<li><p><strong>feature2</strong> (<em>QgsFeature</em>) – second feature will be checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="calcSq">
+<code class="sig-name descname">calcSq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em>, <em class="sig-param"><span class="n">layer2</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcSq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking similarity between two layer with squential method</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
+<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="calcKNN">
+<code class="sig-name descname">calcKNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em>, <em class="sig-param"><span class="n">layer2</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcKNN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check each feature between 2 layer within radius bounding box. Radius distance using euclidean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
+<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="calcWK">
+<code class="sig-name descname">calcWK</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em>, <em class="sig-param"><span class="n">layer2</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcWK" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match each feature the primary key in map, see <a class="reference external" href="https://sig.bps.go.id/">https://sig.bps.go.id/</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
+<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="translateCenterGeom">
+<code class="sig-name descname">translateCenterGeom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">g</span><span class="p">:</span> <span class="n">QgsGeometry</span></em>, <em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">QgsGeometry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#translateCenterGeom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate first geometry to the center of target geometry</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
+<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>QgsGeometry</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div></blockquote>
@@ -357,114 +523,6 @@
 <dd><p>Interaction when self.dlg.saveBtn clicked</p>
 </dd></dl>
 
-<dl class="py attribute">
-<dt id="calcMapCurvesGeom">
-<code class="sig-name descname">calcMapCurvesGeom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">g</span><span class="p">:</span> <span class="n">QgsGeometry</span></em>, <em class="sig-param"><span class="n">g2</span><span class="p">:</span> <span class="n">QgsGeometry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcMapCurvesGeom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the score between the geometry in float number using GOF Mapcurves (Hargrove et al. 2006)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<em>SimilarityPlugin</em>) – class parent</p></li>
-<li><p><strong>g</strong> (<em>QgsGeometry</em>) – first geometry will be checked</p></li>
-<li><p><strong>g2</strong> (<em>QgsGeometry</em>) – second geometry will be checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>float</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="calcMapCurves">
-<code class="sig-name descname">calcMapCurves</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">feature</span><span class="p">:</span> <span class="n">QgsFeature</span></em>, <em class="sig-param"><span class="n">feature2</span><span class="p">:</span> <span class="n">QgsFeature</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcMapCurves" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the score and save to self.similarLayer. Score saved in float number using GOF Mapcurves (Hargrove et al. 2006)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<em>SimilarityPlugin</em>) – class parent</p></li>
-<li><p><strong>feature</strong> (<em>QgsFeature</em>) – first feature will be checked</p></li>
-<li><p><strong>feature2</strong> (<em>QgsFeature</em>) – second feature will be checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>null</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="calcSq">
-<code class="sig-name descname">calcSq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em>, <em class="sig-param"><span class="n">layer2</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcSq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checking similarity between two layer with squential method</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<em>SimilarityPlugin</em>) – class parent</p></li>
-<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
-<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>null</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="calcKNN">
-<code class="sig-name descname">calcKNN</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em>, <em class="sig-param"><span class="n">layer2</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcKNN" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check each feature between 2 layer within radius bounding box. Radius distance using euclidean.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<em>SimilarityPlugin</em>) – class parent</p></li>
-<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
-<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>null</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="calcWK">
-<code class="sig-name descname">calcWK</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layer</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em>, <em class="sig-param"><span class="n">layer2</span><span class="p">:</span> <span class="n">QgsVectorLayer</span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcWK" title="Permalink to this definition">¶</a></dt>
-<dd><p>Match each feature the primary key in map, see <a class="reference external" href="https://sig.bps.go.id/">https://sig.bps.go.id/</a></p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<em>SimilarityPlugin</em>) – class parent</p></li>
-<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
-<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>null</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="translateCenterGeom">
-<code class="sig-name descname">translateCenterGeom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">g</span><span class="p">:</span> <span class="n">QgsGeometry</span></em>, <em class="sig-param"><span class="n">target</span><span class="p">:</span> <span class="n">QgsGeometry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#translateCenterGeom" title="Permalink to this definition">¶</a></dt>
-<dd><p>Translate first geometry to the center of target geometry</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<em>SimilarityPlugin</em>) – class parent</p></li>
-<li><p><strong>layer</strong> (<em>QgsVectorLayer</em>) – first layer will checked</p></li>
-<li><p><strong>layer2</strong> (<em>QgsVectorLayer</em>) – second layer will checked</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>QgsGeometry</p>
-</dd>
-</dl>
-</dd></dl>
-
 </div></blockquote>
 </div>
 <div class="section" id="class-similarityplugindialog">
@@ -612,8 +670,8 @@
 <h2>Class: WarnDialog<a class="headerlink" href="#class-warndialog" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="py data">
-<dt id="id2">
-<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt id="msgLabel">
+<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#msgLabel" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>The warning message</p>
 </div></blockquote>
@@ -641,8 +699,8 @@
 <h2>Class: SimpleWarningDialog<a class="headerlink" href="#class-simplewarningdialog" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="py data">
-<dt id="id3">
-<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
+<dt id="id2">
+<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>The warning message</p>
 </div></blockquote>

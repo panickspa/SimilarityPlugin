@@ -99,7 +99,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>260</x>
+       <x>290</x>
        <y>480</y>
        <width>71</width>
        <height>23</height>
@@ -142,7 +142,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>20</y>
+       <y>30</y>
        <width>101</width>
        <height>16</height>
       </rect>
@@ -155,9 +155,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>0</y>
+       <y>20</y>
        <width>91</width>
-       <height>41</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -244,7 +244,7 @@
     <widget class="QPushButton" name="calcBtn">
      <property name="geometry">
       <rect>
-       <x>360</x>
+       <x>370</x>
        <y>480</y>
        <width>81</width>
        <height>23</height>
@@ -318,7 +318,7 @@
     <widget class="QLabel" name="percentLabel">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>330</x>
        <y>260</y>
        <width>21</width>
        <height>16</height>
@@ -344,7 +344,7 @@
     <widget class="QLineEdit" name="attrOutLineEdit">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>290</y>
        <width>121</width>
        <height>20</height>
@@ -364,13 +364,13 @@
       </rect>
      </property>
      <property name="text">
-      <string>Score Attribute Name  </string>
+      <string>Score attribute name  </string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="lineEditTreshold">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>260</y>
        <width>121</width>
        <height>22</height>
@@ -394,18 +394,18 @@
       <rect>
        <x>40</x>
        <y>320</y>
-       <width>111</width>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Output layer suffix</string>
+      <string>Suffix name layer result</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="sufLineEdit">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>320</y>
        <width>121</width>
        <height>20</height>
@@ -419,8 +419,8 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>450</y>
-       <width>261</width>
+       <y>410</y>
+       <width>431</width>
        <height>20</height>
       </rect>
      </property>
@@ -430,7 +430,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Feature Count of Result : 0</string>
+      <string>Matched Feature's Result : 0</string>
      </property>
     </widget>
     <widget class="QPushButton" name="removeBtn">
@@ -468,7 +468,7 @@
      </property>
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>200</x>
        <y>350</y>
        <width>121</width>
        <height>22</height>
@@ -488,6 +488,61 @@
      </property>
      <property name="value">
       <double>0.050000000000000</double>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>440</y>
+       <width>351</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="stopBtn">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>480</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Stop</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>440</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Progress</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>470</x>
+       <y>10</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Preview:</string>
      </property>
     </widget>
    </widget>
