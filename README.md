@@ -34,7 +34,7 @@ Berikut langkah-langkah untuk menginstal plugin di QGIS
 
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/d9116e47554603ebf9cf186b29d57c58/image.png)
 
-10. **Plugin ready to use !!!**
+10. **Plugin siap digunakan !!!**
 
 
 ## Instalasi plugin dari kode sumber
