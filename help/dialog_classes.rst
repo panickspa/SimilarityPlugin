@@ -3,7 +3,7 @@ Plugin Classes
 ==============================
 All attribute in this plugin dialog and object classes
 
-CalculationModule
+class: CalculationModule
 ------------------------
 
     .. py:data:: killed
@@ -197,7 +197,7 @@ CalculationModule
       :return: QgsGeometry
     
 
-Class: SimilarityPlugin
+class: SimilarityPlugin
 ------------------------
     .. py:data:: layer
       :type: QgsVectorLayer
@@ -321,7 +321,7 @@ Class: SimilarityPlugin
       :return: None
 
 
-Class: SimilarityPluginDialog
+class: SimilarityPluginDialog
 ------------------------------
     .. py:data:: attrOutlineEdit 
       :type: QLineEdit
@@ -413,7 +413,7 @@ Class: SimilarityPluginDialog
 
         Canvas widget in preview section for previewing the result
 
-Class: WarnDialog
+class: WarnDialog
 ----------------------
     .. py:data:: msgLabel 
       :type: QLabel
@@ -430,7 +430,7 @@ Class: WarnDialog
 
         Button for accept the condition
 
-Class: SimpleWarningDialog
+class: SimpleWarningDialog
 ----------------------------
 
     .. py:data:: msgLabel 

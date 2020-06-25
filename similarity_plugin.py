@@ -69,7 +69,7 @@ class SimilarityPlugin:
     
     layer : QgsVectorLayer
     layer2 : QgsVectorLayer
-
+    simpleDialog : SimpleWarnDialog
     def __init__(
         self, 
         iface
@@ -98,6 +98,7 @@ class SimilarityPlugin:
         self.calcTask.progressSim.connect(self.updateSimList)
         self.calcTask.finished.connect(self.finishedCalcThread)
         self.calcTask.error.connect(self.errorCalcThread)
+        # self.calcTask.validityError.connect(self.validityError)
 
         # pan event
         self.actionPan = QAction("Pan", self.iface)
@@ -417,7 +418,7 @@ class SimilarityPlugin:
         cText = "Feature Count of Result: "+str(len(self.similarLayer))
         self.dlg.counterLabel.setText(cText)
 
-    # thread finish
+    # thread signal
     def errorCalcThread(self, value):
         print("error : ", value)
         self.simpleWarnDialogInit(value)
@@ -447,22 +448,26 @@ class SimilarityPlugin:
         self.calcThread.terminate()
 
     def stopCalcThread(self):
-        self.layer = self.calcTask.getLayersDup()[0]
-        self.layer2 = self.calcTask.getLayersDup()[1]
         self.calcThread.terminate()
         self.calcTask.kill()
-        cText = "Feature Count of Result: "+str(len(self.similarLayer))
-        if len(self.similarLayer) > 0 :
-            self.addScoreItem()
-            self.previewLayer = 0
-            self.dlg.saveBtn.setEnabled(True)
-            self.dlg.counterLabel.setText(cText)
-            self.resultPreview()
-        else:
-            self.previewLayer = 0
-            self.dlg.counterLabel.setText(cText)
-        self.dlg.calcBtn.setEnabled(True)
-        self.dlg.stopBtn.setEnabled(False)
+        if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
+            self.layer = self.calcTask.getLayersDup()[0]
+            self.layer2 = self.calcTask.getLayersDup()[1]
+            cText = "Feature Count of Result: "+str(len(self.similarLayer))
+            if len(self.similarLayer) > 0 :
+                self.addScoreItem()
+                self.previewLayer = 0
+                self.dlg.saveBtn.setEnabled(True)
+                self.dlg.counterLabel.setText(cText)
+                self.resultPreview()
+            else:
+                self.previewLayer = 0
+                self.dlg.counterLabel.setText(cText)
+            self.dlg.calcBtn.setEnabled(True)
+            self.dlg.stopBtn.setEnabled(False)
+
+    # def validityError(self, value):
+    #     self.dlg.consoleTextEdit.append(value)
 
     # executing calculation
     def calculateScore(self):
@@ -479,45 +484,24 @@ class SimilarityPlugin:
             self.dlg.previewAttr.setText("")
             self.dlg.previewAttr_2.setText("")
             self.dlg.widgetCanvas.refresh()
-
+            scoreLabel = "Score : 0"
+            self.dlg.labelScore.setText(scoreLabel)
             self.similarLayer = []
-            
-            # duplicating layer
-            # start = timer()
-            # self.layer = self.duplicateLayer(
-            #     self.dlg.layerSel1.currentLayer(),
-            #     str(self.dlg.sufLineEdit.text()),
-            #     str(self.dlg.attrOutLineEdit.text())
-            # )
-            # elapsed = timer() - start
-            # print("ElapsedTimeDuplicating")
-            # print(str(
-            #     elapsed
-            # ))
-            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\nElapsedTimeDuplicating "+str(
-            #     elapsed
-            # ))
-            
-            # start = timer()
-            # self.layer2 = self.duplicateLayer(
-            #     self.dlg.layerSel2.currentLayer(),
-            #     str(self.dlg.sufLineEdit.text()),
-            #     self.dlg.attrOutLineEdit.text()        
-            # )
             
             # set input-output option
             self.calcTask.setLayers(self.dlg.layerSel1.currentLayer(), self.dlg.layerSel2.currentLayer())
-            treshold = float(self.dlg.lineEditTreshold.value())
-            self.calcTask.setTreshold(treshold)
+            self.calcTask.setTreshold(self.dlg.lineEditTreshold.value())
             self.calcTask.setMethod(int(self.dlg.methodComboBox.currentIndex()))
             self.calcTask.setTranslate(self.dlg.mergeCenterCheck.isChecked())
             self.calcTask.setRadius(self.dlg.nnRadiusEdit.value())
             self.calcTask.setSuffix(str(self.dlg.sufLineEdit.text()))
             self.calcTask.setScoreName(str(self.dlg.attrOutLineEdit.text()))
-
+            print("input option set")
             # activating task
             self.calcTask.alive()
+            print("task alive")
             self.calcThread.start()
+            print("thread started")
 
             # set button
             self.dlg.calcBtn.setEnabled(False)
@@ -581,11 +565,9 @@ class SimilarityPlugin:
                 Display the warning message 
         """
         
-        dialog = SimpleWarnDialog()
         # Set the message
-        dialog.msgLabel.setText(msg)
-        dialog.okBtn.connect(dialog.accepted)
-        dialog.show()
+        self.simpleDialog.msgLabel.setText(msg)
+        self.simpleDialog.show()
         
     def run(self):
         """Run method that performs all the real work"""
@@ -593,15 +575,16 @@ class SimilarityPlugin:
         # print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
         # init run variable
-        self.previewLayer = 0
-        self.currentCheckLayer = [0,0]
         # self.canvas = QgsMapCanvas()
         
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
-        if self.first_start == True:
+        if self.first_start == True:    
+            self.previewLayer = 0
+            self.currentCheckLayer = [0,0]
             self.first_start = False
             self.dlg = SimilarityPluginDialog()
+            self.simpleDialog = SimpleWarnDialog()
 
         # filtering selection layer (empty layer not allowed)
         self.dlg.layerSel1.setAllowEmptyLayer(False)
@@ -647,9 +630,18 @@ class SimilarityPlugin:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
+            self.similarLayer = []
+            self.dlg.widgetCanvas.setLayers([
+                    QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
+                ])
+            self.dlg.previewAttr.setText("")
+            self.dlg.previewAttr_2.setText("")
+            self.dlg.widgetCanvas.refresh()
+            scoreLabel = "Score : 0"
+            self.dlg.labelScore.setText(scoreLabel)
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
-            self.closeDialog()
+            
 
     # manipulating geom
     # def translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry):
