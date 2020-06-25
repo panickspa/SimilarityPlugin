@@ -55,20 +55,20 @@ from .resources import *
 # Import the code for the dialog
 from .similarity_plugin_dialog import SimilarityPluginDialog
 # Import additional dialog
-from .calcWarn_plugin_dialog import CalcDialog
 from .warn_plugin_dialog import WarnDialog
 from .CaculationModule import *
 from .simple_warning_dialog import SimpleWarnDialog
 from .CaculationModule import *
 
-import sys, os, time
+import sys, os
 from timeit import default_timer as timer
-from numpy import *
 
 class SimilarityPlugin:
     """QGIS Plugin Implementation."""
     
     
+    layer : QgsVectorLayer
+    layer2 : QgsVectorLayer
 
     def __init__(
         self, 
@@ -422,11 +422,14 @@ class SimilarityPlugin:
         print("error : ", value)
         self.simpleWarnDialogInit(value)
 
+    def setLayers(self, layers:list):
+        self.layer = layers[0]
+        self.layer2 = layers[1]
+
     def finishedCalcThread(self, itemVal):
         # print("finished returned : ", itemVal)
         # self.similarLayer = itemVal
-        self.layer = self.calcTask.getLayersDup()[0]
-        self.layer2 = self.calcTask.getLayersDup()[1]
+        self.setLayers(self.calcTask.getLayersDup())
         self.calcThread.terminate()
         self.calcTask.kill()
         cText = "Feature Count of Result: "+str(len(self.similarLayer))
@@ -599,7 +602,6 @@ class SimilarityPlugin:
         if self.first_start == True:
             self.first_start = False
             self.dlg = SimilarityPluginDialog()
-            self.dialogCalc = CalcDialog()
 
         # filtering selection layer (empty layer not allowed)
         self.dlg.layerSel1.setAllowEmptyLayer(False)

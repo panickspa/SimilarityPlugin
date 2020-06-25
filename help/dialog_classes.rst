@@ -52,7 +52,7 @@ CalculationModule
       Suffix for Cloned layer name
 
     .. py:data:: scoreName
-    :type: str
+      :type: str
 
       Attribute name for reserving score information in cloned layer
 
@@ -199,6 +199,15 @@ CalculationModule
 
 Class: SimilarityPlugin
 ------------------------
+    .. py:data:: layer
+      :type: QgsVectorLayer
+
+        The first layer
+
+    .. py:data:: layer2
+      :type: QgsVectorLayer
+
+        The second layer
 
     .. py:data:: dlg
       :type: SimilarityPluginDialog
@@ -220,20 +229,20 @@ Class: SimilarityPlugin
 
         Current index similarLayer that previewed in canvas
     
-    .. py:data:: resultPreview(self)
+    .. py:attribute:: resultPreview(self)
 
       Activate preview section
 
         *See also*
 
           .. py:attribute:: refreshPreview(self)
-          .. py:data:: CalcDialog.widgetCanvas 
+          .. py:data:: SimilarityPluginDialog.widgetCanvas 
             :type: QgsMapCanvas
-          .. py:data:: CalcDialog.nextBtn 
+          .. py:data:: SimilarityPluginDialog.nextBtn 
             :type: QPushButton
-          .. py:data:: CalcDialog.previousBtn 
+          .. py:data:: SimilarityPluginDialog.previousBtn 
             :type: QPushButton
-          .. py:data:: CalcDialog.removeBtn 
+          .. py:data:: SimilarityPluginDialog.removeBtn 
             :type: QPushButton
 
     .. py:attribute:: attrPrinter(self, fieldList:object, feature:QgsFeature, place:QTextEdit)
@@ -243,6 +252,7 @@ Class: SimilarityPlugin
       :param object fieldList: Iterable field value object
       :param QgsFeature feature: The feature will be printed
       :param QTextEdit place: The place atrribute will be printed
+      :return: None
 
     .. py:attribute:: refreshPreview(self)
 
@@ -291,7 +301,6 @@ Class: SimilarityPlugin
     .. py:attribute:: registerToProject(self)
 
       Interaction when self.dlg.saveBtn clicked
-
     .. py:attribute:: finishedCalcThread(self, itemVal)
 
       Signal when calc worker finished
@@ -303,6 +312,13 @@ Class: SimilarityPlugin
     .. py:attribute:: errorCalcThread(self)
       
       Signal when thread error
+
+    .. py:attribute:: setLayers(self, layers:list)
+
+      Set the layers attribut
+
+      :param list layers=[QgsVectorLayer, QgsVectorLayer]:
+      :return: None
 
 
 Class: SimilarityPluginDialog

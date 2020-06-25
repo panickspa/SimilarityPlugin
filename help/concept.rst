@@ -8,7 +8,7 @@ MapCurve (Hargrove et al. 2006)
 -------------------------------
 MapCurves is algorithm for checking similarity between two maps. MapCurve Algorithm is developed by Hargrove et al. (2006). Mapcurves can calculate the similarity proportion. Mapcurve can be applied in vector maps. 
 
-:math:`GOF_{Mapcurves} = \sum{\frac{C}{C+A} \times \frac{C}{C+B}}`
+:math:`GOF_{MapCurve} = \sum{\frac{C}{C+A} \times \frac{C}{C+B}}`
     
 Squential
 -------------------------------

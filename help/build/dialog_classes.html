@@ -38,7 +38,7 @@
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Plugin Dialog Interaction" href="dialog_interaction.html" />
+    <link rel="next" title="About Plugin" href="about.html" />
     <link rel="prev" title="User Guide" href="tutorial.html" /> 
 </head>
 
@@ -95,7 +95,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#class-simplewarningdialog">Class: SimpleWarningDialog</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dialog_interaction.html">Plugin Dialog Interaction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
 </ul>
 
@@ -228,15 +227,10 @@
 
 <dl class="py data">
 <dt id="scoreName">
-<code class="sig-name descname">scoreName</code><a class="headerlink" href="#scoreName" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">scoreName</code><em class="property">: str</em><a class="headerlink" href="#scoreName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute name for reserving score information in cloned layer</p>
+</dd></dl>
 
-<dl class="field-list">
-<dt class="field-odd">type</dt>
-<dd class="field-odd"><p>str</p>
-<p>Attribute name for reserving score information in cloned layer</p>
-</dd>
-</dl>
 <dl class="py data">
 <dt id="translate">
 <code class="sig-name descname">translate</code><em class="property">: bool</em><a class="headerlink" href="#translate" title="Permalink to this definition">¶</a></dt>
@@ -365,6 +359,22 @@
 <h2>Class: SimilarityPlugin<a class="headerlink" href="#class-similarityplugin" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="py data">
+<dt id="id0">
+<code class="sig-name descname">layer</code><em class="property">: QgsVectorLayer</em><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>The first layer</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt id="id1">
+<code class="sig-name descname">layer</code><em class="property">: QgsVectorLayer</em><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>The second layer</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py data">
 <dt id="dlg">
 <code class="sig-name descname">dlg</code><em class="property">: SimilarityPluginDialog</em><a class="headerlink" href="#dlg" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
@@ -396,7 +406,7 @@
 </div></blockquote>
 </dd></dl>
 
-<dl class="py data">
+<dl class="py attribute">
 <dt id="resultPreview">
 <code class="sig-name descname">resultPreview</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#resultPreview" title="Permalink to this definition">¶</a></dt>
 <dd><p>Activate preview section</p>
@@ -409,23 +419,23 @@
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="CalcDialog.widgetCanvas">
-<code class="sig-prename descclassname">CalcDialog.</code><code class="sig-name descname">widgetCanvas</code><em class="property">: QgsMapCanvas</em><a class="headerlink" href="#CalcDialog.widgetCanvas" title="Permalink to this definition">¶</a></dt>
+<dt id="SimilarityPluginDialog.widgetCanvas">
+<code class="sig-prename descclassname">SimilarityPluginDialog.</code><code class="sig-name descname">widgetCanvas</code><em class="property">: QgsMapCanvas</em><a class="headerlink" href="#SimilarityPluginDialog.widgetCanvas" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="CalcDialog.nextBtn">
-<code class="sig-prename descclassname">CalcDialog.</code><code class="sig-name descname">nextBtn</code><em class="property">: QPushButton</em><a class="headerlink" href="#CalcDialog.nextBtn" title="Permalink to this definition">¶</a></dt>
+<dt id="SimilarityPluginDialog.nextBtn">
+<code class="sig-prename descclassname">SimilarityPluginDialog.</code><code class="sig-name descname">nextBtn</code><em class="property">: QPushButton</em><a class="headerlink" href="#SimilarityPluginDialog.nextBtn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="CalcDialog.previousBtn">
-<code class="sig-prename descclassname">CalcDialog.</code><code class="sig-name descname">previousBtn</code><em class="property">: QPushButton</em><a class="headerlink" href="#CalcDialog.previousBtn" title="Permalink to this definition">¶</a></dt>
+<dt id="SimilarityPluginDialog.previousBtn">
+<code class="sig-prename descclassname">SimilarityPluginDialog.</code><code class="sig-name descname">previousBtn</code><em class="property">: QPushButton</em><a class="headerlink" href="#SimilarityPluginDialog.previousBtn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py data">
-<dt id="CalcDialog.removeBtn">
-<code class="sig-prename descclassname">CalcDialog.</code><code class="sig-name descname">removeBtn</code><em class="property">: QPushButton</em><a class="headerlink" href="#CalcDialog.removeBtn" title="Permalink to this definition">¶</a></dt>
+<dt id="SimilarityPluginDialog.removeBtn">
+<code class="sig-prename descclassname">SimilarityPluginDialog.</code><code class="sig-name descname">removeBtn</code><em class="property">: QPushButton</em><a class="headerlink" href="#SimilarityPluginDialog.removeBtn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
@@ -444,19 +454,22 @@
 <li><p><strong>place</strong> (<em>QTextEdit</em>) – The place atrribute will be printed</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="id0">
-<code class="sig-name descname">refreshPreview</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
+<dt id="id2">
+<code class="sig-name descname">refreshPreview</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redraw canvas preview and reprint the attribute value based on current preview.</p>
 <blockquote>
 <div><p><em>See also</em></p>
 <blockquote>
 <div><dl class="py attribute">
-<dt id="id1">
-<code class="sig-name descname">attrPrinter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">fieldList</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">feature</span><span class="p">:</span> <span class="n">QgsFeature</span></em>, <em class="sig-param"><span class="n">place</span><span class="p">:</span> <span class="n">QTextEdit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
+<dt id="id3">
+<code class="sig-name descname">attrPrinter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">fieldList</span><span class="p">:</span> <span class="n">object</span></em>, <em class="sig-param"><span class="n">feature</span><span class="p">:</span> <span class="n">QgsFeature</span></em>, <em class="sig-param"><span class="n">place</span><span class="p">:</span> <span class="n">QTextEdit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
@@ -521,6 +534,38 @@
 <dt id="registerToProject">
 <code class="sig-name descname">registerToProject</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#registerToProject" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interaction when self.dlg.saveBtn clicked</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="finishedCalcThread">
+<code class="sig-name descname">finishedCalcThread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">itemVal</span></em><span class="sig-paren">)</span><a class="headerlink" href="#finishedCalcThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal when calc worker finished</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="stopCalcThread">
+<code class="sig-name descname">stopCalcThread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#stopCalcThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal when thread stopped</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="errorCalcThread">
+<code class="sig-name descname">errorCalcThread</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em><span class="sig-paren">)</span><a class="headerlink" href="#errorCalcThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Signal when thread error</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="setLayers">
+<code class="sig-name descname">setLayers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">self</span></em>, <em class="sig-param"><span class="n">layers</span><span class="p">:</span> <span class="n">list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#setLayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the layers attribut</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>layers=</strong><strong>[</strong><strong>QgsVectorLayer</strong><strong>, </strong><strong>QgsVectorLayer</strong><strong>]</strong> (<em>list</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div></blockquote>
@@ -699,8 +744,8 @@
 <h2>Class: SimpleWarningDialog<a class="headerlink" href="#class-simplewarningdialog" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="py data">
-<dt id="id2">
-<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#id2" title="Permalink to this definition">¶</a></dt>
+<dt id="id4">
+<code class="sig-name descname">msgLabel</code><em class="property">: QLabel</em><a class="headerlink" href="#id4" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div><p>The warning message</p>
 </div></blockquote>
@@ -726,7 +771,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dialog_interaction.html" class="btn btn-neutral float-right" title="Plugin Dialog Interaction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="about.html" class="btn btn-neutral float-right" title="About Plugin" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="tutorial.html" class="btn btn-neutral float-left" title="User Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
