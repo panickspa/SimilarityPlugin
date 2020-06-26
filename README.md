@@ -1,6 +1,6 @@
 # Similarity Plugin
 
-Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Hargove et al., 2006) yang berbentuk vektor. Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* eksternal yang digunakan pada plugin ini kecuali **PyQGIS**. Penghitungan skor kesamaan peta mengimplementasi metode **GOF MapCurve** (Hargrove et. al. (2006) <doi:10.1007/s10109-006-0025-x> ). Anda dapat mendistribusikan dan memodifikasi plugin ini secara bebas tetapi anda harus mencitasi jurnal MapCurve dan plugin ini. Untuk informasi lebih lanjut dapat menghubungi Pandu pada email 16.9350@stis.ac.id atau panickspa@gmail.com.
+Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Hargove et al., 2006) yang berbentuk vektor. Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* eksternal yang digunakan pada plugin ini kecuali **PyQGIS**. Penghitungan skor kesamaan peta mengimplementasi metode **GOF MapCurve** (Hargrove et. al. (2006) <[doi:10.1007/s10109-006-0025-x](https://doi.org/10.1007/s10109-006-0025-x)> ). Anda dapat mendistribusikan dan memodifikasi plugin ini secara bebas tetapi anda harus mencitasi jurnal MapCurve dan plugin ini. Untuk informasi lebih lanjut dapat menghubungi Pandu pada email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
 ## Instalasi plugin pada QGIS secara langsung
 
@@ -99,7 +99,7 @@ Setelah pemeriksaan selesai, anda dapat melihat hasilnya pada *preview section* 
 
 # About Plugin
 
-This plugin is used for checking similarity between two maps vector with MapCurve ( Hargrove et al., 2016 ). Plugin created by Pandu Wicaksono and Takdir. There is no external library included in this plugin except **PyQGIS**. Similarity score implementing **GOF MapCurve** method (Hargrove et. al. (2006) <doi:10.1007/s10109-006-0025-x> ). You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
+This plugin is used for checking similarity between two maps vector with MapCurve ( Hargrove et al., 2016 ). Plugin created by Pandu Wicaksono and Takdir. There is no external library included in this plugin except **PyQGIS**. Similarity score implementing **GOF MapCurve** method (Hargrove et. al. (2006) <[doi:10.1007/s10109-006-0025-x](https://doi.org/10.1007/s10109-006-0025-x)> ). You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
 
 ## Install the plugin into QGIS directly
