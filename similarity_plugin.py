@@ -488,7 +488,9 @@ class SimilarityPlugin:
 
     def setLayers(self, layers:list):
         """Set the layers
-            :param layers list: List of layers
+        
+        :param layers list: List of layers
+        
         """
         self.layer = layers[0]
         self.layer2 = layers[1]
@@ -496,7 +498,8 @@ class SimilarityPlugin:
     def finishedCalcThread(self, itemVal:list):
         """signal when calcTask calculation is finished
 
-            :param itemVal list: the returned value emit
+        :param itemVal list: the returned value emit
+        
         """
         # print("finished returned : ", itemVal)
         # self.similarLayer = itemVal
@@ -538,7 +541,9 @@ class SimilarityPlugin:
 
     def eventCalcThread(self, value:str):
         """Receiving signal event
-            :param value str: the returned value emit
+        
+        :param value str: the returned value emit
+        
         """
         self.dlg.eventLabel.setText("Event: "+value)
 
@@ -620,9 +625,10 @@ class SimilarityPlugin:
 
     # warning dialog for error or prevention
     def warnDialogInit(self, msg:str):
-        """ 
-            This dialog have Yes and No button.
-           :param msg: str Display the warning message 
+        """This dialog have Yes and No button.
+        
+        :param msg: str Display the warning message 
+        
         """
 
         dialog = WarnDialog()
@@ -632,9 +638,10 @@ class SimilarityPlugin:
 
     # initializing simple warning dialog
     def simpleWarnDialogInit(self, msg:str):
-        """ 
-            This dialog have ok button only
-           :param: msg str: Display the warning message 
+        """ This dialog have ok button only
+        
+        :param: msg str: Display the warning message 
+        
         """
         
         # Set the message

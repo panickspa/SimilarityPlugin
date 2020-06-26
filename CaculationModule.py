@@ -73,82 +73,54 @@ class CalculationModule(QObject):
 
     # Set option for calculating
     def setTreshold(self, treshold:float):
-        """
-        Set the treshold attribute
+        """Set the treshold attribute.
 
-        Parameters
-        ------------
-        treshold : float
-            Determined treshold from user
+        :param treshold float :Determined treshold from user
 
         """
         self.treshold = treshold
+    
     def setLayers(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
-        """
-        Set the original layers
+        """Set the original layers.
 
-        Parameters
-        -----------
-        layer : QgsVectorLayer
-            The first layer
-        layer2 : QgsVectorLayer
-            The second layer
+        :layer QgsVectorLayer: The first layer
+        :layer2 QgsVectorLayer: The second layer
         """
         self.layer = layer
         self.layer2 = layer2
     
     def setMethod(self, method:int):
-        """
-        Set the choosen method
+        """Set the choosen method.
 
-        Parameters
-        -----------
-        method : int
-            The index of choosen method (determined by user)
+        :param method int: The index of choosen method (determined by user)
         """
         self.method = method
     
     def setTranslate(self, translate:bool):
-        """
-        Set translate status
+        """Set translate status.
 
-        Parameters
-        -----------
-        translate : bool
-            Translate status
+        :param translate bool: Translate status
         """
         self.translate = translate
     
     def setRadius(self, radius:float):
-        """
-        Set radius
+        """Set radius.
 
-        Parameters
-        -----------
-        radius : float
-            Set the radius
+        :radius float: Set the radius
         """
         self.radius = radius
     
     def setSuffix(self, suffix:str):
-        """
-        Set suffix name suffix cloned layer's
+        """Set suffix name suffix cloned layer's.
 
-        Parameters
-        -----------
-        suffix : str
-            Suffix value
+        :param suffix str: Suffix value
         """
         self.suffix = suffix
     
     def setScoreName(self, scoreName:str):
-        """
-        Set score name attribute cloned layer's
+        """Set score name attribute cloned layer's.
 
-        Parameters
-        -----------
-        scoreName : str
-            Score name value
+        :param scoreName str: Score name value
 
         """
         self.scoreName = scoreName
@@ -174,13 +146,10 @@ class CalculationModule(QObject):
         return self.translate
 
     def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
-        """
-            :params: currentLayer
-                The layer will be duplicated
-            :params: suffix str
-                Suffix name
-            :params: scoreName
-                Attribute name of score in attribute table
+        """Duplicate original Layer
+            :params currentLayer QgsVectorLayer:The layer will be duplicated
+            :params suffix str: Suffix name
+            :params scoreName str: Attribute name of score in attribute table
         """
         # print(currentLayer)
         # print(suffix)
