@@ -20,6 +20,41 @@ import datetime
 import time
 
 class CalculationModule(QObject):
+    """
+    Calculation Module for checking the similarity
+    
+    ..
+
+    Attribute
+    -----------
+    killed = False
+        Killed status object
+    layer : QgsVectorLayer
+        First original layer
+    layerDup : QgsVectorLayer
+        First duplicated layer
+    layer2 : QgsVectorLayer
+        Second original layer
+    layer2Dup : QgsVectorLayer
+        Second duplicated layer
+    method : int
+        Method selected
+    radius : float
+        Determined radius from user
+    similarLayer : list=[]
+        Similar result
+    suffix: str
+        Duplicated name suffix layer
+    scoreName: str
+        Duplicated scoreName attribute
+    translate : bool
+        Translate status
+    treshold : float
+        Treshold for calculation
+
+
+
+    """
     killed = False
     layer : QgsVectorLayer
     layerDup : QgsVectorLayer
@@ -38,40 +73,105 @@ class CalculationModule(QObject):
 
     # Set option for calculating
     def setTreshold(self, treshold:float):
+        """
+        Set the treshold attribute
+
+        Parameters
+        ------------
+        treshold : float
+            Determined treshold from user
+
+        """
         self.treshold = treshold
     def setLayers(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+        """
+        Set the original layers
+
+        Parameters
+        -----------
+        layer : QgsVectorLayer
+            The first layer
+        layer2 : QgsVectorLayer
+            The second layer
+        """
         self.layer = layer
         self.layer2 = layer2
+    
     def setMethod(self, method:int):
+        """
+        Set the choosen method
+
+        Parameters
+        -----------
+        method : int
+            The index of choosen method (determined by user)
+        """
         self.method = method
+    
     def setTranslate(self, translate:bool):
+        """
+        Set translate status
+
+        Parameters
+        -----------
+        translate : bool
+            Translate status
+        """
         self.translate = translate
+    
     def setRadius(self, radius:float):
+        """
+        Set radius
+
+        Parameters
+        -----------
+        radius : float
+            Set the radius
+        """
         self.radius = radius
+    
     def setSuffix(self, suffix:str):
+        """
+        Set suffix name suffix cloned layer's
+
+        Parameters
+        -----------
+        suffix : str
+            Suffix value
+        """
         self.suffix = suffix
+    
     def setScoreName(self, scoreName:str):
+        """
+        Set score name attribute cloned layer's
+
+        Parameters
+        -----------
+        scoreName : str
+            Score name value
+
+        """
         self.scoreName = scoreName
 
-    # get similar layer
     def getSimilarLayer(self):
+        """Get the similar layer"""
         return self.similarLayer
 
     def getLayers(self):
+        """get the original layer"""
         return [self.layer, self.layer2]
 
     def getLayersDup(self):
+        """get the duplicated layer"""
         return [self.layerDup, self.layer2Dup]
 
     def getSimilarLayer(self):
+        """get list of the similar layer"""
         return self.similarLayer
 
     def getTranslate(self):
+        """get translate status"""
         return self.translate
-
-    def setLayer(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
-        self.layer = layer
-        self.layer2 = layer2
 
     def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
         """

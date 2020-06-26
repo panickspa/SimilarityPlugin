@@ -69,7 +69,7 @@ class SimilarityPlugin:
     """
     Similarity Plugin parent class
     
-    ...
+    ..
 
     Attributes
     -----------
@@ -320,17 +320,10 @@ class SimilarityPlugin:
 
     def attrPrinter(self, fieldsList:object, feature:QgsFeature, place:QTextEdit):
         """print the attribute table on preview panel
-        ...
 
-        Parameters
-        -----------
-
-        fieldsList : object
-            List the attribute value of feature
-        feature : QgsFeature
-            The feature will be printed
-        place   : QTextEdit
-            The place for editing text
+        :param fieldsList object: List the attribute value of feature
+        :param feature QgsFeature: The feature will be printed
+        :param place QTextEdit: The place for editing text
         
         """
         temp = ''
@@ -494,12 +487,17 @@ class SimilarityPlugin:
         self.dlg.stopBtn.setEnabled(False)
 
     def setLayers(self, layers:list):
-        """Set the layers"""
+        """Set the layers
+            :param layers list: List of layers
+        """
         self.layer = layers[0]
         self.layer2 = layers[1]
 
     def finishedCalcThread(self, itemVal:list):
-        """signal when calcTask calculation is finished"""
+        """signal when calcTask calculation is finished
+
+            :param itemVal list: the returned value emit
+        """
         # print("finished returned : ", itemVal)
         # self.similarLayer = itemVal
         self.setLayers(self.calcTask.getLayersDup())
@@ -539,7 +537,9 @@ class SimilarityPlugin:
             self.dlg.stopBtn.setEnabled(False)
 
     def eventCalcThread(self, value:str):
-        """Receiving signal event"""
+        """Receiving signal event
+            :param value str: the returned value emit
+        """
         self.dlg.eventLabel.setText("Event: "+value)
 
     # executing calculation
@@ -622,8 +622,7 @@ class SimilarityPlugin:
     def warnDialogInit(self, msg:str):
         """ 
             This dialog have Yes and No button.
-           :param: msg: str
-                Display the warning message 
+           :param msg: str Display the warning message 
         """
 
         dialog = WarnDialog()
@@ -635,8 +634,7 @@ class SimilarityPlugin:
     def simpleWarnDialogInit(self, msg:str):
         """ 
             This dialog have ok button only
-           :param: msg: str
-                Display the warning message 
+           :param: msg str: Display the warning message 
         """
         
         # Set the message
@@ -727,9 +725,9 @@ class SimilarityPlugin:
     # manipulating geom
     # def translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry):
     #     """
-    #         :params: g QgsGeometry
+    #         :param: g QgsGeometry
     #             The geometry will be translated
-    #         :params: target QgsGeometry
+    #         :param: target QgsGeometry
     #             Destination
     #     """
     #     # duplicate geometry due to data integrity
@@ -745,9 +743,9 @@ class SimilarityPlugin:
     # calculating score between two geometry
     # def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
     #     """
-    #         :params: feature QgsGeometry
+    #         :param: feature QgsGeometry
     #             First geometry will be checked
-    #         :params: feature2 QgsGeometry
+    #         :param: feature2 QgsGeometry
     #             Second geometry will be checked
     #     """
     #     inter = g.intersection(g2)
@@ -760,9 +758,9 @@ class SimilarityPlugin:
     # calculating the score between two feature and store it to list : self.similarityList
     # def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
     #     """
-    #         :params: feature QgsFeature
+    #         :param: feature QgsFeature
     #             First feature will be checked
-    #         :params: feature2 QgsFeature
+    #         :param: feature2 QgsFeature
     #             Second feature will be checked
     #     """
     #     # make treshold to decimal
@@ -784,9 +782,9 @@ class SimilarityPlugin:
     # wilkerstat mechanism
     # def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
     #     """
-    #         :params: layer QgsVectorLayer
+    #         :param: layer QgsVectorLayer
     #             First layer will be checked
-    #         :params: layer2 QgsVectorLayer
+    #         :param: layer2 QgsVectorLayer
     #             Second layer will be checked
     #     """
     #     print("WK method")
@@ -887,9 +885,9 @@ class SimilarityPlugin:
     # squential mechanism
     # def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
     #     """
-    #         :params: layer QgsVectorLayer
+    #         :param: layer QgsVectorLayer
     #             First layer will be checked
-    #         :params: layer2 QgsVectorLayer
+    #         :param: layer2 QgsVectorLayer
     #             Second layer will be checked
     #     """
     #     # print("layer 1 count : "+str(layer.featureCount()))
@@ -902,9 +900,9 @@ class SimilarityPlugin:
     # # knn mechanism            
     # def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
     #     """
-    #         :params: layer QgsVectorLayer
+    #         :param: layer QgsVectorLayer
     #             First layer will be checked
-    #         :params: layer2 QgsVectorLayer
+    #         :param: layer2 QgsVectorLayer
     #             Second layer will be checked
     #     """
 
@@ -925,11 +923,11 @@ class SimilarityPlugin:
     # cloning layer (better performance on WK)
     # def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
     #     """
-    #         :params: currentLayer
+    #         :param: currentLayer
     #             The layer will be duplicated
-    #         :params: suffix str
+    #         :param: suffix str
     #             Suffix name
-    #         :params: scoreName
+    #         :param: scoreName
     #             Attribute name of score in attribute table
     #     """
     #     layername = str(currentLayer.name())+"_"+str(suffix)
