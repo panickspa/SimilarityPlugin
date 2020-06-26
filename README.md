@@ -77,6 +77,8 @@ Berikut beberapa perintah untuk mengintegrasikan *terminal* dengan PyQGIS dan OS
 
 ```
 
+Anda dapat memmasang plugin dengan mengkopi fail repositorinya ke folder plugin-plugin QGIS berada atau anda dapat memasangnya dengan perintah `pb_tool build`. Plugin baru tersebut dapat dioperasikan dengan merestart QGIS terlebih dahulu atau menggunakan plugin eksternal yaitu Plugin Reloader. Plugin Reloader tersedia di QGIS Plugin Repository (lihat <https://plugins.qgis.org/plugins/plugin_reloader/>).
+
 ## Cara penggunaan plugin
 
 Anda dapat memilih layer pada *combo box* *Select Layer 2* dan *combo box* *Selec Layer 2* pada *input section* (Masukkan tersebut hanya disupport dengan layer bertipe vektor). Metode untuk pemeriksaan dapat dipilih pada *combo box* *method*. Jika anda memilih *Wilkerstat Method*, katak berlabel *Merge Center* akan aktif. Jika hal tersebut tercentang, proses kalkulasi akan menggeser geometri ke tengah geometri yang sesuai.
@@ -173,6 +175,8 @@ Here some command for integrating terminal with PyQGIS and OSGeoW in Visual Stud
     pyrcc5 -o resources.py resources.qrc
 
 ```
+
+You can deploy the plugin by copying the repository to plugins QGIS folder or you can deploy it with pb_tool with command `pb_tool build`. The new plugin can be operated by restarting the QGIS first or using extension called Plugin Reloader. Plugin Reloader available in QGIS Plugin Repository (see <https://plugins.qgis.org/plugins/plugin_reloader/>). 
 
 ## How to use plugin
 
