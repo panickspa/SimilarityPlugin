@@ -52,8 +52,6 @@ class CalculationModule(QObject):
     treshold : float
         Treshold for calculation
 
-
-
     """
     killed = False
     layer : QgsVectorLayer
@@ -267,11 +265,8 @@ class CalculationModule(QObject):
             # print("calculating")
             score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
             # print("calculated")
-        # if(score == -1):
-        #     # print("not valid geom")
-        #     self.validityError.emit("Feature with attribute "+ str(feature.attributes())+" "+str(feature2.attributes())+" id "+str([feature.id(), feature2.id()])+" is invalid")
-    
-        if (score >= treshold or self.method == 3) and score > 0:
+
+        if (score >= treshold and score > 0) or self.method == 3:
             # print("saving score ...")
             self.similarLayer.append([feature.id(), feature2.id(), score])
             self.addScoreItem(feature.id(), feature2.id(), score)
@@ -418,31 +413,6 @@ class CalculationModule(QObject):
                 # print(len([j for j in layer2.getFeatures(queText)]))
                 for j in layer2.getFeatures(queText):
                     self.calcMapCurves(i,j)
-                    # if self.translate:
-                    #     score = self.calcMapCurvesGeom(
-                    #             i.geometry(),
-                    #             self.translateCenterGeom(i.geometry(), j.geometry())
-                    #         )
-                    #     # print("calculate geom score")
-                    #     # if(score == -1):
-                    #     #     self.validityError.emit("Feature with attribute "+ str(i.attributes())+" "+str(j.attributes())+" id "+str([i.id(), j.id()])+" is invalid")
-                    #     #     # print("error emit")
-                    #     self.progressSim.emit([i.id(),j.id(), score])
-                    #     # print("append similar result")
-                    #     self.addScoreItem(i.id(), j.id(), score)
-                    #     # print("adding score")
-                    # else:
-                    #     score = self.calcMapCurvesGeom(
-                    #         i.geometry(), j.geometry()
-                    #     )
-                    #     # print("calculate geom score")
-                    #     # if(score == -1):
-                    #     #     self.validityError.emit("Feature with attribute "+ str(j.attributes())+" "+str(i.attributes())+" id "+str([i.id(), j.id()])+" is invalid")
-                    #     #     # print("error emit")
-                    #     self.progressSim.emit([i.id(),j.id(), score])
-                    #     # print("append similar result")
-                    #     self.addScoreItem(i.id(), j.id(), score)
-                    #     # print("adding score")
             except KeyError as identifier:
                 # show error message
                 self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required")
@@ -579,6 +549,7 @@ class CalculationModule(QObject):
         self.layer2Dup.commitChanges()
 
     def run(self):
+        """Run the object"""
         start = time.perf_counter()
         if self.killed is False :
             self.similarLayer = []
@@ -657,9 +628,11 @@ class CalculationModule(QObject):
         print("Elapsed time "+str(elapsed))
 
     def kill(self):
+        """Set the killed status"""
         self.killed = True
 
     def alive(self):
+        """Set the not to be killed"""
         self.killed = False
 
     finished = pyqtSignal(list)
