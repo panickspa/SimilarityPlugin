@@ -44,13 +44,14 @@ import os
 #     def method2(self):
 #         """ do something in here """
 #         self.data = []
-class Test:
-    score : int
-    def __init__(self):
-        super().__init__()
-    def getScore(self):
-        self.score = 100
-        return self.score
+# def cumulativeScore(similarLayer, index):
+#     filteredResult = [x[2] for x in similarLayer if x[0] == index]
+#     return sum(filteredResult)
 
-testC = Test()
-print(testC.score)
+# import time
+# start = time.perf_counter_ns()
+# time.sleep(1)
+# elapsed = time.perf_counter_ns()-start
+# print(elapsed)
+# print(elapsed/1000000000)
+print(os.path.join(os.path.dirname(__file__), "help", "build","index.html"))

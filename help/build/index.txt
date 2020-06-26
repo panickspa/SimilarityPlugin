@@ -1,0 +1,32 @@
+Welcome to Similarity Plugin’s documentation!
+*********************************************
+
+* Concept Algorithm
+
+  * MapCurve (Hargrove et al. 2006)
+
+  * Squential
+
+  * Nearest Neighbour
+
+  * Wilkerstat
+
+* User Guide
+
+  * How to Use Plugin
+
+  * How to build from source
+
+* Plugin Classes
+
+  * class: CalculationModule
+
+  * class: SimilarityPlugin
+
+  * class: SimilarityPluginDialog
+
+  * class: WarnDialog
+
+  * class: SimpleWarningDialog
+
+* About Plugin

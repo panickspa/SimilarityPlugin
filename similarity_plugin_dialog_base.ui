@@ -430,7 +430,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Matched Feature's Result : 0</string>
+      <string>Number of Result : 0</string>
      </property>
     </widget>
     <widget class="QPushButton" name="removeBtn">
@@ -543,6 +543,60 @@
      </property>
      <property name="text">
       <string>Preview:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="eventLabel">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>480</y>
+       <width>181</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="helpTab">
+    <attribute name="title">
+     <string>Help</string>
+    </attribute>
+    <widget class="QTextBrowser" name="helpTextBrowser">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>831</width>
+       <height>471</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="nextHelpBtn">
+     <property name="geometry">
+      <rect>
+       <x>750</x>
+       <y>490</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Next</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="previousHelpBtn">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>490</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Previous</string>
      </property>
     </widget>
    </widget>

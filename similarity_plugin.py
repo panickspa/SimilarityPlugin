@@ -23,12 +23,14 @@
 """
 
 # importing PyQt environment
-from qgis.PyQt.QtCore import *
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QThread, QTranslator, QUrl
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction, QTextEdit
 
+
 # importing qgis environment
-from qgis.core import (QgsProject, 
+from qgis.core import (
+    QgsProject, 
     QgsVectorLayer, 
     QgsMeshLayer, 
     QgsPluginLayer, 
@@ -64,12 +66,52 @@ import sys, os
 from timeit import default_timer as timer
 
 class SimilarityPlugin:
-    """QGIS Plugin Implementation."""
+    """
+    Similarity Plugin parent class
     
-    
+    ...
+
+    Attributes
+    -----------
+
     layer : QgsVectorLayer
+        First layer
     layer2 : QgsVectorLayer
-    simpleDialog : SimpleWarnDialog
+        Second layer
+    dlg : SimilarityPluginDialog
+        MainPluginDialog
+    simpleDialog : SimpleWarningDialog
+        Show simple warning
+    similarLayer : list=[]
+        The result of calculation process
+    previewLayer: int=0
+        Current index similarLayer that previewed in canvas widget  
+    calcThread : QThread(self.iface)
+        Thread for data processing
+    calcTask : CalculationModule
+        Calculation module for checking similarity
+    iface : QgsInterface
+        An interface instance that will be passed to this class
+        which provides the hook by which you can manipulate the QGIS
+        application at run time.
+
+    
+    Methods
+    --------
+
+    resultPreview()
+        Activate preview section
+    
+    attrPrinter(fieldList: object, feature: QgsFeature, place: QTextEdit)
+        Print feature atrribute info on text edit in preview section
+
+
+    """
+    
+    layer : QgsVectorLayer #: First layer
+    layer2 : QgsVectorLayer #: Second layer
+    simpleDialog : SimpleWarnDialog #: Simple warning dialog
+
     def __init__(
         self, 
         iface
@@ -82,6 +124,7 @@ class SimilarityPlugin:
         :type iface: QgsInterface
         """
         self.similarLayer = []
+        """  """
         self.previewLayer = 0
         self.calcTask = CalculationModule()
         # Save reference to the QGIS interface
@@ -98,7 +141,7 @@ class SimilarityPlugin:
         self.calcTask.progressSim.connect(self.updateSimList)
         self.calcTask.finished.connect(self.finishedCalcThread)
         self.calcTask.error.connect(self.errorCalcThread)
-        # self.calcTask.validityError.connect(self.validityError)
+        self.calcTask.eventTask.connect(self.eventCalcThread)
 
         # pan event
         self.actionPan = QAction("Pan", self.iface)
@@ -229,13 +272,13 @@ class SimilarityPlugin:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
-            self.iface.removePluginMenu(
+            self.iface.removePluginVectorMenu(
                 self.tr(u'&Calculate Similarity Map'),
                 action)
             self.iface.removeToolBarIcon(action)
 
-    # signal when method changed
     def methodChange(self):
+        """Signal when method changed"""
         if self.dlg.methodComboBox.currentIndex() == 2:
             self.dlg.mergeCenterCheck.setChecked(False)
             self.dlg.mergeCenterCheck.setEnabled(True)
@@ -252,8 +295,20 @@ class SimilarityPlugin:
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.nnRadiusEdit.setEnabled(True)
 
-    # enabling preview panel function
     def resultPreview(self):
+        """Activate preview section
+
+        This method will called if calculation process is finished
+
+        See Also
+        ----------
+            refreshPreview()
+            SimilarityPluginDialog.widgetCanvas
+            SimilarityPluginDialog.nextBtn
+            SimilarityPluginDialog.previousBtn
+            SimilarityPluginDialog.removeBtn
+
+        """
         self.previewLayer = 0
         self.refreshPreview()
 
@@ -263,8 +318,21 @@ class SimilarityPlugin:
         self.dlg.previousBtn.setEnabled(True)
         self.dlg.removeBtn.setEnabled(True)
 
-    # print the attribute table on preview panel
     def attrPrinter(self, fieldsList:object, feature:QgsFeature, place:QTextEdit):
+        """print the attribute table on preview panel
+        ...
+
+        Parameters
+        -----------
+
+        fieldsList : object
+            List the attribute value of feature
+        feature : QgsFeature
+            The feature will be printed
+        place   : QTextEdit
+            The place for editing text
+        
+        """
         temp = ''
 
         for f in fieldsList:
@@ -275,16 +343,16 @@ class SimilarityPlugin:
         # print(place)
         place.setText(temp)
 
-    # refreshing canvas on preview
     def refreshPreview(self):
+        """refreshing canvas on preview"""
         if len(self.similarLayer) > 0 :
             # set the layer
             self.layerCanvas = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
             self.layer2Canvas = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
 
             # set the feature
-            self.previewLayerFeature = self.layer.getFeature(self.similarLayer[self.previewLayer][0])
-            self.previewLayerFeature2 = self.layer2.getFeature(self.similarLayer[self.previewLayer][1])
+            previewLayerFeature = self.layer.getFeature(self.similarLayer[self.previewLayer][0])
+            previewLayerFeature2 = self.layer2.getFeature(self.similarLayer[self.previewLayer][1])
 
             # set the label score
             scoreLabel = "Score : " + str(self.similarLayer[self.previewLayer][2])
@@ -292,7 +360,7 @@ class SimilarityPlugin:
             # show distance if the layer merge centered (NN and WK only)
             if(self.dlg.methodComboBox.currentIndex() == 1 or self.dlg.methodComboBox.currentIndex() == 2 ) :
                 distance = QgsGeometry.distance(
-                            self.previewLayerFeature.geometry().centroid(), self.previewLayerFeature2.geometry().centroid()
+                            previewLayerFeature.geometry().centroid(), previewLayerFeature2.geometry().centroid()
                         )
                 if distance < 0.00001:
                     distance = 0
@@ -303,34 +371,34 @@ class SimilarityPlugin:
             else:
                 self.dlg.labelScore.setText(scoreLabel)
 
-            self.attrPrinter(self.layer.dataProvider().fields().toList(), self.previewLayerFeature, self.dlg.previewAttr)
-            self.attrPrinter(self.layer2.dataProvider().fields().toList(), self.previewLayerFeature2, self.dlg.previewAttr_2)
+            self.attrPrinter(self.layer.dataProvider().fields().toList(), previewLayerFeature, self.dlg.previewAttr)
+            self.attrPrinter(self.layer2.dataProvider().fields().toList(), previewLayerFeature2, self.dlg.previewAttr_2)
 
 
-            self.layerCanvas.dataProvider().addFeature(self.previewLayerFeature)
+            self.layerCanvas.dataProvider().addFeature(previewLayerFeature)
             
             # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature added count : \n "+str(
             #        self.layerCanvas.featureCount()
             #     ))
             
             # translating preview 
-            if self.dlg.mergeCenterCheck.isChecked():
-                self.tGeom = self.calcTask.translateCenterGeom(
-                    self.previewLayerFeature2.geometry(),
-                    self.previewLayerFeature.geometry()
+            if self.calcTask.getTranslate():
+                tGeom = self.calcTask.translateCenterGeom(
+                    previewLayerFeature2.geometry(),
+                    previewLayerFeature.geometry()
                 )
-                self.nFeat = QgsFeature(self.previewLayerFeature2)
-                self.nFeat.setGeometry(self.tGeom)
-                self.layer2Canvas.dataProvider().addFeature(self.nFeat)
+                nFeat = QgsFeature(previewLayerFeature2)
+                nFeat.setGeometry(tGeom)
+                self.layer2Canvas.dataProvider().addFeature(nFeat)
             else:
-                self.layer2Canvas.dataProvider().addFeature(self.previewLayerFeature2)
+                self.layer2Canvas.dataProvider().addFeature(previewLayerFeature2)
             
             # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature2 added count : \n "+str(
             #         self.layer2Canvas.featureCount()
             #     ))
 
             # set canvas to preview feature layer
-            self.dlg.widgetCanvas.setExtent(self.previewLayerFeature.geometry().boundingBox(), True)
+            self.dlg.widgetCanvas.setExtent(previewLayerFeature.geometry().boundingBox(), True)
             
             self.dlg.widgetCanvas.setDestinationCrs(self.layerCanvas.sourceCrs())
             
@@ -348,8 +416,8 @@ class SimilarityPlugin:
             # redraw the canvas
             self.dlg.widgetCanvas.refresh()
 
-    # next preview signal
     def nextPreview(self):
+        """Next preview signal for next button in preview section"""
         # f2 = open("engine/f2.txt", "w")
         if(self.previewLayer+1 < len(self.similarLayer)
             ):
@@ -357,30 +425,30 @@ class SimilarityPlugin:
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
 
-    # previous preview signal
     def previousPreview(self):
+        """Previous preview signal"""
         if(self.previewLayer-1 > -1):
             self.previewLayer = self.previewLayer-1
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
 
-    # remove similarity info feature on the result
     def rmFeatResult(self):
+        """Removing similarity info current result"""
         self.similarLayer.pop(self.previewLayer)
         if(self.previewLayer > len(self.similarLayer)):
             self.previewLayer = len(self.similarLayer-1)
         self.refreshPreview()
         self.warnDlg.close()
 
-    # prevention remove item preview
     def rmWarn(self):
+        """prevention remove item preview"""
         self.warnDlg = self.warnDialogInit('Are you sure to delete this feature ?')
         self.warnDlg.yesBtn.clicked.connect(self.rmFeatResult)
         self.warnDlg.noBtn.clicked.connect(self.warnDlg.close)
         self.warnDlg.show()
 
-    # save score item into the clone layer
     def addScoreItem(self):
+        """save score item into the clone layer"""
         self.layer.commitChanges()
         self.layer2.commitChanges()
 
@@ -407,35 +475,39 @@ class SimilarityPlugin:
         self.layer.commitChanges()
         self.layer2.commitChanges()  
 
-    # progress
     def updateCalcProgress(self, value):
-        # print("progress : "+str(value))
+        """Progress signal for calcTask"""
         self.dlg.progressBar.setValue(int(round(value,1)))
 
-    # update similarityList
     def updateSimList(self, simList:list):
+        """Updating similiarity result signal"""
         self.similarLayer.append(simList)
-        cText = "Feature Count of Result: "+str(len(self.similarLayer))
+        cText = "Number of Result: "+str(len(self.similarLayer))
         self.dlg.counterLabel.setText(cText)
 
     # thread signal
-    def errorCalcThread(self, value):
+    def errorCalcThread(self, value:str):
+        """Signal when an error occured"""
         print("error : ", value)
         self.simpleWarnDialogInit(value)
+        self.dlg.calcBtn.setEnabled(True)
+        self.dlg.stopBtn.setEnabled(False)
 
     def setLayers(self, layers:list):
+        """Set the layers"""
         self.layer = layers[0]
         self.layer2 = layers[1]
 
-    def finishedCalcThread(self, itemVal):
+    def finishedCalcThread(self, itemVal:list):
+        """signal when calcTask calculation is finished"""
         # print("finished returned : ", itemVal)
         # self.similarLayer = itemVal
         self.setLayers(self.calcTask.getLayersDup())
         self.calcThread.terminate()
         self.calcTask.kill()
-        cText = "Feature Count of Result: "+str(len(self.similarLayer))
+        cText = "Number of Result: "+str(len(self.similarLayer))
         if len(self.similarLayer) > 0 :
-            self.addScoreItem()
+            # self.addScoreItem()
             self.previewLayer = 0
             self.dlg.saveBtn.setEnabled(True)
             self.dlg.counterLabel.setText(cText)
@@ -445,17 +517,17 @@ class SimilarityPlugin:
             self.dlg.counterLabel.setText(cText)
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
-        self.calcThread.terminate()
 
     def stopCalcThread(self):
+        """Signal when calcTask is stopped """
         self.calcThread.terminate()
         self.calcTask.kill()
         if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
             self.layer = self.calcTask.getLayersDup()[0]
             self.layer2 = self.calcTask.getLayersDup()[1]
-            cText = "Feature Count of Result: "+str(len(self.similarLayer))
+            cText = "Number of Result: "+str(len(self.similarLayer))
             if len(self.similarLayer) > 0 :
-                self.addScoreItem()
+                # self.addScoreItem()
                 self.previewLayer = 0
                 self.dlg.saveBtn.setEnabled(True)
                 self.dlg.counterLabel.setText(cText)
@@ -466,11 +538,13 @@ class SimilarityPlugin:
             self.dlg.calcBtn.setEnabled(True)
             self.dlg.stopBtn.setEnabled(False)
 
-    # def validityError(self, value):
-    #     self.dlg.consoleTextEdit.append(value)
+    def eventCalcThread(self, value:str):
+        """Receiving signal event"""
+        self.dlg.eventLabel.setText("Event: "+value)
 
     # executing calculation
     def calculateScore(self):
+        """Signal for executing calculation for cheking maps"""
         if(isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer) and isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer)):
             # set plugin to initial condition
             self.dlg.progressBar.setValue(0)
@@ -506,13 +580,13 @@ class SimilarityPlugin:
             # set button
             self.dlg.calcBtn.setEnabled(False)
             self.dlg.stopBtn.setEnabled(True)
-            
         else:
             # prevention on QgsVectorLayer only
             self.simpleWarnDialogInit("This plugin support Vector Layer only")
 
     # signal when saveBtn clicked
     def registerToProject(self):
+        """Signal to registering project"""
         # create an temporary memory layer 1
         layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
                         self.layer.name(),
@@ -585,7 +659,14 @@ class SimilarityPlugin:
             self.first_start = False
             self.dlg = SimilarityPluginDialog()
             self.simpleDialog = SimpleWarnDialog()
-
+        # set help documentation
+        self.dlg.helpTextBrowser.setSource(
+            QUrl.fromLocalFile(
+                os.path.join(os.path.dirname(__file__), "help", "build","index.html")
+            )
+        )
+        self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
+        self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.backward)
         # filtering selection layer (empty layer not allowed)
         self.dlg.layerSel1.setAllowEmptyLayer(False)
         self.dlg.layerSel1.setAllowEmptyLayer(False)

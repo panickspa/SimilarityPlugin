@@ -1,0 +1,373 @@
+Plugin Classes
+**************
+
+All attribute in this plugin dialog and object classes
+
+
+class: CalculationModule
+========================
+
+   killed: boolean
+
+         Statement of task is being killed or not
+
+   layer: QgsVectorLayer
+
+         First original layer
+
+   layerDup: QgsVectorLayer
+
+         Clone of the first layer and the first result layer for
+         calculation
+
+   layer2: QgsVectorLayer
+
+         Second original layer
+
+   layer2Dup: QgsVectorLayer
+
+         Clone of the second layer and the second result layer for
+         calculation
+
+   method: int
+
+      Selected method index
+
+   radius: float
+
+      Radius for NN method
+
+   suffix: str
+
+      Suffix for Cloned layer name
+
+   scoreName: str
+
+      Attribute name for reserving score information in cloned layer
+
+   translate: bool
+
+      Statement for checking method is translated or not for
+      Wilkerstat method
+
+   setTreshold(self, treshold: float)
+
+      Set threshold option
+
+      Parameters:
+         **treshold** (*float*) – determined treshold
+
+      Returns:
+         None
+
+   calcMapCurvesGeom(self, g: QgsGeometry, g2: QgsGeometry)
+
+      Calculate the score between the geometry in float number using
+      GOF Mapcurves (Hargrove et al. 2006)
+
+      Parameters:
+         * **g** (*QgsGeometry*) – first geometry will be checked
+
+         * **g2** (*QgsGeometry*) – second geometry will be checked
+
+      Returns:
+         float
+
+   calcMapCurves(self, feature: QgsFeature, feature2: QgsFeature)
+
+      Calculate the score and save to self.similarLayer. Score saved
+      in float number using GOF Mapcurves (Hargrove et al. 2006)
+
+      Parameters:
+         * **feature** (*QgsFeature*) – first feature will be checked
+
+         * **feature2** (*QgsFeature*) – second feature will be
+           checked
+
+      Returns:
+         None
+
+   calcSq(self, layer: QgsVectorLayer, layer2: QgsVectorLayer)
+
+      Checking similarity between two layer with squential method
+
+      Parameters:
+         * **layer** (*QgsVectorLayer*) – first layer will checked
+
+         * **layer2** (*QgsVectorLayer*) – second layer will checked
+
+      Returns:
+         None
+
+   calcKNN(self, layer: QgsVectorLayer, layer2: QgsVectorLayer)
+
+      Check each feature between 2 layer within radius bounding box.
+      Radius distance using euclidean.
+
+      Parameters:
+         * **layer** (*QgsVectorLayer*) – first layer will checked
+
+         * **layer2** (*QgsVectorLayer*) – second layer will checked
+
+      Returns:
+         None
+
+   calcWK(self, layer: QgsVectorLayer, layer2: QgsVectorLayer)
+
+      Match each feature the primary key in map, see
+      https://sig.bps.go.id/
+
+      Parameters:
+         * **layer** (*QgsVectorLayer*) – first layer will checked
+
+         * **layer2** (*QgsVectorLayer*) – second layer will checked
+
+      Returns:
+         None
+
+   translateCenterGeom(self, g: QgsGeometry, target: QgsGeometry)
+
+      Translate first geometry to the center of target geometry
+
+      Parameters:
+         * **layer** (*QgsVectorLayer*) – first layer will checked
+
+         * **layer2** (*QgsVectorLayer*) – second layer will checked
+
+      Returns:
+         QgsGeometry
+
+
+class: SimilarityPlugin
+=======================
+
+   layer: QgsVectorLayer
+
+         The first layer
+
+   layer2: QgsVectorLayer
+
+         The second layer
+
+   dlg: SimilarityPluginDialog
+
+         Main plugin dialog
+
+   dialogCalc: CalcDialog
+
+         Caution dialog to convincing the user of large data checking
+
+   similarLayer: list=[]
+
+         The result of calculation process
+
+   previewLayer: int=0
+
+         Current index similarLayer that previewed in canvas
+
+   resultPreview(self)
+
+      Activate preview section
+
+         *See also*
+
+            refreshPreview(self)
+
+            SimilarityPluginDialog.widgetCanvas: QgsMapCanvas
+
+            SimilarityPluginDialog.nextBtn: QPushButton
+
+            SimilarityPluginDialog.previousBtn: QPushButton
+
+            SimilarityPluginDialog.removeBtn: QPushButton
+
+   attrPrinter(self, fieldList: object, feature: QgsFeature, place: QTextEdit)
+
+      Print feature atrribute info on text edit in preview section
+
+      Parameters:
+         * **fieldList** (*object*) – Iterable field value object
+
+         * **feature** (*QgsFeature*) – The feature will be printed
+
+         * **place** (*QTextEdit*) – The place atrribute will be
+           printed
+
+      Returns:
+         None
+
+   refreshPreview(self)
+
+      Redraw canvas preview and reprint the attribute value based on
+      current preview.
+
+         *See also*
+
+            attrPrinter(self, fieldList: object, feature: QgsFeature, place: QTextEdit)
+
+   nextPreview(self)
+
+      next result features
+
+   nextPrevious(self)
+
+      previous result features
+
+   rmFeatResult(self)
+
+      Remove the current result
+
+   rmWarn(self)
+
+      Warning dialog to prevent accidentally remove result
+
+   addScoreItem(self)
+
+      Adding result score
+
+   calculateDialogAccepted(self)
+
+      Interaction when self.dialogCalc accepted
+
+   calculateClicked(self)
+
+      Interaction when self.dlg.calcBtn clicked
+
+   methodChange(self)
+
+      Change on interaction method combo box
+
+   calculateDialogRejected(self)
+
+      Interaction when self.dialogCalc rejected
+
+   registerToProject(self)
+
+      Interaction when self.dlg.saveBtn clicked
+
+   finishedCalcThread(self, itemVal)
+
+      Signal when calc worker finished
+
+   stopCalcThread(self)
+
+      Signal when thread stopped
+
+   errorCalcThread(self)
+
+      Signal when thread error
+
+   setLayers(self, layers: list)
+
+      Set the layers attribut
+
+      Parameters:
+         **layers=****[****QgsVectorLayer****,
+         ****QgsVectorLayer****]** (*list*) –
+
+      Returns:
+         None
+
+
+class: SimilarityPluginDialog
+=============================
+
+   attrOutlineEdit: QLineEdit
+
+         Inputation interface for attribute name score in attribute
+         table in string (text)
+
+   calcBtn: QPushButton
+
+         Button for exceuting calculation
+
+   layerSel1: QgsMapComboBox
+
+         Combo Box for selecting first layer
+
+   layerSel2: QgsMapComboBox
+
+         Combo Box for selecting second layer
+
+   lineEditTreshold: QDoubleSpinBox
+
+         Inputation for similarity score treshold in float (number)
+
+   mainTab: QWidget
+
+         Tab for the main menu
+
+   mergeCenterCheck: QCheckBox
+
+         Check box for calculation with centering the geometry to
+         another geometry
+
+   methodComboBox: QCheckBox
+
+         Combo box for selecting the checking similarity method
+
+   nextBtn: QPushButton
+
+         Button for preview the next feature in similarity list result
+
+   nnRadiusEdit: QDoubleSpinBox
+
+         Inputation the radius tolerance (The number is according to
+         the projection unit scale)
+
+   prefLineEdit: QLineEdit
+
+         Inputation for prefix result layer name
+
+   previewAttr: QLineEdit
+
+         Previewing attribute current feature in first layer
+
+   previewAttr_2: QLineEdit
+
+         Previewing attribute current feature in second layer
+
+   previousBtn: QPushButton
+
+         Button for preview the previous feature in similarity list
+         result
+
+   SimilarityPluginDialogBase: QDialog
+
+         Base plugin window dialog
+
+   tabWidget: QTabWidget
+
+         Tab widget in the plugin
+
+   widgetCanvas: QgsMapCanvas
+
+         Canvas widget in preview section for previewing the result
+
+
+class: WarnDialog
+=================
+
+   msgLabel: QLabel
+
+         The warning message
+
+   noBtn: QPushButton
+
+         Button for reject the condition
+
+   yesBtn: QPushButton
+
+         Button for accept the condition
+
+
+class: SimpleWarningDialog
+==========================
+
+   msgLabel: QLabel
+
+         The warning message
+
+   okBtn: QPushButton
+
+         Ok condition

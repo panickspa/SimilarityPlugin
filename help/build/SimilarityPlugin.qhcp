@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QHelpCollectionProject version="1.0">
+    <assistant>
+        <title>Similarity Plugin  documentation</title>
+        <homePage>qthelp://org.sphinx.similarityplugin/doc/index.html</homePage>
+        <startPage>qthelp://org.sphinx.similarityplugin/doc/index.html</startPage>
+    </assistant>
+    <docFiles>
+        <generate>
+            <file>
+                <input>SimilarityPlugin.qhp</input>
+                <output>SimilarityPlugin.qch</output>
+            </file>
+        </generate>
+        <register>
+            <file>SimilarityPlugin.qch</file>
+        </register>
+    </docFiles>
+</QHelpCollectionProject>

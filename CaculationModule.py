@@ -2,7 +2,8 @@ from qgis.PyQt.QtCore import *
 from qgis.PyQt.QtGui import QIcon, QColor
 from qgis.PyQt.QtWidgets import QAction
 
-from qgis.core import (QgsProject, 
+from qgis.core import (
+    QgsProject, 
     QgsVectorLayer, 
     QgsGeometry, 
     QgsFeature, 
@@ -16,7 +17,7 @@ from qgis.core import (QgsProject,
 
 from qgis.gui import QgsQueryBuilder
 import datetime
-from timeit import default_timer as timer
+import time
 
 class CalculationModule(QObject):
     killed = False
@@ -64,6 +65,9 @@ class CalculationModule(QObject):
 
     def getSimilarLayer(self):
         return self.similarLayer
+
+    def getTranslate(self):
+        return self.translate
 
     def setLayer(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
         self.layer = layer
@@ -133,8 +137,6 @@ class CalculationModule(QObject):
         return g
 
     def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
-        
-        
         if(not g.isGeosValid()):
             # print("not valid geom")
             g = QgsGeometry(g.makeValid())
@@ -156,7 +158,6 @@ class CalculationModule(QObject):
             return round(score, 4)
  
     def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
-        
         treshold = self.treshold/100
         # print("treshold hold converted")
         score = 0
@@ -175,10 +176,11 @@ class CalculationModule(QObject):
         # if(score == -1):
         #     # print("not valid geom")
         #     self.validityError.emit("Feature with attribute "+ str(feature.attributes())+" "+str(feature2.attributes())+" id "+str([feature.id(), feature2.id()])+" is invalid")
-
-        if score >= treshold and score > 0:
+    
+        if (score >= treshold or self.method == 3) and score > 0:
             # print("saving score ...")
             self.similarLayer.append([feature.id(), feature2.id(), score])
+            self.addScoreItem(feature.id(), feature2.id(), score)
             # print("saved ...")
             self.progressSim.emit([feature.id(), feature2.id(), score])
             # print("result emited")
@@ -192,8 +194,6 @@ class CalculationModule(QObject):
         attrName2 = layer2.dataProvider().fields().names()
         # print("attrnName initialized")
 
-        # pkCheck = self.wilkerstatPKExist(layer, layer2)
-        iterL = 0
         for i in layer.getFeatures():
             # Querying for matching attribute
             # print(self.killed)
@@ -201,16 +201,31 @@ class CalculationModule(QObject):
                 # kill request received, exit loop early
                 break
             # print("iterated i : "+str(i.id()))
-            que = QgsQueryBuilder(layer2)
+            # que = QgsQueryBuilder(layer2)
             # print("query builder" )
-
+            # print("key cek")
+            # print("PROVNO" in attrName)
+            # print("provno" in attrName)
+            # print("KABKOTNO" in attrName)
+            # print("kabkotno" in attrName)
+            # print("KECNO" in attrName)
+            # print("kecno" in attrName)
+            # print("DESANO" in attrName)
+            # print("desano" in attrName)
+            # print("PROVNO" in attrName2)
+            # print("provno" in attrName2)
+            # print("KABKOTNO" in attrName2)
+            # print("kabkotno" in attrName2)
+            # print("KECNO" in attrName2)
+            # print("kecno" in attrName2)
+            # print("DESANO" in attrName2)
+            # print("desano" in attrName2)
+            # print("key ceked")
             queText = ""
             try:
                 # print("trying..")
-                # print("PROVNO" in attrName2)
-                # print("provno" in attrName2)
                 if("PROVNO" in attrName2):
-                    # print("provno passed")
+                    # print("PROVNO passed")
                     queText += '"PROVNO"' + " LIKE '"
                     if("PROVNO" in attrName):
                         # print(("PROVNO" in attrName))
@@ -218,7 +233,7 @@ class CalculationModule(QObject):
                     else:
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
-                else:
+                elif("provno" in attrName2):
                     # print("provno" in attrName)
                     queText += '"provno"' + " LIKE '"
                     if("PROVNO" in attrName):
@@ -227,7 +242,13 @@ class CalculationModule(QObject):
                     else:
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
-                
+                else:
+                    # show error message
+                    self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, and/or DESANO is required")
+                    # print("error emit")
+                    self.kill()
+                    # print("kill task")
+
                 if ("KABKOTNO" in attrName2):
                     # print("kabkotno checked")
                     queText += "'"+' AND "KABKOTNO" ' + " LIKE '"
@@ -238,7 +259,7 @@ class CalculationModule(QObject):
                     else:
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
-                else:
+                elif("kabkotno" in attrName2):
                     # print("kabkotno checked")
                     queText += "'"+' AND "kabkotno" ' + " LIKE '"
                     # print("query str build "+"'"+' AND "kabkotno" ' + " LIKE '")
@@ -259,7 +280,7 @@ class CalculationModule(QObject):
                     else:
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
-                else:
+                elif("kecno" in attrName2):
                     # print("kecno cheked")
                     queText += "'"+' AND "kecno" ' + "LIKE '"
                     # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
@@ -280,7 +301,7 @@ class CalculationModule(QObject):
                     else:
                         queText += i.attribute("desano")+"' "
                         # print("query add desano")
-                else:
+                elif("desano" in attrName2):
                     # print("desano cheked")
                     queText += "'"+' AND "desano" ' + "LIKE '"
                     # print("query build "+"'"+' AND "desano" ' + "LIKE '")
@@ -290,42 +311,47 @@ class CalculationModule(QObject):
                     else:
                         queText += i.attribute("desano")
                         # print("query add desano")
-                # print("id checked")
-                queText += "' "
+                        # print("id checked")
+                        queText += "' "
                 # print(queText)
                 # print(len([j for j in layer2.getFeatures(queText)]))
                 for j in layer2.getFeatures(queText):
-                    if self.translate:
-                        score = self.calcMapCurvesGeom(
-                                i.geometry(),
-                                self.translateCenterGeom(i.geometry(), j.geometry())
-                            )
-                        # print("calculate geom score")
-                        # if(score == -1):
-                        #     self.validityError.emit("Feature with attribute "+ str(i.attributes())+" "+str(j.attributes())+" id "+str([i.id(), j.id()])+" is invalid")
-                        #     # print("error emit")
-                        self.progressSim.emit([i.id(),j.id(), score])
-                        # print("append similar result")
-                    else:
-                        score = self.calcMapCurvesGeom(
-                            i.geometry(), j.geometry()
-                        )
-                        # print("calculate geom score")
-                        # if(score == -1):
-                        #     self.validityError.emit("Feature with attribute "+ str(j.attributes())+" "+str(i.attributes())+" id "+str([i.id(), j.id()])+" is invalid")
-                        #     # print("error emit")
-                        self.progressSim.emit([i.id(),j.id(), score])
-                        # print("append similar result")
+                    self.calcMapCurves(i,j)
+                    # if self.translate:
+                    #     score = self.calcMapCurvesGeom(
+                    #             i.geometry(),
+                    #             self.translateCenterGeom(i.geometry(), j.geometry())
+                    #         )
+                    #     # print("calculate geom score")
+                    #     # if(score == -1):
+                    #     #     self.validityError.emit("Feature with attribute "+ str(i.attributes())+" "+str(j.attributes())+" id "+str([i.id(), j.id()])+" is invalid")
+                    #     #     # print("error emit")
+                    #     self.progressSim.emit([i.id(),j.id(), score])
+                    #     # print("append similar result")
+                    #     self.addScoreItem(i.id(), j.id(), score)
+                    #     # print("adding score")
+                    # else:
+                    #     score = self.calcMapCurvesGeom(
+                    #         i.geometry(), j.geometry()
+                    #     )
+                    #     # print("calculate geom score")
+                    #     # if(score == -1):
+                    #     #     self.validityError.emit("Feature with attribute "+ str(j.attributes())+" "+str(i.attributes())+" id "+str([i.id(), j.id()])+" is invalid")
+                    #     #     # print("error emit")
+                    #     self.progressSim.emit([i.id(),j.id(), score])
+                    #     # print("append similar result")
+                    #     self.addScoreItem(i.id(), j.id(), score)
+                    #     # print("adding score")
             except KeyError as identifier:
                 # show error message
                 self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required")
-                # print("error emit")
+                print("error emit")
                 self.kill()
                 # print("kill task")
             except ValueError as identifier:
                 # show error message
                 self.error.emit("Value error")
-                # print("error emit")
+                print("error emit")
                 self.kill()
                 # print("kill task")
             except:
@@ -406,9 +432,61 @@ class CalculationModule(QObject):
 
         return self.similarLayer
 
+    def addScoreItem(self, idFeat:int, idFeat2:int, score:float):
+        self.layerDup.commitChanges()
+        self.layer2Dup.commitChanges()
+
+        scoreFieldIndex = self.layerDup.dataProvider().fieldNameIndex(self.scoreName)
+        scoreFieldIndex2 = self.layer2Dup.dataProvider().fieldNameIndex(self.scoreName)
+
+        idIndex = self.layerDup.dataProvider().fieldNameIndex('id')
+        idIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('id')
+
+        matchIndex = self.layerDup.dataProvider().fieldNameIndex('match')
+        matchIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('match')
+
+        self.layerDup.startEditing()
+        self.layer2Dup.startEditing()
+
+        self.layerDup.changeAttributeValue(idFeat, scoreFieldIndex, score)
+        self.layerDup.changeAttributeValue(idFeat, idIndex, idFeat)
+        self.layerDup.changeAttributeValue(idFeat, matchIndex, idFeat2)
+        self.layer2Dup.changeAttributeValue(idFeat2, scoreFieldIndex2, score)
+        self.layer2Dup.changeAttributeValue(idFeat2, idIndex2, idFeat2)
+        self.layer2Dup.changeAttributeValue(idFeat2, matchIndex2, idFeat)
+
+        self.layerDup.commitChanges()
+        self.layer2Dup.commitChanges()
+
+    def addScoreItemLayer(self):
+        self.layerDup.commitChanges()
+        self.layer2Dup.commitChanges()
+
+        scoreFieldIndex = self.layerDup.dataProvider().fieldNameIndex(self.scoreName)
+        scoreFieldIndex2 = self.layer2Dup.dataProvider().fieldNameIndex(self.scoreName)
+
+        idIndex = self.layerDup.dataProvider().fieldNameIndex('id')
+        idIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('id')
+
+        matchIndex = self.layerDup.dataProvider().fieldNameIndex('match')
+        matchIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('match')
+
+        self.layerDup.startEditing()
+        self.layer2Dup.startEditing()
+
+        for sim in self.similarLayer:
+            self.layerDup.changeAttributeValue(sim[0], scoreFieldIndex, sim[2])
+            self.layerDup.changeAttributeValue(sim[0], idIndex, sim[0])
+            self.layerDup.changeAttributeValue(sim[0], matchIndex, sim[1])
+            self.layer2Dup.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2])
+            self.layer2Dup.changeAttributeValue(sim[1], idIndex2, sim[1])
+            self.layer2Dup.changeAttributeValue(sim[1], matchIndex2, sim[0])
+
+        self.layerDup.commitChanges()
+        self.layer2Dup.commitChanges()
+
     def run(self):
-        start = timer()
-        print(self.killed)
+        start = time.perf_counter()
         if self.killed is False :
             self.similarLayer = []
             # print("duplicatingg")
@@ -417,59 +495,72 @@ class CalculationModule(QObject):
             # print("suffix :"+  self.suffix)
             # print("score name : "+ self.scoreName)
             try:
+                self.eventTask.emit("Duplicating ....")
                 self.layerDup = self.duplicateLayer(self.layer, self.suffix, self.scoreName)
                 # print("duplicated 1")
                 self.layer2Dup = self.duplicateLayer(self.layer2, self.suffix, self.scoreName)
                 # print("duplicated 2")
+                self.eventTask.emit("Calculating ....")
+                if(self.method == 0):
+                    print("sq method")
+                    try:
+                        self.calculateSq(self.layerDup, self.layer2Dup)
+                        # print("similar checked")
+                        self.eventTask.emit("adding Score to layer")
+                        # self.addScoreItemLayer()
+                        # print("score item addded")
+                        self.finished.emit(self.similarLayer)
+                        self.eventTask.emit("Finished !!")
+                        # print(self.similarLayer)
+                    except NameError as ex:
+                        # print("error")
+                        self.error.emit("Not executed")
+                        # print("error emitted")
+                    except:
+                        # print("error")
+                        self.error.emit("Not executed")   
+                        # print("error emitted")     
+                elif (self.method == 1):
+                    try:
+                        print("is translated : "+str(self.translate))
+                        # print("nn method")
+                        self.calculateKNN(self.layerDup, self.layer2Dup, self.radius)
+                        # print("similar checked")
+                        self.eventTask.emit("Add score to layer")
+                        # self.addScoreItemLayer()
+                        # print("score item added")
+                        self.finished.emit(self.similarLayer)
+                        # print("finished emitted")   
+                    except NameError as ex:
+                        self.error.emit("Not executed")
+                        # print("error emitted")   
+                    except:
+                        # print("error")
+                        self.error.emit("Not executed")
+                        # print("error emitted") 
+                else:
+                    print("wk method")
+                    try:
+                        self.calculateWK(self.layerDup, self.layer2Dup)
+                        # print("similar checked")
+                        # self.addScoreItemLayer()
+                        # print("score item added")
+                        self.finished.emit(self.similarLayer)
+                        # print("finished emitted") 
+                    except NameError as ex:
+                        self.error.emit(str(ex))
+                        # print("error emitted") 
+                    except:
+                        # print("error")
+                        self.error.emit("Not executed")
+                        # print("error emitted") 
+                        # print(similar)
             except:
-                self.error.emit("error when duplicating")
+                self.error.emit("Error when duplicating")
                 # print(isinstance(self.layer, QgsVectorLayer))
                 # print(isinstance(self.layer2, QgsVectorLayer))
-            if(self.method == 0):
-                print("sq method")
-                try:
-                    self.calculateSq(self.layerDup, self.layer2Dup)
-                    # print("similar checked")
-                    self.finished.emit(self.similarLayer)
-                    # print(self.similarLayer)
-                except NameError as ex:
-                    # print("error")
-                    self.error.emit("Not executed")
-                    # print("error emitted")
-                except:
-                    # print("error")
-                    self.error.emit("Not executed")   
-                    # print("error emitted")     
-            elif (self.method == 1):
-                try:
-                    # print("nn method")
-                    self.calculateKNN(self.layerDup, self.layer2Dup, self.radius)
-                    # print("similar checked")
-                    self.finished.emit(self.similarLayer)
-                    # print("finished emitted")   
-                except NameError as ex:
-                    self.error.emit("Not executed")
-                    # print("error emitted")   
-                except:
-                    # print("error")
-                    self.error.emit("Not executed")
-                    # print("error emitted") 
-            else:
-                print("wk method")
-                try:
-                    self.calculateWK(self.layerDup, self.layer2Dup)
-                    # print("similar checked")
-                    self.finished.emit(self.similarLayer)
-                    # print("finished emitted") 
-                except NameError as ex:
-                    self.error.emit(str(ex))
-                    # print("error emitted") 
-                except:
-                    # print("error")
-                    self.error.emit("Not executed")
-                    # print("error emitted") 
-                    # print(similar)
-        elapsed = timer()-start
+        elapsed = time.perf_counter()
+        elapsed = elapsed-start
         print("Elapsed time "+str(elapsed))
 
     def kill(self):
@@ -481,5 +572,5 @@ class CalculationModule(QObject):
     finished = pyqtSignal(list)
     error = pyqtSignal(str)
     progress = pyqtSignal(float)
-    # validityError = pyqtSignal(str)
     progressSim = pyqtSignal(list)
+    eventTask = pyqtSignal(str)

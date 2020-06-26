@@ -56,3 +56,5 @@ How to build from source
 
         @echo on
         pyrcc5 -o resources.py resources.qrc
+
+    You can deploy the plugin by copying the repository to plugins QGIS folder or you can deploy it with pb_tool with command `pb_tool build`. The new plugin can be operated by restarting the QGIS first or using extension called Plugin Reloader. Plugin Reloader available in QGIS Plugin Repository (see https://plugins.qgis.org/plugins/plugin_reloader/). 

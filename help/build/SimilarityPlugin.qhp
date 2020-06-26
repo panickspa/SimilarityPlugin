@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<QtHelpProject version="1.0">
+    <namespace>org.sphinx.similarityplugin</namespace>
+    <virtualFolder>doc</virtualFolder>
+    <customFilter name="Similarity Plugin ">
+        <filterAttribute>SimilarityPlugin</filterAttribute>
+        <filterAttribute></filterAttribute>
+    </customFilter>
+    <filterSection>
+        <filterAttribute>SimilarityPlugin</filterAttribute>
+        <filterAttribute></filterAttribute>
+        <toc>
+            <section title="Similarity Plugin  documentation" ref="index.html">
+                <section title="Concept Algorithm" ref="concept.html">
+                    <section title="MapCurve (Hargrove et al. 2006)" ref="concept.html#mapcurve-hargrove-et-al-2006"/>
+                    <section title="Squential" ref="concept.html#squential"/>
+                    <section title="Nearest Neighbour" ref="concept.html#nearest-neighbour"/>
+                    <section title="Wilkerstat" ref="concept.html#wilkerstat"/>
+                </section>
+                <section title="User Guide" ref="tutorial.html">
+                    <section title="How to Use Plugin" ref="tutorial.html#how-to-use-plugin"/>
+                    <section title="How to build from source" ref="tutorial.html#how-to-build-from-source"/>
+                </section>
+                <section title="Plugin Classes" ref="dialog_classes.html">
+                    <section title="class: CalculationModule" ref="dialog_classes.html#class-calculationmodule"/>
+                    <section title="class: SimilarityPlugin" ref="dialog_classes.html#class-similarityplugin"/>
+                    <section title="class: SimilarityPluginDialog" ref="dialog_classes.html#class-similarityplugindialog"/>
+                    <section title="class: WarnDialog" ref="dialog_classes.html#class-warndialog"/>
+                    <section title="class: SimpleWarningDialog" ref="dialog_classes.html#class-simplewarningdialog"/>
+                </section>
+                <section title="About Plugin" ref="about.html"/>
+            </section>
+        </toc>
+        <keywords>
+            <keyword name="addScoreItem" ref="dialog_classes.html#addScoreItem"/>
+            <keyword name="attrOutlineEdit (built-in variable)" ref="dialog_classes.html#attrOutlineEdit"/>
+            <keyword name="attrPrinter" ref="dialog_classes.html#attrPrinter"/>
+            <keyword name="attrPrinter" ref="dialog_classes.html#id3"/>
+            <keyword name="calcBtn (built-in variable)" ref="dialog_classes.html#calcBtn"/>
+            <keyword name="calcKNN" ref="dialog_classes.html#calcKNN"/>
+            <keyword name="calcMapCurves" ref="dialog_classes.html#calcMapCurves"/>
+            <keyword name="calcMapCurvesGeom" ref="dialog_classes.html#calcMapCurvesGeom"/>
+            <keyword name="calcSq" ref="dialog_classes.html#calcSq"/>
+            <keyword name="calculateClicked" ref="dialog_classes.html#calculateClicked"/>
+            <keyword name="calculateDialogAccepted" ref="dialog_classes.html#calculateDialogAccepted"/>
+            <keyword name="calculateDialogRejected" ref="dialog_classes.html#calculateDialogRejected"/>
+            <keyword name="calcWK" ref="dialog_classes.html#calcWK"/>
+            <keyword name="dialogCalc (built-in variable)" ref="dialog_classes.html#dialogCalc"/>
+            <keyword name="dlg (built-in variable)" ref="dialog_classes.html#dlg"/>
+            <keyword name="errorCalcThread" ref="dialog_classes.html#errorCalcThread"/>
+            <keyword name="finishedCalcThread" ref="dialog_classes.html#finishedCalcThread"/>
+            <keyword name="killed (built-in variable)" ref="dialog_classes.html#killed"/>
+            <keyword name="layer (built-in variable)" ref="dialog_classes.html#id0"/>
+            <keyword name="layer (built-in variable)" ref="dialog_classes.html#layer"/>
+            <keyword name="layer2 (built-in variable)" ref="dialog_classes.html#id1"/>
+            <keyword name="layer2 (built-in variable)" ref="dialog_classes.html#layer2"/>
+            <keyword name="layer2Dup (built-in variable)" ref="dialog_classes.html#layer2Dup"/>
+            <keyword name="layerDup (built-in variable)" ref="dialog_classes.html#layerDup"/>
+            <keyword name="layerSel1 (built-in variable)" ref="dialog_classes.html#layerSel1"/>
+            <keyword name="layerSel2 (built-in variable)" ref="dialog_classes.html#layerSel2"/>
+            <keyword name="lineEditTreshold (built-in variable)" ref="dialog_classes.html#lineEditTreshold"/>
+            <keyword name="mainTab (built-in variable)" ref="dialog_classes.html#mainTab"/>
+            <keyword name="mergeCenterCheck (built-in variable)" ref="dialog_classes.html#mergeCenterCheck"/>
+            <keyword name="method (built-in variable)" ref="dialog_classes.html#method"/>
+            <keyword name="methodChange" ref="dialog_classes.html#methodChange"/>
+            <keyword name="methodComboBox (built-in variable)" ref="dialog_classes.html#methodComboBox"/>
+            <keyword name="msgLabel (built-in variable)" ref="dialog_classes.html#id4"/>
+            <keyword name="msgLabel (built-in variable)" ref="dialog_classes.html#msgLabel"/>
+            <keyword name="nextBtn (built-in variable)" ref="dialog_classes.html#nextBtn"/>
+            <keyword name="nextPreview" ref="dialog_classes.html#nextPreview"/>
+            <keyword name="nextPrevious" ref="dialog_classes.html#nextPrevious"/>
+            <keyword name="nnRadiusEdit (built-in variable)" ref="dialog_classes.html#nnRadiusEdit"/>
+            <keyword name="noBtn (built-in variable)" ref="dialog_classes.html#noBtn"/>
+            <keyword name="okBtn (built-in variable)" ref="dialog_classes.html#okBtn"/>
+            <keyword name="prefLineEdit (built-in variable)" ref="dialog_classes.html#prefLineEdit"/>
+            <keyword name="previewAttr (built-in variable)" ref="dialog_classes.html#previewAttr"/>
+            <keyword name="previewAttr_2 (built-in variable)" ref="dialog_classes.html#previewAttr_2"/>
+            <keyword name="previewLayer (built-in variable)" ref="dialog_classes.html#previewLayer"/>
+            <keyword name="previousBtn (built-in variable)" ref="dialog_classes.html#previousBtn"/>
+            <keyword name="radius (built-in variable)" ref="dialog_classes.html#radius"/>
+            <keyword name="refreshPreview" ref="dialog_classes.html#id2"/>
+            <keyword name="refreshPreview" ref="dialog_classes.html#refreshPreview"/>
+            <keyword name="registerToProject" ref="dialog_classes.html#registerToProject"/>
+            <keyword name="resultPreview" ref="dialog_classes.html#resultPreview"/>
+            <keyword name="rmFeatResult" ref="dialog_classes.html#rmFeatResult"/>
+            <keyword name="rmWarn" ref="dialog_classes.html#rmWarn"/>
+            <keyword name="scoreName (built-in variable)" ref="dialog_classes.html#scoreName"/>
+            <keyword name="setLayers" ref="dialog_classes.html#setLayers"/>
+            <keyword name="setTreshold" ref="dialog_classes.html#setTreshold"/>
+            <keyword name="SimilarityPluginDialog.nextBtn (built-in variable)" ref="dialog_classes.html#SimilarityPluginDialog.nextBtn"/>
+            <keyword name="SimilarityPluginDialog.previousBtn (built-in variable)" ref="dialog_classes.html#SimilarityPluginDialog.previousBtn"/>
+            <keyword name="SimilarityPluginDialog.removeBtn (built-in variable)" ref="dialog_classes.html#SimilarityPluginDialog.removeBtn"/>
+            <keyword name="SimilarityPluginDialog.widgetCanvas (built-in variable)" ref="dialog_classes.html#SimilarityPluginDialog.widgetCanvas"/>
+            <keyword name="SimilarityPluginDialogBase (built-in variable)" ref="dialog_classes.html#SimilarityPluginDialogBase"/>
+            <keyword name="similarLayer (built-in variable)" ref="dialog_classes.html#similarLayer"/>
+            <keyword name="stopCalcThread" ref="dialog_classes.html#stopCalcThread"/>
+            <keyword name="suffix (built-in variable)" ref="dialog_classes.html#suffix"/>
+            <keyword name="tabWidget (built-in variable)" ref="dialog_classes.html#tabWidget"/>
+            <keyword name="translate (built-in variable)" ref="dialog_classes.html#translate"/>
+            <keyword name="translateCenterGeom" ref="dialog_classes.html#translateCenterGeom"/>
+            <keyword name="widgetCanvas (built-in variable)" ref="dialog_classes.html#widgetCanvas"/>
+            <keyword name="yesBtn (built-in variable)" ref="dialog_classes.html#yesBtn"/>
+        </keywords>
+        <files>
+            <file>about.html</file>
+            <file>concept.html</file>
+            <file>dialog_classes.html</file>
+            <file>dialog_interaction.html</file>
+            <file>genindex.html</file>
+            <file>index.html</file>
+            <file>search.html</file>
+            <file>similarity_method.html</file>
+            <file>tutorial.html</file>
+            <file>html/genindex.html</file>
+            <file>html/index.html</file>
+            <file>html/search.html</file>
+            <file>_images/ExcecutionSection.png</file>
+            <file>_images/InputSection.png</file>
+            <file>_images/OutputSection.png</file>
+            <file>_images/PreviewSection.png</file>
+            <file>_images/nn.png</file>
+            <file>_images/squential.png</file>
+            <file>_static/alabaster.css</file>
+            <file>_static/basic.css</file>
+            <file>_static/custom.css</file>
+            <file>_static/file.png</file>
+            <file>_static/minus.png</file>
+            <file>_static/nonav.css</file>
+            <file>_static/plus.png</file>
+            <file>_static/pygments.css</file>
+            <file>_static/css/badge_only.css</file>
+            <file>_static/css/theme.css</file>
+            <file>_static/css/fonts/Roboto-Slab-Bold.woff</file>
+            <file>_static/css/fonts/Roboto-Slab-Bold.woff2</file>
+            <file>_static/css/fonts/Roboto-Slab-Regular.woff</file>
+            <file>_static/css/fonts/Roboto-Slab-Regular.woff2</file>
+            <file>_static/css/fonts/fontawesome-webfont.eot</file>
+            <file>_static/css/fonts/fontawesome-webfont.svg</file>
+            <file>_static/css/fonts/fontawesome-webfont.ttf</file>
+            <file>_static/css/fonts/fontawesome-webfont.woff</file>
+            <file>_static/css/fonts/fontawesome-webfont.woff2</file>
+            <file>_static/css/fonts/lato-bold-italic.woff</file>
+            <file>_static/css/fonts/lato-bold-italic.woff2</file>
+            <file>_static/css/fonts/lato-bold.woff</file>
+            <file>_static/css/fonts/lato-bold.woff2</file>
+            <file>_static/css/fonts/lato-normal-italic.woff</file>
+            <file>_static/css/fonts/lato-normal-italic.woff2</file>
+            <file>_static/css/fonts/lato-normal.woff</file>
+            <file>_static/css/fonts/lato-normal.woff2</file>
+            <file>_static/fonts/FontAwesome.otf</file>
+            <file>_static/fonts/Roboto-Slab-Bold.woff</file>
+            <file>_static/fonts/Roboto-Slab-Bold.woff2</file>
+            <file>_static/fonts/Roboto-Slab-Light.woff</file>
+            <file>_static/fonts/Roboto-Slab-Light.woff2</file>
+            <file>_static/fonts/Roboto-Slab-Regular.woff</file>
+            <file>_static/fonts/Roboto-Slab-Regular.woff2</file>
+            <file>_static/fonts/Roboto-Slab-Thin.woff</file>
+            <file>_static/fonts/Roboto-Slab-Thin.woff2</file>
+            <file>_static/fonts/fontawesome-webfont.eot</file>
+            <file>_static/fonts/fontawesome-webfont.svg</file>
+            <file>_static/fonts/fontawesome-webfont.ttf</file>
+            <file>_static/fonts/fontawesome-webfont.woff</file>
+            <file>_static/fonts/fontawesome-webfont.woff2</file>
+            <file>_static/fonts/lato-bold-italic.woff</file>
+            <file>_static/fonts/lato-bold-italic.woff2</file>
+            <file>_static/fonts/lato-bold.woff</file>
+            <file>_static/fonts/lato-bold.woff2</file>
+            <file>_static/fonts/lato-normal-italic.woff</file>
+            <file>_static/fonts/lato-normal-italic.woff2</file>
+            <file>_static/fonts/lato-normal.woff</file>
+            <file>_static/fonts/lato-normal.woff2</file>
+            <file>_static/fonts/Lato/lato-bold.eot</file>
+            <file>_static/fonts/Lato/lato-bold.ttf</file>
+            <file>_static/fonts/Lato/lato-bold.woff</file>
+            <file>_static/fonts/Lato/lato-bold.woff2</file>
+            <file>_static/fonts/Lato/lato-bolditalic.eot</file>
+            <file>_static/fonts/Lato/lato-bolditalic.ttf</file>
+            <file>_static/fonts/Lato/lato-bolditalic.woff</file>
+            <file>_static/fonts/Lato/lato-bolditalic.woff2</file>
+            <file>_static/fonts/Lato/lato-italic.eot</file>
+            <file>_static/fonts/Lato/lato-italic.ttf</file>
+            <file>_static/fonts/Lato/lato-italic.woff</file>
+            <file>_static/fonts/Lato/lato-italic.woff2</file>
+            <file>_static/fonts/Lato/lato-regular.eot</file>
+            <file>_static/fonts/Lato/lato-regular.ttf</file>
+            <file>_static/fonts/Lato/lato-regular.woff</file>
+            <file>_static/fonts/Lato/lato-regular.woff2</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-bold.eot</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-bold.ttf</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-bold.woff2</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-regular.eot</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-regular.ttf</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff</file>
+            <file>_static/fonts/RobotoSlab/roboto-slab-v7-regular.woff2</file>
+        </files>
+    </filterSection>
+</QtHelpProject>
