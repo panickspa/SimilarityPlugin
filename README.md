@@ -77,7 +77,7 @@ Berikut beberapa perintah untuk mengintegrasikan *terminal* dengan PyQGIS dan OS
 
 ```
 
-Anda dapat memmasang plugin dengan mengkopi fail repositorinya ke folder plugin-plugin QGIS berada atau anda dapat memasangnya dengan perintah `pb_tool build`. Plugin baru tersebut dapat dioperasikan dengan merestart QGIS terlebih dahulu atau menggunakan plugin eksternal yaitu Plugin Reloader. Plugin Reloader tersedia di QGIS Plugin Repository (lihat <https://plugins.qgis.org/plugins/plugin_reloader/>).
+Anda dapat memmasang plugin dengan mennyalin fail repositorinya ke folder plugin-plugin QGIS berada atau anda dapat memasangnya dengan perintah `pb_tool build`. Plugin baru tersebut dapat dioperasikan dengan merestart QGIS terlebih dahulu atau menggunakan plugin eksternal yaitu Plugin Reloader. Plugin Reloader tersedia di QGIS Plugin Repository (lihat <https://plugins.qgis.org/plugins/plugin_reloader/>).
 
 ## Cara penggunaan plugin
 
