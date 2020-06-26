@@ -83,8 +83,9 @@ class CalculationModule(QObject):
     def setLayers(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
         """Set the original layers.
 
-        :layer QgsVectorLayer: The first layer
-        :layer2 QgsVectorLayer: The second layer
+        :param layer QgsVectorLayer: The first layer
+        :param layer2 QgsVectorLayer: The second layer
+        
         """
         self.layer = layer
         self.layer2 = layer2
@@ -93,6 +94,7 @@ class CalculationModule(QObject):
         """Set the choosen method.
 
         :param method int: The index of choosen method (determined by user)
+        
         """
         self.method = method
     
@@ -100,13 +102,15 @@ class CalculationModule(QObject):
         """Set translate status.
 
         :param translate bool: Translate status
+        
         """
         self.translate = translate
     
     def setRadius(self, radius:float):
         """Set radius.
 
-        :radius float: Set the radius
+        :param radius float: Set the radius
+        
         """
         self.radius = radius
     
@@ -114,6 +118,7 @@ class CalculationModule(QObject):
         """Set suffix name suffix cloned layer's.
 
         :param suffix str: Suffix value
+        
         """
         self.suffix = suffix
     
@@ -146,10 +151,12 @@ class CalculationModule(QObject):
         return self.translate
 
     def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
-        """Duplicate original Layer
-            :params currentLayer QgsVectorLayer:The layer will be duplicated
-            :params suffix str: Suffix name
-            :params scoreName str: Attribute name of score in attribute table
+        """Duplicate original Layer.
+        
+        :param currentLayer QgsVectorLayer:The layer will be duplicated
+        :param suffix str: Suffix name
+        :param scoreName str: Attribute name of score in attribute table
+        
         """
         # print(currentLayer)
         # print(suffix)
@@ -186,7 +193,12 @@ class CalculationModule(QObject):
         return layer
 
     def translateCenterGeom(self, g, target):
+        """Translate a geometry to the center another geometry
         
+        :param g QgsGeometry: Geometry that be translated
+        :param target QgsGeometry: The target geometry
+
+        """
         # duplicating
         g_new = QgsGeometry(g)
         # print("g duplicated")
@@ -206,6 +218,12 @@ class CalculationModule(QObject):
         return g
 
     def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
+        """Calculating MapCurve using geometry.
+        
+        :param g QgsGeometry: First geometry for calculation
+        :param g2 QgsGeometry: Second geometry for calculation
+
+        """
         if(not g.isGeosValid()):
             # print("not valid geom")
             g = QgsGeometry(g.makeValid())
@@ -227,6 +245,13 @@ class CalculationModule(QObject):
             return round(score, 4)
  
     def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
+        """Calculation MapCurve using feature.
+        
+        :param feature QgsFeature: The first feature
+        :param feature2 QgsFeature: The second feature
+        
+        """
+
         treshold = self.treshold/100
         # print("treshold hold converted")
         score = 0
@@ -255,6 +280,13 @@ class CalculationModule(QObject):
             # print("result emited")
 
     def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
+        """MapCurve calculation using Wilkerstat method.
+        
+        :param layer QgsVectorLayer: The First layer
+        :param layer2 QgsVevtorLayer: The Second Layer
+        :param translate bool: calculate with translating the geometry
+        
+        """
         # print("executed function wk")
         progress = 0
         # print("progress initialized") 
@@ -438,6 +470,12 @@ class CalculationModule(QObject):
         return self.similarLayer
 
     def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+        """MapCurve calculation using Squential method.
+        
+        :param layer QgsVectorLayer: The First layer
+        :param layer2 QgsVevtorLayer: The Second Layer
+        
+        """
         # print("executed function sq")
         progress = 0
         # print("progress initialized")
@@ -466,6 +504,12 @@ class CalculationModule(QObject):
         return self.similarLayer
 
     def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, radius:float):
+        """MapCurve calculation using Nearest Neighbour method.
+        
+        :param layer QgsVectorLayer: The First layer
+        :param layer2 QgsVevtorLayer: The Second Layer
+        
+        """
         # print("executed function nn")
         progress = 0
         # print("progress initialzed")
@@ -502,6 +546,13 @@ class CalculationModule(QObject):
         return self.similarLayer
 
     def addScoreItem(self, idFeat:int, idFeat2:int, score:float):
+        """Add the core item to layer cloned feature's
+
+        :param idFeat int: the first id feature
+        :param idFeat2 int: the second id feature
+        :param score float: the similarity score
+
+        """
         self.layerDup.commitChanges()
         self.layer2Dup.commitChanges()
 
@@ -523,33 +574,6 @@ class CalculationModule(QObject):
         self.layer2Dup.changeAttributeValue(idFeat2, scoreFieldIndex2, score)
         self.layer2Dup.changeAttributeValue(idFeat2, idIndex2, idFeat2)
         self.layer2Dup.changeAttributeValue(idFeat2, matchIndex2, idFeat)
-
-        self.layerDup.commitChanges()
-        self.layer2Dup.commitChanges()
-
-    def addScoreItemLayer(self):
-        self.layerDup.commitChanges()
-        self.layer2Dup.commitChanges()
-
-        scoreFieldIndex = self.layerDup.dataProvider().fieldNameIndex(self.scoreName)
-        scoreFieldIndex2 = self.layer2Dup.dataProvider().fieldNameIndex(self.scoreName)
-
-        idIndex = self.layerDup.dataProvider().fieldNameIndex('id')
-        idIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('id')
-
-        matchIndex = self.layerDup.dataProvider().fieldNameIndex('match')
-        matchIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('match')
-
-        self.layerDup.startEditing()
-        self.layer2Dup.startEditing()
-
-        for sim in self.similarLayer:
-            self.layerDup.changeAttributeValue(sim[0], scoreFieldIndex, sim[2])
-            self.layerDup.changeAttributeValue(sim[0], idIndex, sim[0])
-            self.layerDup.changeAttributeValue(sim[0], matchIndex, sim[1])
-            self.layer2Dup.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2])
-            self.layer2Dup.changeAttributeValue(sim[1], idIndex2, sim[1])
-            self.layer2Dup.changeAttributeValue(sim[1], matchIndex2, sim[0])
 
         self.layerDup.commitChanges()
         self.layer2Dup.commitChanges()
