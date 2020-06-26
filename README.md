@@ -1,6 +1,6 @@
 # Similarity Plugin
 
-Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Hargove et al., 2006). Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* eksternal yang digunakan pada plugin ini kecuali **PyQGIS**. Penghitungan skor kesamaan peta mengimplementasi metode **GOF MapCurve** (Hargrove et. al. (2006) <doi:10.1007/s10109-006-0025-x> ). Anda dapat mendistribusikan dan memodifikasi plugin ini secara bebas tetapi anda harus mencitasi jurnal MapCurve dan plugin ini. Untuk informasi lebih lanjut dapat menghubungi Pandu pada email 16.9350@stis.ac.id atau panickspa@gmail.com.
+Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Hargove et al., 2006) yang berbentuk vektor. Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* eksternal yang digunakan pada plugin ini kecuali **PyQGIS**. Penghitungan skor kesamaan peta mengimplementasi metode **GOF MapCurve** (Hargrove et. al. (2006) <doi:10.1007/s10109-006-0025-x> ). Anda dapat mendistribusikan dan memodifikasi plugin ini secara bebas tetapi anda harus mencitasi jurnal MapCurve dan plugin ini. Untuk informasi lebih lanjut dapat menghubungi Pandu pada email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
 ## Instalasi plugin pada QGIS secara langsung
 
@@ -79,7 +79,7 @@ Berikut beberapa perintah untuk mengintegrasikan *terminal* dengan PyQGIS dan OS
 
 ## Cara penggunaan plugin
 
-Anda dapat memilih layer pada *combo box* *Select Layer 2* dan *combo box* *Selec Layer 2* pada *input section*. Metode untuk pemeriksaan dapat dipilih pada *combo box* *method*. Jika anda memilih *Wilkerstat Method*, katak berlabel *Merge Center* akan aktif. Jika hal tersebut tercentang, proses kalkulasi akan menggeser geometri ke tengah geometri yang sesuai.
+Anda dapat memilih layer pada *combo box* *Select Layer 2* dan *combo box* *Selec Layer 2* pada *input section* (Masukkan tersebut hanya disupport dengan layer bertipe vektor). Metode untuk pemeriksaan dapat dipilih pada *combo box* *method*. Jika anda memilih *Wilkerstat Method*, katak berlabel *Merge Center* akan aktif. Jika hal tersebut tercentang, proses kalkulasi akan menggeser geometri ke tengah geometri yang sesuai.
 
 ![InputSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/3469def04e15cc35cfa2d4b5c3b38ef5/InputSection.png)
 
@@ -97,7 +97,7 @@ Setelah pemeriksaan selesai, anda dapat melihat hasilnya pada *preview section* 
 
 # About Plugin
 
-This plugin is used for checking similarity between two maps with MapCurve ( Hargrove et al., 2016 ). Plugin created by Pandu Wicaksono and Takdir. There is no external library included in this plugin except **PyQGIS**. Similarity score implementing **GOF MapCurve** method (Hargrove et. al. (2006) <doi:10.1007/s10109-006-0025-x> ). You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
+This plugin is used for checking similarity between two maps vector with MapCurve ( Hargrove et al., 2016 ). Plugin created by Pandu Wicaksono and Takdir. There is no external library included in this plugin except **PyQGIS**. Similarity score implementing **GOF MapCurve** method (Hargrove et. al. (2006) <doi:10.1007/s10109-006-0025-x> ). You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
 
 ## Install the plugin into QGIS directly
@@ -176,7 +176,7 @@ Here some command for integrating terminal with PyQGIS and OSGeoW in Visual Stud
 
 ## How to use plugin
 
-You can choose the layer on Select Layer 1 combo box and Select Layer 2 combo box in input section. Method can be chosen in method combo box. If you choose Wilkerstat Method, merge center check box will activated. If merge center checked, the calculation process will translate geometry to the center of matching geometry.
+You can choose the layer on Select Layer 1 combo box and Select Layer 2 combo box in input section (Layer inputation only support vector data type). Method can be chosen in method combo box. If you choose Wilkerstat Method, merge center check box will activated. If merge center checked, the calculation process will translate geometry to the center of matching geometry.
 
 ![InputSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/3469def04e15cc35cfa2d4b5c3b38ef5/InputSection.png)
 
