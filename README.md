@@ -4,7 +4,7 @@ Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Harg
 
 <div align="center">
 <img src="https://latex.codecogs.com/svg.latex?GOF_{Mapcurves}=\sum{\frac{C}{C+A}\times\frac{C}{C+B}}"/>
-![image](uploads/79e0483a7fa9a4ce311b13898bb876fa/image.png)
+https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/79e0483a7fa9a4ce311b13898bb876fa/image.png
 </div>
 
 
