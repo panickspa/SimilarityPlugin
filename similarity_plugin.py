@@ -259,7 +259,7 @@ class SimilarityPlugin:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/similarity_plugin/icon.png'
+        icon_path = ':/plugins/similarity_plugin/icon-24.png'
         self.add_action(
             icon_path,
             text=self.tr(u'Check Similarity ...'),
@@ -344,8 +344,10 @@ class SimilarityPlugin:
             self.layer2Canvas = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
 
             # set the feature
-            previewLayerFeature = self.layer.getFeature(self.similarLayer[self.previewLayer][0])
-            previewLayerFeature2 = self.layer2.getFeature(self.similarLayer[self.previewLayer][1])
+            # print(self.layer.getFeature(self.similarLayer[self.previewLayer][0]).attributes())
+            # print(self.layer2.getFeature(self.similarLayer[self.previewLayer][1]).attributes())
+            previewLayerFeature = self.calcTask.getLayersDup()[0].getFeature(self.similarLayer[self.previewLayer][0])
+            previewLayerFeature2 = self.calcTask.getLayersDup()[1].getFeature(self.similarLayer[self.previewLayer][1])
 
             # set the label score
             scoreLabel = "Score : " + str(self.similarLayer[self.previewLayer][2])
@@ -364,8 +366,8 @@ class SimilarityPlugin:
             else:
                 self.dlg.labelScore.setText(scoreLabel)
 
-            self.attrPrinter(self.layer.dataProvider().fields().toList(), previewLayerFeature, self.dlg.previewAttr)
-            self.attrPrinter(self.layer2.dataProvider().fields().toList(), previewLayerFeature2, self.dlg.previewAttr_2)
+            self.attrPrinter(self.calcTask.getLayersDup()[0].dataProvider().fields().toList(), previewLayerFeature, self.dlg.previewAttr)
+            self.attrPrinter(self.calcTask.getLayersDup()[1].dataProvider().fields().toList(), previewLayerFeature2, self.dlg.previewAttr_2)
 
 
             self.layerCanvas.dataProvider().addFeature(previewLayerFeature)
@@ -439,34 +441,6 @@ class SimilarityPlugin:
         self.warnDlg.yesBtn.clicked.connect(self.rmFeatResult)
         self.warnDlg.noBtn.clicked.connect(self.warnDlg.close)
         self.warnDlg.show()
-
-    def addScoreItem(self):
-        """save score item into the clone layer"""
-        self.layer.commitChanges()
-        self.layer2.commitChanges()
-
-        scoreFieldIndex = self.layer.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
-        scoreFieldIndex2 = self.layer2.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
-
-        idIndex = self.layer.dataProvider().fieldNameIndex('id')
-        idIndex2 = self.layer2.dataProvider().fieldNameIndex('id')
-
-        matchIndex = self.layer.dataProvider().fieldNameIndex('match')
-        matchIndex2 = self.layer2.dataProvider().fieldNameIndex('match')
-
-        self.layer.startEditing()
-        self.layer2.startEditing()
-
-        for sim in self.similarLayer:
-            self.layer.changeAttributeValue(sim[0], scoreFieldIndex, sim[2])
-            self.layer.changeAttributeValue(sim[0], idIndex, sim[0])
-            self.layer.changeAttributeValue(sim[0], matchIndex, sim[1])
-            self.layer2.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2])
-            self.layer2.changeAttributeValue(sim[1], idIndex2, sim[1])
-            self.layer2.changeAttributeValue(sim[1], matchIndex2, sim[0])
-
-        self.layer.commitChanges()
-        self.layer2.commitChanges()  
 
     def updateCalcProgress(self, value):
         """Progress signal for calcTask"""
@@ -575,12 +549,12 @@ class SimilarityPlugin:
             self.calcTask.setRadius(self.dlg.nnRadiusEdit.value())
             self.calcTask.setSuffix(str(self.dlg.sufLineEdit.text()))
             self.calcTask.setScoreName(str(self.dlg.attrOutLineEdit.text()))
-            print("input option set")
+            # print("input option set")
             # activating task
             self.calcTask.alive()
-            print("task alive")
+            # print("task alive")
             self.calcThread.start()
-            print("thread started")
+            # print("thread started")
 
             # set button
             self.dlg.calcBtn.setEnabled(False)
@@ -592,36 +566,7 @@ class SimilarityPlugin:
     # signal when saveBtn clicked
     def registerToProject(self):
         """Signal to registering project"""
-        # create an temporary memory layer 1
-        layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
-                        self.layer.name(),
-                        'memory')
-        layer.setCrs(
-            self.layer.sourceCrs()
-        )
-        layer.dataProvider().addAttributes(
-            self.layer.dataProvider().fields().toList()
-        )
-        layer.updateFields()
-        layer.dataProvider().addFeatures(
-            [self.layer.getFeature(f[0]) for f in self.similarLayer]
-        )
-        # create an temporary memory layer 1
-        layer2 = QgsVectorLayer("Polygon?crs=ESPG:4326",
-                        self.layer2.name(),
-                        'memory')
-        layer2.setCrs(
-            self.layer2.sourceCrs()
-        )
-        layer2.dataProvider().addAttributes(
-            self.layer2.dataProvider().fields().toList()
-        )
-        layer2.updateFields()
-        layer2.dataProvider().addFeatures(
-            [self.layer2.getFeature(f[1]) for f in self.similarLayer]
-        )
-        # add the layers to instance
-        QgsProject.instance().addMapLayers([layer, layer2])
+        QgsProject.instance().addMapLayers(self.calcTask.getLayersResult())
 
     # warning dialog for error or prevention
     def warnDialogInit(self, msg:str):
@@ -962,3 +907,31 @@ class SimilarityPlugin:
     #     )
 
     #     return layer
+
+     # def addScoreItem(self):
+    #     """save score item into the clone layer"""
+    #     self.layer.commitChanges()
+    #     self.layer2.commitChanges()
+
+    #     scoreFieldIndex = self.layer.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
+    #     scoreFieldIndex2 = self.layer2.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
+
+    #     idIndex = self.layer.dataProvider().fieldNameIndex('id')
+    #     idIndex2 = self.layer2.dataProvider().fieldNameIndex('id')
+
+    #     matchIndex = self.layer.dataProvider().fieldNameIndex('match')
+    #     matchIndex2 = self.layer2.dataProvider().fieldNameIndex('match')
+
+    #     self.layer.startEditing()
+    #     self.layer2.startEditing()
+
+    #     for sim in self.similarLayer:
+    #         self.layer.changeAttributeValue(sim[0], scoreFieldIndex, sim[2])
+    #         self.layer.changeAttributeValue(sim[0], idIndex, sim[0])
+    #         self.layer.changeAttributeValue(sim[0], matchIndex, sim[1])
+    #         self.layer2.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2])
+    #         self.layer2.changeAttributeValue(sim[1], idIndex2, sim[1])
+    #         self.layer2.changeAttributeValue(sim[1], matchIndex2, sim[0])
+
+    #     self.layer.commitChanges()
+    #     self.layer2.commitChanges()  

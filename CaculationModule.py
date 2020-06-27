@@ -56,8 +56,10 @@ class CalculationModule(QObject):
     killed = False
     layer : QgsVectorLayer
     layerDup : QgsVectorLayer
+    layerResult : QgsVectorLayer
     layer2 : QgsVectorLayer
     layer2Dup : QgsVectorLayer
+    layerResult2 : QgsVectorLayer
     method : int
     radius : float
     similarLayer = []
@@ -140,6 +142,10 @@ class CalculationModule(QObject):
         """get the duplicated layer"""
         return [self.layerDup, self.layer2Dup]
 
+    def getLayersResult(self):
+        """Get the results"""
+        return [self.layerResult, self.layerResult2]
+
     def getSimilarLayer(self):
         """get list of the similar layer"""
         return self.similarLayer
@@ -185,9 +191,27 @@ class CalculationModule(QObject):
         layer.updateFields()
         # print("updated fields")
         layer.dataProvider().addFeatures(
-            [f for f in currentLayer.getFeatures()]
+            currentLayer.getFeatures()
         )
+        # print(layer.featureCount())
         # print("features updated")
+        return layer
+
+    def duplicateEmptyLayer(self, currentLayer:QgsVectorLayer):
+        layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
+                        currentLayer.name(),
+                        'memory')
+        # print("layer created")
+        layer.setCrs(
+            currentLayer.sourceCrs()
+        )
+        # print("crs set")
+        layer.dataProvider().addAttributes(
+            currentLayer.dataProvider().fields().toList()
+        )
+
+        layer.updateFields()
+
         return layer
 
     def translateCenterGeom(self, g, target):
@@ -254,22 +278,24 @@ class CalculationModule(QObject):
         # print("treshold hold converted")
         score = 0
         # print("score initialized")
-        if self.method == 1:
-            # print("calculating")
+        if self.translate:
+            # print("calculating with translate")
             score = self.calcMapCurvesGeom(
                         feature.geometry(),
                         self.translateCenterGeom(feature2.geometry(),feature.geometry()) 
                     )
             # print("calculated")
         else:
-            # print("calculating")
+            # print("calculating without translate")
             score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
             # print("calculated")
 
         if (score >= treshold and score > 0) or self.method == 3:
             # print("saving score ...")
             self.similarLayer.append([feature.id(), feature2.id(), score])
-            self.addScoreItem(feature.id(), feature2.id(), score)
+            # self.addScoreItem(feature.id(), feature2.id(), score)
+            self.addFeatureResult(feature, feature2, score)
+            # print("feature added")
             # print("saved ...")
             self.progressSim.emit([feature.id(), feature2.id(), score])
             # print("result emited")
@@ -548,6 +574,47 @@ class CalculationModule(QObject):
         self.layerDup.commitChanges()
         self.layer2Dup.commitChanges()
 
+    def addFeatureResult(self, feature:QgsFeature, feature2:QgsFeature, score:float):
+        """Add result feature to result layer.
+        
+            :param feature QgsFeature: The feature will be added on first layer result
+            :param feature QgsFeature: The feature will be added on second layer result
+            :param score float: the feature score result
+
+        """
+        featDup = QgsFeature()
+        featDup.setGeometry(feature.geometry())
+        featDup.setFields(feature.fields())
+        # print("set attribute")
+        featDup.setAttributes(feature.attributes())
+        featDup.setAttribute(feature.fields().indexOf(self.scoreName), score)
+        # print("score 1 set")
+        featDup.setAttribute(feature.fields().indexOf("id"), feature.id())
+        # print("id 1 set")
+        featDup.setAttribute(feature.fields().indexOf("match"), feature2.id())
+        # print("match 1 set")
+        
+        featDup2 = QgsFeature()
+        featDup2.setGeometry(feature2.geometry())
+        featDup2.setFields(feature2.fields())
+        featDup2.setAttributes(feature2.attributes())
+        featDup2.setAttribute(feature2.fields().indexOf(self.scoreName), score)
+        # print("score 2 set")
+        featDup2.setAttribute(feature2.fields().indexOf('id'), feature2.id())
+        # print("id 2 set")
+        featDup2.setAttribute(feature2.fields().indexOf('match'), feature.id())
+        # print("match 2 set")
+        # print(featDup)
+        # print(featDup.attributes())
+        # print(featDup2)
+        # print(featDup2.attributes())
+
+        self.layerResult.dataProvider().addFeature(featDup)
+        # print(self.layerResult.dataProvider().addFeature(featDup))
+        self.layerResult2.dataProvider().addFeature(featDup2)
+        # print(self.layerResult2.dataProvider().addFeature(featDup2))
+        # print("duplicated")
+
     def run(self):
         """Run the object"""
         start = time.perf_counter()
@@ -562,11 +629,16 @@ class CalculationModule(QObject):
                 self.eventTask.emit("Duplicating ....")
                 self.layerDup = self.duplicateLayer(self.layer, self.suffix, self.scoreName)
                 # print("duplicated 1")
+                self.layerResult = self.duplicateEmptyLayer(self.layerDup)
+                # print("duplicate layer result")
                 self.layer2Dup = self.duplicateLayer(self.layer2, self.suffix, self.scoreName)
+                # print("duplicated 2")
+                self.layerResult2 = self.duplicateEmptyLayer(self.layer2Dup)
+                # print("duplicate layer result2")
                 # print("duplicated 2")
                 self.eventTask.emit("Calculating ....")
                 if(self.method == 0):
-                    print("sq method")
+                    # print("sq method")
                     try:
                         self.calculateSq(self.layerDup, self.layer2Dup)
                         # print("similar checked")
@@ -579,14 +651,16 @@ class CalculationModule(QObject):
                     except NameError as ex:
                         # print("error")
                         self.error.emit("Not executed")
+                        self.eventTask.emit("Eror Occured")
                         # print("error emitted")
                     except:
                         # print("error")
-                        self.error.emit("Not executed")   
+                        self.error.emit("Not executed")
+                        self.eventTask.emit("Eror Occured")  
                         # print("error emitted")     
                 elif (self.method == 1):
                     try:
-                        print("is translated : "+str(self.translate))
+                        # print("is translated : "+str(self.translate))
                         # print("nn method")
                         self.calculateKNN(self.layerDup, self.layer2Dup, self.radius)
                         # print("similar checked")
@@ -597,12 +671,14 @@ class CalculationModule(QObject):
                         # print("finished emitted")   
                     except NameError as ex:
                         self.error.emit("Not executed")
+                        self.eventTask.emit("Eror Occured")
                         # print("error emitted")   
                     except:
                         # print("error")
                         self.error.emit("Not executed")
+                        self.eventTask.emit("Eror Occured")
                         # print("error emitted") 
-                else:
+                elif (self.method == 2):
                     print("wk method")
                     try:
                         self.calculateWK(self.layerDup, self.layer2Dup)
@@ -613,19 +689,30 @@ class CalculationModule(QObject):
                         # print("finished emitted") 
                     except NameError as ex:
                         self.error.emit(str(ex))
+                        self.eventTask.emit("Eror Occured")
                         # print("error emitted") 
                     except:
                         # print("error")
                         self.error.emit("Not executed")
+                        self.eventTask.emit("Eror Occured")
                         # print("error emitted") 
                         # print(similar)
+                else:
+                    print("saving")
+                    self.eventTask.emit("Saving ....")
+                    self.registerToProject()
+                    self.eventTask.emit("Layer saved")
             except:
                 self.error.emit("Error when duplicating")
+                self.eventTask.emit("Eror Occured")
                 # print(isinstance(self.layer, QgsVectorLayer))
                 # print(isinstance(self.layer2, QgsVectorLayer))
         elapsed = time.perf_counter()
         elapsed = elapsed-start
+        # print(self.layerResult.featureCount())
+        # print(self.layerResult2.featureCount())
         print("Elapsed time "+str(elapsed))
+        # print(self.similarLayer)
 
     def kill(self):
         """Set the killed status"""

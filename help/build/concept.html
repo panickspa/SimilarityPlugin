@@ -5,42 +5,44 @@
   <head>
     <meta charset="utf-8" />
     <title>Concept Algorithm &#8212; Similarity Plugin  documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="User Guide" href="tutorial.html" />
-    <link rel="prev" title="Welcome to Similarity Plugin’s documentation!" href="index.html" />
-   
-  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
-
+    <link rel="prev" title="Welcome to Similarity Plugin’s documentation!" href="index.html" /> 
   </head><body>
-  
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>Similarity Plugin  documentation</span></a></h1>
+        <h2 class="heading"><span>Concept Algorithm</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Welcome to Similarity Plugin’s documentation!</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="tutorial.html">User Guide</a>&#160;&#160;»
+        </p>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          
-
-          <div class="body" role="main">
-            
+      </div>
+      <div class="content" role="main">
+        
+        
   <div class="section" id="concept-algorithm">
 <h1>Concept Algorithm<a class="headerlink" href="#concept-algorithm" title="Permalink to this headline">¶</a></h1>
 <p>This plugin has four concept there are MapCurve, Squential, Nearest Neighbour, and Wilkersat. MapCurve method is used for similarity calculation. The other method is used for searching the matching feature on layer. User determine the treshold of similarity to make sure the map is similar in some confidence interval.</p>
 <div class="section" id="mapcurve-hargrove-et-al-2006">
 <h2>MapCurve (Hargrove et al. 2006)<a class="headerlink" href="#mapcurve-hargrove-et-al-2006" title="Permalink to this headline">¶</a></h2>
 <p>MapCurves is algorithm for checking similarity between two maps. MapCurve Algorithm is developed by Hargrove et al. (2006). Mapcurves can calculate the similarity proportion. Mapcurve can be applied in vector maps.</p>
-<p><span class="math notranslate nohighlight">\(GOF_{MapCurve} = \sum{\frac{C}{C+A} \times \frac{C}{C+B}}\)</span></p>
+<a class="reference internal image-reference" href="_images/gof.png"><img alt="_images/gof.png" src="_images/gof.png" style="width: 233px;" /></a>
 </div>
 <div class="section" id="squential">
 <h2>Squential<a class="headerlink" href="#squential" title="Permalink to this headline">¶</a></h2>
@@ -60,80 +62,22 @@
 </div>
 
 
-          </div>
-          
-        </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="index.html">Similarity Plugin</a></h1>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="index.html">Welcome to Similarity Plugin’s documentation!</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="tutorial.html">User Guide</a>&#160;&#160;»
+        </p>
 
-
-
-
-
-
-
-
-<h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Concept Algorithm</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#mapcurve-hargrove-et-al-2006">MapCurve (Hargrove et al. 2006)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#squential">Squential</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#nearest-neighbour">Nearest Neighbour</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#wilkerstat">Wilkerstat</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">User Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dialog_classes.html">Plugin Classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="about.html">About Plugin</a></li>
-</ul>
-
-<div class="relations">
-<h3>Related Topics</h3>
-<ul>
-  <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Similarity Plugin’s documentation!</a></li>
-      <li>Next: <a href="tutorial.html" title="next chapter">User Guide</a></li>
-  </ul></li>
-</ul>
-</div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-
-
-
-
-
-
-
-
-        </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2020, Politeknik Statistika STIS.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
-      
-      |
-      <a href="_sources/concept.rst.txt"
-          rel="nofollow">Page source</a>
-    </div>
 
-    
-
-    
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Politeknik Statistika STIS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.1.
+    </div>
   </body>
 </html>

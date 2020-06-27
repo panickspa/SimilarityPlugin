@@ -27,7 +27,7 @@ tags=python
 
 homepage=https://git.stis.ac.id/pandu1881/similarity-plugin
 category=Vector
-icon=icon.png
+icon=icon-24.png
 # experimental flag
 experimental=True
 

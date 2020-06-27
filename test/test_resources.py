@@ -31,7 +31,7 @@ class SimilarityPluginDialogTest(unittest.TestCase):
 
     def test_icon_png(self):
         """Test we can click OK."""
-        path = ':/plugins/SimilarityPlugin/icon.png'
+        path = ':/plugins/SimilarityPlugin/icon-24.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
