@@ -2,6 +2,14 @@
 
 Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Hargove et al., 2006) yang berbentuk vektor. Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* eksternal yang digunakan pada plugin ini kecuali **PyQGIS**. Penghitungan skor kesamaan peta mengimplementasi metode **GOF MapCurve** (Hargrove et. al. (2006) <[doi:10.1007/s10109-006-0025-x](https://doi.org/10.1007/s10109-006-0025-x)> ). Anda dapat mendistribusikan dan memodifikasi plugin ini secara bebas tetapi anda harus mencitasi jurnal MapCurve dan plugin ini. Untuk informasi lebih lanjut dapat menghubungi Pandu pada email 16.9350@stis.ac.id atau panickspa@gmail.com. Untuk dokumentasi yang lebih lengkap dapat mengunjungi link [Wiki](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/home) di git project ini.
 
+## Fitur plugin
+
+Plugin ini dapat memeriksa peta dengan tipe data vektor. Plugin memiliki 3 metode pemeriksaan yaitu:
+*  Squential : Membandingkan peta satu persatu
+*  Nearest Neighbour : Membandingkan peta dengan menggeser peta ke peta terdekat dengan radius tertentu
+*  Wilkerstat : Membandingkan peta dengan kode wilayah
+  
+
 ## Instalasi plugin pada QGIS secara langsung
 
 Batas minimum sistem
