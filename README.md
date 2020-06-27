@@ -14,35 +14,45 @@ Plugin ini dapat memeriksa peta dengan tipe data vektor. Plugin memiliki 3 metod
 
 Batas minimum sistem
 
-  - **QGIS 3.10 A Coruna LTR**
+  - <b>QGIS 3.10 A Coruna LTR</b>
 
 Berikut langkah-langkah untuk menginstal plugin di QGIS
 
-1. *Extract* fail plugin.zip pada sebuat *directory*
+1. <i>Extract</i> fail plugin.zip pada sebuat <i>directory</i>
 2. Buka aplikasi QGIS
-3. Klik Menu *Plugins* pada menu bar
+3. Klik Menu <i>Plugins</i> pada menu bar
+
 <div align="center">
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/db49312a38f98846a2783260826384e2/image.png)
 </div>
-4. Klik menu *Manage and Install Plugins...*
+
+4. Klik menu <i>Manage and Install Plugins...</i>
+
 <div align="center">
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/be7220e560ed1b167fbba5ca4a523b60/image.png)
 </div>
+
 5. Pilih dan klik *Install from Zip section*
+
 <div align="center">
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/18c153a368b85ff528c953b41c6a40a7/image.png)
 </div>
+
 6. Klik tombol ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7bbdff1818aa2193bc9d46cda71f3d6e/image.png)
 7. Cari fail instalasi plugin pada step pertama.
-8. Klik tombol *Install Plugin*
+8. Klik tombol <i>Install Plugin</i>
+
 <div align="center">
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/b2606bcad2e8f7a8a8dc270aea03896b/image.png)
 </div>
-9. Pindah pada *Installed Section* dengan mengkliknya lalu mencentang kotak yang berada disebelah kiri *Calculate Similarity Map*
+
+9. Pindah pada *Installed Section* dengan mengkliknya lalu mencentang kotak yang berada disebelah kiri <i>Calculate Similarity Map</i>
+
 <div align="center">
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/d9116e47554603ebf9cf186b29d57c58/image.png)
 </div>
-10. **Plugin siap digunakan !!!**
+
+10. <b>Plugin siap digunakan !!!</b>
 
 
 ## Cara penggunaan plugin
