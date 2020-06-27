@@ -78,7 +78,7 @@ Anda dapat mengedit ambang batas pada menu *Treshold*, radius pergeseran peta pa
 Setelah anda mengisikan semua opsi, anda dapat melakukan klik tombol **Calculate** ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/8809206cb30f46d730020bcfb1a934ba/image.png). Setelah pemeriksaan selesai, anda dapat menyimpan dengan mengklik tombol **Save** ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/4fae88aaf29832a2d42f6fe9d1ea3d90/image.png) untuk menyimpannya pada *QGIS Project*.
 
 <div align="center">
-![ExcecutionSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7d11bd599f79bd00c3a0bdcbafa6d46e/ExcecutionSection.png)
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/1073bcf7f274498a299258747905e19b/image.png)
 </div>
 
 Setelah pemeriksaan selesai, anda dapat melihat hasilnya pada *preview section* juga sebelum menyimpan hasilnya di *QGIS project*.
