@@ -49,7 +49,7 @@ Berikut langkah-langkah untuk menginstal plugin di QGIS
 
 Anda dapat memilih layer pada *combo box* *Select Layer 2* dan *combo box* *Selec Layer 2* pada *input section* (Masukkan tersebut hanya mendukung layer dengan tipe vektor). Metode untuk pemeriksaan dapat dipilih pada *combo box* *method*. Jika anda memilih *Wilkerstat Method*, katak berlabel *Merge Center* akan aktif. Jika hal tersebut tercentang, proses kalkulasi akan menggeser geometri ke tengah geometri yang sesuai.
 <div align="center">
-![InputSection](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/3469def04e15cc35cfa2d4b5c3b38ef5/InputSection.png)
+<img src="https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/db49312a38f98846a2783260826384e2/image.png" />
 </div>
 Anda dapat mengedit ambang batas pada menu *Treshold*, radius pergeseran peta pada menu *KNN Radius* (if you useing NN Method), nama attribut skor yang didapat pada tabel attribut dan nama belakang dari *layer* hasil pemeriksaan. Harap isikan *Treshold* dalam **persentil**.
 
