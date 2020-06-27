@@ -7,7 +7,6 @@ Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF MapCurve (Harg
 ![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/79e0483a7fa9a4ce311b13898bb876fa/image.png)
 </div>
 
-
 ## Fitur plugin
 
 Plugin ini dapat memeriksa peta dengan tipe data vektor. Plugin memiliki 3 metode pemeriksaan yaitu:
