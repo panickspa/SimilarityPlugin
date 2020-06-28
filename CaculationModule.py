@@ -33,10 +33,14 @@ class CalculationModule(QObject):
         First original layer
     layerDup : QgsVectorLayer
         First duplicated layer
+    layerResult : QgsVectorLayer
+        First result layer
     layer2 : QgsVectorLayer
         Second original layer
     layer2Dup : QgsVectorLayer
         Second duplicated layer
+    layerResult : QgsVectorLayer
+        Second result layer
     method : int
         Method selected
     radius : float
@@ -214,7 +218,7 @@ class CalculationModule(QObject):
 
         return layer
 
-    def translateCenterGeom(self, g, target):
+    def translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry):
         """Translate a geometry to the center another geometry
         
         :param g QgsGeometry: Geometry that be translated
@@ -239,7 +243,7 @@ class CalculationModule(QObject):
         # print("g translated")
         return g
 
-    def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
+    def __calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
         """Calculating MapCurve using geometry.
         
         :param g QgsGeometry: First geometry for calculation
@@ -266,7 +270,7 @@ class CalculationModule(QObject):
             # print("score calculated")
             return round(score, 4)
  
-    def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
+    def __calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
         """Calculation MapCurve using feature.
         
         :param feature QgsFeature: The first feature
@@ -280,27 +284,26 @@ class CalculationModule(QObject):
         # print("score initialized")
         if self.translate:
             # print("calculating with translate")
-            score = self.calcMapCurvesGeom(
+            score = self.__calcMapCurvesGeom(
                         feature.geometry(),
                         self.translateCenterGeom(feature2.geometry(),feature.geometry()) 
                     )
             # print("calculated")
         else:
             # print("calculating without translate")
-            score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
+            score = self.__calcMapCurvesGeom(feature.geometry(), feature2.geometry())
             # print("calculated")
 
         if (score >= treshold and score > 0) or self.method == 3:
             # print("saving score ...")
             self.similarLayer.append([feature.id(), feature2.id(), score])
-            # self.addScoreItem(feature.id(), feature2.id(), score)
-            self.addFeatureResult(feature, feature2, score)
+            self.__addFeatureResult(feature, feature2, score)
             # print("feature added")
             # print("saved ...")
             self.progressSim.emit([feature.id(), feature2.id(), score])
             # print("result emited")
 
-    def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
+    def __calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
         """MapCurve calculation using Wilkerstat method.
         
         :param layer QgsVectorLayer: The First layer
@@ -438,7 +441,7 @@ class CalculationModule(QObject):
                 # print(queText)
                 # print(len([j for j in layer2.getFeatures(queText)]))
                 for j in layer2.getFeatures(queText):
-                    self.calcMapCurves(i,j)
+                    self.__calcMapCurves(i,j)
             except KeyError as identifier:
                 # show error message
                 self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required")
@@ -465,7 +468,7 @@ class CalculationModule(QObject):
             # print("progress emitted")
         return self.similarLayer
 
-    def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+    def __calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
         """MapCurve calculation using Squential method.
         
         :param layer QgsVectorLayer: The First layer
@@ -490,7 +493,7 @@ class CalculationModule(QObject):
                 # print("Iteration j")
                 if(i.hasGeometry()):
                     # print("Checking")
-                    self.calcMapCurves(i, j)
+                    self.__calcMapCurves(i, j)
                     # print("checked")
             progress = progress+(1/layer.featureCount()*100)
             # print("progress add")
@@ -499,7 +502,7 @@ class CalculationModule(QObject):
 
         return self.similarLayer
 
-    def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, radius:float):
+    def __calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, radius:float):
         """MapCurve calculation using Nearest Neighbour method.
         
         :param layer QgsVectorLayer: The First layer
@@ -532,7 +535,7 @@ class CalculationModule(QObject):
                     # print(j)
                     # print(j.id())
                     # print("Iteration j")
-                    self.calcMapCurves(i, j)
+                    self.__calcMapCurves(i, j)
                     # print("calculated")
             progress = progress+(1/layer.featureCount()*100)
             # print("progress added")
@@ -541,40 +544,7 @@ class CalculationModule(QObject):
 
         return self.similarLayer
 
-    def addScoreItem(self, idFeat:int, idFeat2:int, score:float):
-        """Add the core item to layer cloned feature's
-
-        :param idFeat int: the first id feature
-        :param idFeat2 int: the second id feature
-        :param score float: the similarity score
-
-        """
-        self.layerDup.commitChanges()
-        self.layer2Dup.commitChanges()
-
-        scoreFieldIndex = self.layerDup.dataProvider().fieldNameIndex(self.scoreName)
-        scoreFieldIndex2 = self.layer2Dup.dataProvider().fieldNameIndex(self.scoreName)
-
-        idIndex = self.layerDup.dataProvider().fieldNameIndex('id')
-        idIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('id')
-
-        matchIndex = self.layerDup.dataProvider().fieldNameIndex('match')
-        matchIndex2 = self.layer2Dup.dataProvider().fieldNameIndex('match')
-
-        self.layerDup.startEditing()
-        self.layer2Dup.startEditing()
-
-        self.layerDup.changeAttributeValue(idFeat, scoreFieldIndex, score)
-        self.layerDup.changeAttributeValue(idFeat, idIndex, idFeat)
-        self.layerDup.changeAttributeValue(idFeat, matchIndex, idFeat2)
-        self.layer2Dup.changeAttributeValue(idFeat2, scoreFieldIndex2, score)
-        self.layer2Dup.changeAttributeValue(idFeat2, idIndex2, idFeat2)
-        self.layer2Dup.changeAttributeValue(idFeat2, matchIndex2, idFeat)
-
-        self.layerDup.commitChanges()
-        self.layer2Dup.commitChanges()
-
-    def addFeatureResult(self, feature:QgsFeature, feature2:QgsFeature, score:float):
+    def __addFeatureResult(self, feature:QgsFeature, feature2:QgsFeature, score:float):
         """Add result feature to result layer.
         
             :param feature QgsFeature: The feature will be added on first layer result
@@ -640,10 +610,9 @@ class CalculationModule(QObject):
                 if(self.method == 0):
                     # print("sq method")
                     try:
-                        self.calculateSq(self.layerDup, self.layer2Dup)
+                        self.__calculateSq(self.layerDup, self.layer2Dup)
                         # print("similar checked")
                         self.eventTask.emit("adding Score to layer")
-                        # self.addScoreItemLayer()
                         # print("score item addded")
                         self.finished.emit(self.similarLayer)
                         self.eventTask.emit("Finished !!")
@@ -662,10 +631,9 @@ class CalculationModule(QObject):
                     try:
                         # print("is translated : "+str(self.translate))
                         # print("nn method")
-                        self.calculateKNN(self.layerDup, self.layer2Dup, self.radius)
+                        self.__calculateKNN(self.layerDup, self.layer2Dup, self.radius)
                         # print("similar checked")
                         self.eventTask.emit("Add score to layer")
-                        # self.addScoreItemLayer()
                         # print("score item added")
                         self.finished.emit(self.similarLayer)
                         # print("finished emitted")   
@@ -681,9 +649,8 @@ class CalculationModule(QObject):
                 elif (self.method == 2):
                     print("wk method")
                     try:
-                        self.calculateWK(self.layerDup, self.layer2Dup)
+                        self.__calculateWK(self.layerDup, self.layer2Dup)
                         # print("similar checked")
-                        # self.addScoreItemLayer()
                         # print("score item added")
                         self.finished.emit(self.similarLayer)
                         # print("finished emitted") 

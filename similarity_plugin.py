@@ -95,17 +95,6 @@ class SimilarityPlugin:
         which provides the hook by which you can manipulate the QGIS
         application at run time.
 
-    
-    Methods
-    --------
-
-    resultPreview()
-        Activate preview section
-    
-    attrPrinter(fieldList: object, feature: QgsFeature, place: QTextEdit)
-        Print feature atrribute info on text edit in preview section
-
-
     """
     
     layer : QgsVectorLayer #: First layer
@@ -612,7 +601,7 @@ class SimilarityPlugin:
         # set help documentation
         self.dlg.helpTextBrowser.setSource(
             QUrl.fromLocalFile(
-                os.path.join(os.path.dirname(__file__), "help", "build","index.html")
+                os.path.join(os.path.dirname(__file__), "help", "_build","index.html")
             )
         )
         self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
