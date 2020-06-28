@@ -333,8 +333,11 @@ class SimilarityPlugin:
             previewLayerFeature2 = self.calcTask.getLayersDup()[1].getFeature(self.similarLayer[self.previewLayer][1])
 
             # set the label score
-            scoreLabel = "Score : " + str(self.similarLayer[self.previewLayer][2])
+            scoreLabel = "Score : " + str(round(self.similarLayer[self.previewLayer][2],3))
             
+            # set cumulative score
+            scoreLabel += " - Cumulative score : "+ str(self.calcTask.getCumulative(self.similarLayer[self.previewLayer]))
+
             # show distance if the layer merge centered (NN and WK only)
             if(self.dlg.methodComboBox.currentIndex() == 1 or self.dlg.methodComboBox.currentIndex() == 2 ) :
                 distance = QgsGeometry.distance(
@@ -343,7 +346,7 @@ class SimilarityPlugin:
                 if distance < 0.00001:
                     distance = 0
                 self.dlg.labelScore.setText(scoreLabel+ " - Distance : "+str(
-                        round(distance, 4)
+                        round(distance, 3)
                     )
                 )
             else:
@@ -421,7 +424,7 @@ class SimilarityPlugin:
     def updateSimList(self, simList:list):
         """Updating similiarity result signal"""
         self.similarLayer.append(simList)
-        cText = "Number of Result: "+str(len(self.similarLayer))
+        cText = "Number of Result: "+str(len(self.similarLayer))+" Mean Score : "+str(self.calcTask.getMeanCumulative())
         self.dlg.counterLabel.setText(cText)
 
     # thread signal
@@ -443,7 +446,7 @@ class SimilarityPlugin:
         # self.setLayers(self.calcTask.getLayersDup())
         self.calcThread.exit()
         self.calcTask.kill()
-        cText = "Number of Result: "+str(len(self.similarLayer))
+        cText = "Number of Result: "+str(len(self.similarLayer))+" Mean Score : "+str(self.calcTask.getMeanCumulative())
         if len(self.similarLayer) > 0 :
             # self.addScoreItem()
             self.previewLayer = 0

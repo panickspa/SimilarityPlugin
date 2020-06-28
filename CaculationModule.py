@@ -71,6 +71,7 @@ class CalculationModule(QObject):
     scoreName: str
     translate : bool
     treshold : float
+    cumulative: float
     
     def __init__(self):
         super().__init__()
@@ -132,6 +133,22 @@ class CalculationModule(QObject):
 
         """
         self.scoreName = scoreName
+
+    def getCumulative(self, similar:list):
+        score = float(0)
+        scoreMatch = float(0)
+        for i in self.layerResult.getFeatures('"id" = '+str(similar[0])):
+            score = float(score)+float(i.attribute(self.scoreName))
+        for i in self.layerResult2.getFeatures('"id" = '+str(similar[1])):
+            scoreMatch = float(scoreMatch)+float(i.attribute(self.scoreName))
+        return [round(score,3), round(scoreMatch, 3)]
+
+    def getMeanCumulative(self):
+        """Get cumulative score"""
+        if self.layer2Dup.featureCount() > 0:
+            return self.cumulative/self.layerDup.featureCount()
+        else:
+            return 0
 
     def getSimilarLayer(self):
         """Get the similar layer"""
@@ -274,10 +291,8 @@ class CalculationModule(QObject):
         :param feature2 QgsFeature: The second feature
         
         """
-
         treshold = self.treshold/100
         # print("treshold hold converted")
-        score = 0
         # print("score initialized")
         if self.translate:
             # print("calculating with translate")
@@ -291,13 +306,15 @@ class CalculationModule(QObject):
             score = self.__calcMapCurvesGeom(feature.geometry(), feature2.geometry())
             # print("calculated")
 
-        if (score >= treshold and score > 0) or self.method == 3:
+        if (score >= treshold and score > 0) or self.method == 2:
             # print("saving score ...")
             self.similarLayer.append([feature.id(), feature2.id(), score])
             self.__addFeatureResult(feature, feature2, score)
             # print("feature added")
             # print("saved ...")
             self.progressSim.emit([feature.id(), feature2.id(), score])
+            self.cumulative = float(self.cumulative)+score
+            print("calculated : "+str(self.cumulative)+" - "+str(score))
             # print("result emited")
 
     def __calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
@@ -315,7 +332,7 @@ class CalculationModule(QObject):
         # print("attrnName initialized")
         attrName2 = layer2.dataProvider().fields().names()
         # print("attrnName initialized")
-
+        score = float(0)
         for i in layer.getFeatures():
             # Querying for matching attribute
             # print(self.killed)
@@ -535,6 +552,7 @@ class CalculationModule(QObject):
             # print(iterL)
             # print("progress "+str(progress))
             self.progress.emit(progress)
+            
             # print("progress emitted")
         return self.similarLayer
 
@@ -659,6 +677,7 @@ class CalculationModule(QObject):
         """Run the object"""
         start = time.perf_counter()
         if self.killed is False :
+            self.cumulative = 0
             self.similarLayer = []
             # print("duplicatingg")
             # print(self.layer)
@@ -668,10 +687,12 @@ class CalculationModule(QObject):
             try:
                 self.eventTask.emit("Duplicating ....")
                 self.layerDup = self.duplicateLayer(self.layer, self.suffix, self.scoreName)
+                # print(self.layerDup.featureCount())
                 # print("duplicated 1")
                 self.layerResult = self.duplicateEmptyLayer(self.layerDup)
                 # print("duplicate layer result")
                 self.layer2Dup = self.duplicateLayer(self.layer2, self.suffix, self.scoreName)
+                # print(self.layer2Dup.featureCount())
                 # print("duplicated 2")
                 self.layerResult2 = self.duplicateEmptyLayer(self.layer2Dup)
                 # print("duplicate layer result2")
@@ -739,6 +760,7 @@ class CalculationModule(QObject):
                 self.eventTask.emit("Eror Occured")
                 # print(isinstance(self.layer, QgsVectorLayer))
                 # print(isinstance(self.layer2, QgsVectorLayer))
+            # print("cumulative score : "+str(self.getCumulative())+" feature count : "+str(self.layerDup.featureCount()))
         elapsed = time.perf_counter()
         elapsed = elapsed-start
         # print(self.layerResult.featureCount())
