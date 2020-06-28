@@ -467,7 +467,7 @@ class SimilarityPlugin:
         # print("finished returned : ", itemVal)
         # self.similarLayer = itemVal
         self.setLayers(self.calcTask.getLayersDup())
-        self.calcThread.terminate()
+        self.calcThread.exit()
         self.calcTask.kill()
         cText = "Number of Result: "+str(len(self.similarLayer))
         if len(self.similarLayer) > 0 :
@@ -484,7 +484,8 @@ class SimilarityPlugin:
 
     def stopCalcThread(self):
         """Signal when calcTask is stopped """
-        self.calcThread.terminate()
+        self.calcThread.exit()
+        self.dlg.eventLabel.setText("Event: Stopped")
         self.calcTask.kill()
         if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
             self.layer = self.calcTask.getLayersDup()[0]

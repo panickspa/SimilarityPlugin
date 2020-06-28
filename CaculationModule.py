@@ -633,7 +633,7 @@ class CalculationModule(QObject):
                         # print("nn method")
                         self.__calculateKNN(self.layerDup, self.layer2Dup, self.radius)
                         # print("similar checked")
-                        self.eventTask.emit("Add score to layer")
+                        # self.eventTask.emit("Add score to layer")
                         # print("score item added")
                         self.finished.emit(self.similarLayer)
                         # print("finished emitted")   
@@ -664,11 +664,6 @@ class CalculationModule(QObject):
                         self.eventTask.emit("Eror Occured")
                         # print("error emitted") 
                         # print(similar)
-                else:
-                    print("saving")
-                    self.eventTask.emit("Saving ....")
-                    self.registerToProject()
-                    self.eventTask.emit("Layer saved")
             except:
                 self.error.emit("Error when duplicating")
                 self.eventTask.emit("Eror Occured")
@@ -679,6 +674,7 @@ class CalculationModule(QObject):
         # print(self.layerResult.featureCount())
         # print(self.layerResult2.featureCount())
         print("Elapsed time "+str(elapsed))
+        self.eventTask.emit("Finished !!!")
         # print(self.similarLayer)
 
     def kill(self):
