@@ -23,7 +23,7 @@ Batas minimum sistem
 
 Berikut langkah-langkah untuk menginstal plugin di QGIS
 
-1. <i>Extract</i> fail plugin.zip pada sebuat <i>directory</i>
+1. Untuh fail pada link berikut [plugin.zip](https://git.stis.ac.id/pandu1881/similarity-plugin/-/raw/master/plugin.zip) pada sebuat <i>directory</i>
 2. Buka aplikasi QGIS
 3. Klik Menu <i>Plugins</i> pada menu bar
 
