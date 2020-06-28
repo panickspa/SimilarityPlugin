@@ -332,10 +332,10 @@ class SimilarityPlugin:
             previewLayerFeature = self.calcTask.getLayersDup()[0].getFeature(self.similarLayer[self.previewLayer][0])
             previewLayerFeature2 = self.calcTask.getLayersDup()[1].getFeature(self.similarLayer[self.previewLayer][1])
 
-            # set the label score
+            # set the label score on preview
             scoreLabel = "Score : " + str(round(self.similarLayer[self.previewLayer][2],3))
             
-            # set cumulative score
+            # set cumulative score on preview
             scoreLabel += " - Cumulative score : "+ str(self.calcTask.getCumulative(self.similarLayer[self.previewLayer]))
 
             # show distance if the layer merge centered (NN and WK only)

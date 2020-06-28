@@ -135,6 +135,7 @@ class CalculationModule(QObject):
         self.scoreName = scoreName
 
     def getCumulative(self, similar:list):
+        """Get Cumulative Score"""
         score = float(0)
         scoreMatch = float(0)
         for i in self.layerResult.getFeatures('"id" = '+str(similar[0])):
