@@ -440,7 +440,7 @@ class SimilarityPlugin:
         """
         # print("finished returned : ", itemVal)
         # self.similarLayer = itemVal
-        self.setLayers(self.calcTask.getLayersDup())
+        # self.setLayers(self.calcTask.getLayersDup())
         self.calcThread.exit()
         self.calcTask.kill()
         cText = "Number of Result: "+str(len(self.similarLayer))

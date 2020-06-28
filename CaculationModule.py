@@ -352,6 +352,8 @@ class CalculationModule(QObject):
                     if("PROVNO" in attrName):
                         # print(("PROVNO" in attrName))
                         queText += i.attribute("PROVNO")
+                    elif "kdprov" in attrName :
+                        queText += i.attribute("kdprov")
                     else:
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
@@ -361,6 +363,18 @@ class CalculationModule(QObject):
                     if("PROVNO" in attrName):
                         # print(("PROVNO" in attrName))
                         queText += i.attribute("PROVNO")
+                    elif "kdprov" in attrName :
+                        queText += i.attribute("kdprov")
+                    else:
+                        # print("provno" in attrName)
+                        queText += i.attribute("provno")
+                elif "kdprov" in attrName2:
+                    queText += '"kdprov"' + " LIKE '"
+                    if("PROVNO" in attrName):
+                        # print(("PROVNO" in attrName))
+                        queText += i.attribute("PROVNO")
+                    elif "kdprov" in attrName :
+                        queText += i.attribute("kdprov")
                     else:
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
@@ -378,6 +392,8 @@ class CalculationModule(QObject):
                     if ("KABKOTNO" in attrName):
                         queText += i.attribute("KABKOTNO")
                         # print("query str build add KABKOTNO")
+                    elif "kdkab" in attrName:
+                        queText += i.attribute("kdkab")
                     else:
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
@@ -388,6 +404,19 @@ class CalculationModule(QObject):
                     if ("KABKOTNO" in attrName):
                         queText += i.attribute("KABKOTNO")
                         # print("query str build add KABKOTNO")
+                    elif "kdkab" in attrName:
+                        queText += i.attribute("kdkab")
+                    else:
+                        queText += i.attribute("kabkotno")
+                        # print("query str build kabkotno")
+                elif "kdkab" in attrName2:
+                    queText += "'"+' AND "kdkab" ' + " LIKE '"
+                    # print("query str build "+"'"+' AND "kabkotno" ' + " LIKE '")
+                    if ("KABKOTNO" in attrName):
+                        queText += i.attribute("KABKOTNO")
+                        # print("query str build add KABKOTNO")
+                    elif "kdkab" in attrName:
+                        queText += i.attribute("kdkab")
                     else:
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
@@ -399,6 +428,9 @@ class CalculationModule(QObject):
                     if ("KECNO" in attrName):
                         queText += i.attribute("KECNO")
                         # print("query str build add KECNO")
+                    elif ("kdkec" in attrName):
+                        queText += i.attribute("kdkec")
+                        # print("query str build add KECNO")
                     else:
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
@@ -408,6 +440,22 @@ class CalculationModule(QObject):
                     # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                     if ("KECNO" in attrName):
                         queText += i.attribute("KECNO")
+                        # print("query str build add KECNO")
+                    elif ("kdkec" in attrName):
+                        queText += i.attribute("kdkec")
+                        # print("query str build add KECNO")
+                    else:
+                        queText += i.attribute("kecno")
+                        # print("query str build add kecno")
+                elif "kdkec" in attrName2:
+                    # print("kecno cheked")
+                    queText += "'"+' AND "kdkec" ' + "LIKE '"
+                    # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
+                    if ("KECNO" in attrName):
+                        queText += i.attribute("KECNO")
+                        # print("query str build add KECNO")
+                    elif ("kdkec" in attrName):
+                        queText += i.attribute("kdkec")
                         # print("query str build add KECNO")
                     else:
                         queText += i.attribute("kecno")
@@ -420,22 +468,38 @@ class CalculationModule(QObject):
                     if('DESANO' in attrName):
                         queText += i.attribute("DESANO")+"' "
                         # print("query add DESANO")
+                    elif 'kddesa' in attrName:
+                        queText += i.attribute("kddesa")+"'"
                     else:
                         queText += i.attribute("desano")+"' "
                         # print("query add desano")
-                elif("desano" in attrName2):
+                elif("kddesa" in attrName2):
                     # print("desano cheked")
-                    queText += "'"+' AND "desano" ' + "LIKE '"
+                    queText += "'"+' AND "kddesa" ' + "LIKE '"
                     # print("query build "+"'"+' AND "desano" ' + "LIKE '")
                     if('DESANO' in attrName):
                         queText += i.attribute("DESANO")+"' "
                         # print("query add DESANO")
+                    elif 'kddesa' in attrName:
+                        queText += i.attribute("kddesa")+"'"
+                    else:
+                        queText += i.attribute("desano")+"' "
+                        # print("query add desano")
+                        # print("id checked")
+                elif("kddesa" in attrName2):
+                    queText += "'"+' AND "kddesa" ' + "LIKE '"
+                    # print("query build "+"'"+' AND "desano" ' + "LIKE '")
+                    if('DESANO' in attrName):
+                        queText += i.attribute("DESANO")+"' "
+                        # print("query add DESANO")
+                    elif 'kddesa' in attrName:
+                        queText += i.attribute("kddesa")+"'"
                     else:
                         queText += i.attribute("desano")
                         # print("query add desano")
                         # print("id checked")
                         queText += "' "
-                # print(queText)
+                print(queText)
                 # print(len([j for j in layer2.getFeatures(queText)]))
                 for j in layer2.getFeatures(queText):
                     self.__calcMapCurves(i,j)
