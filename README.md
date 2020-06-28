@@ -34,7 +34,7 @@ Berikut langkah-langkah untuk menginstal plugin di QGIS
 4. Klik menu <i>Manage and Install Plugins...</i>
 
 <div align="center">
-![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/be7220e560ed1b167fbba5ca4a523b60/image.png)
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/91f6e0928694e806a3c1e1c6585a3296/image.png)
 </div>
 
 5. Pilih dan klik *Install from Zip section*
@@ -48,13 +48,13 @@ Berikut langkah-langkah untuk menginstal plugin di QGIS
 8. Klik tombol <i>Install Plugin</i>
 
 <div align="center">
-![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/b2606bcad2e8f7a8a8dc270aea03896b/image.png)
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/7ec6af98405d8004e370ff0aa862d36a/image.png)
 </div>
 
 9. Pindah pada *Installed Section* dengan mengkliknya lalu mencentang kotak yang berada disebelah kiri <i>Calculate Similarity Map</i>
 
 <div align="center">
-![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/d9116e47554603ebf9cf186b29d57c58/image.png)
+![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/1851181da2b6047918829b6b938b73f7/image.png)
 </div>
 
 10. <b>Plugin siap digunakan !!!</b>
