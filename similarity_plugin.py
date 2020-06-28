@@ -74,10 +74,6 @@ class SimilarityPlugin:
     Attributes
     -----------
 
-    layer : QgsVectorLayer
-        First layer
-    layer2 : QgsVectorLayer
-        Second layer
     dlg : SimilarityPluginDialog
         MainPluginDialog
     simpleDialog : SimpleWarningDialog
@@ -333,8 +329,6 @@ class SimilarityPlugin:
             self.layer2Canvas = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
 
             # set the feature
-            # print(self.layer.getFeature(self.similarLayer[self.previewLayer][0]).attributes())
-            # print(self.layer2.getFeature(self.similarLayer[self.previewLayer][1]).attributes())
             previewLayerFeature = self.calcTask.getLayersDup()[0].getFeature(self.similarLayer[self.previewLayer][0])
             previewLayerFeature2 = self.calcTask.getLayersDup()[1].getFeature(self.similarLayer[self.previewLayer][1])
 
@@ -361,10 +355,6 @@ class SimilarityPlugin:
 
             self.layerCanvas.dataProvider().addFeature(previewLayerFeature)
             
-            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature added count : \n "+str(
-            #        self.layerCanvas.featureCount()
-            #     ))
-            
             # translating preview 
             if self.calcTask.getTranslate():
                 tGeom = self.calcTask.translateCenterGeom(
@@ -376,18 +366,11 @@ class SimilarityPlugin:
                 self.layer2Canvas.dataProvider().addFeature(nFeat)
             else:
                 self.layer2Canvas.dataProvider().addFeature(previewLayerFeature2)
-            
-            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n feature2 added count : \n "+str(
-            #         self.layer2Canvas.featureCount()
-            #     ))
 
             # set canvas to preview feature layer
             self.dlg.widgetCanvas.setExtent(previewLayerFeature.geometry().boundingBox(), True)
             
             self.dlg.widgetCanvas.setDestinationCrs(self.layerCanvas.sourceCrs())
-            
-            # self.canvas.setDestinationCrs(self.layerCanvas.sourceCrs())
-            # self.canvas.setExtent(self.layerCanvas.extent())
 
             symbol = self.layerCanvas.renderer().symbol()
             symbol.setColor(QColor(0,147,221,127))
@@ -449,15 +432,6 @@ class SimilarityPlugin:
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
 
-    def setLayers(self, layers:list):
-        """Set the layers
-        
-        :param layers list: List of layers
-        
-        """
-        self.layer = layers[0]
-        self.layer2 = layers[1]
-
     def finishedCalcThread(self, itemVal:list):
         """signal when calcTask calculation is finished
 
@@ -488,8 +462,6 @@ class SimilarityPlugin:
         self.dlg.eventLabel.setText("Event: Stopped")
         self.calcTask.kill()
         if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
-            self.layer = self.calcTask.getLayersDup()[0]
-            self.layer2 = self.calcTask.getLayersDup()[1]
             cText = "Number of Result: "+str(len(self.similarLayer))
             if len(self.similarLayer) > 0 :
                 # self.addScoreItem()
@@ -662,266 +634,3 @@ class SimilarityPlugin:
             self.dlg.labelScore.setText(scoreLabel)
             # Do something useful here - delete the line containing pass and
             # substitute with your code.
-            
-
-    # manipulating geom
-    # def translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry):
-    #     """
-    #         :param: g QgsGeometry
-    #             The geometry will be translated
-    #         :param: target QgsGeometry
-    #             Destination
-    #     """
-    #     # duplicate geometry due to data integrity
-    #     g_new = QgsGeometry(g)
-    #     target_new = QgsGeometry(target)
-    #     c = target_new.centroid().asQPointF()
-    #     c2 = g_new.centroid().asQPointF()
-    #     transX = c.x() - c2.x()
-    #     transY = c.y() - c2.y()
-    #     g.translate(transX, transY)
-    #     return g
-
-    # calculating score between two geometry
-    # def calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
-    #     """
-    #         :param: feature QgsGeometry
-    #             First geometry will be checked
-    #         :param: feature2 QgsGeometry
-    #             Second geometry will be checked
-    #     """
-    #     inter = g.intersection(g2)
-    #     if(inter.isEmpty()):
-    #         return 0
-    #     else:
-    #         score = (inter.area()/g.area())*(inter.area()/g2.area())
-    #         return round(score, 4)
- 
-    # calculating the score between two feature and store it to list : self.similarityList
-    # def calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
-    #     """
-    #         :param: feature QgsFeature
-    #             First feature will be checked
-    #         :param: feature2 QgsFeature
-    #             Second feature will be checked
-    #     """
-    #     # make treshold to decimal
-    #     treshold = self.dlg.lineEditTreshold.value()/100
-
-    #     if self.dlg.methodComboBox.currentIndex() == 1:
-    #         score = self.calcMapCurvesGeom(
-    #                     feature.geometry(),
-    #                     self.translateCenterGeom(feature2.geometry(),feature.geometry()) 
-    #                 )
-    #     else:
-    #         score = self.calcMapCurvesGeom(feature.geometry(), feature2.geometry())
-
-    #     # print("score : "+str(score)+" treshold : "+str(self.dlg.lineEditTreshold.value()/100))
-
-    #     if score >= treshold and treshold > 0:
-    #         self.similarLayer.append([feature.id(), feature2.id(), score])
-
-    # wilkerstat mechanism
-    # def calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
-    #     """
-    #         :param: layer QgsVectorLayer
-    #             First layer will be checked
-    #         :param: layer2 QgsVectorLayer
-    #             Second layer will be checked
-    #     """
-    #     print("WK method")
-    #     # start = timer()
-
-    #     attrName = layer.dataProvider().fields().names()
-    #     attrName2 = layer2.dataProvider().fields().names()
-        
-    #     # pkCheck = self.wilkerstatPKExist(layer, layer2)
-
-    #     for i in layer.getFeatures():
-    #         # Querying for matching attribute 
-            
-    #         que = QgsQueryBuilder(layer2)
-            
-    #         queText = ""
-    #         try:
-    #             if("PROVNO" in attrName2):
-    #                 queText += '"PROVNO"' + " LIKE '"
-    #                 if("PROVNO" in attrName):
-    #                     queText += i.attribute("PROVNO")
-    #                 else:
-    #                     queText += i.attribute("provno")
-    #             else:
-    #                 queText += '"provno"' + " LIKE '"
-    #                 if("PROVNO" in attrName):
-    #                     queText += i.attribute("PROVNO")
-    #                 else:
-    #                     queText += i.attribute("provno")
-                
-    #             if ("KABKOTNO" in attrName2):
-    #                 queText += "'"+' AND "KABKOTNO" ' + " LIKE '"
-    #                 if ("KABKOTNO" in attrName):
-    #                     queText += i.attribute("KABKOTNO")
-    #                 else:
-    #                     queText += i.attribute("kabkotno")
-    #             else:
-    #                 queText += "'"+' AND "kabkotno" ' + " LIKE '"
-    #                 if ("KABKOTNO" in attrName):
-    #                     queText += i.attribute("KABKOTNO")
-    #                 else:
-    #                     queText += i.attribute("kabkotno")
-                
-    #             if ("KECNO" in attrName2):
-    #                 queText += "'"+' AND "KECNO" ' + "LIKE '"
-    #                 if ("KECNO" in attrName):
-    #                     queText += i.attribute("KECNO")
-    #                 else:
-    #                     queText += i.attribute("kecno")
-    #             else:
-    #                 queText += "'"+' AND "kecno" ' + "LIKE '"
-    #                 if ("KECNO" in attrName):
-    #                     queText += i.attribute("KECNO")
-    #                 else:
-    #                     queText += i.attribute("kecno")
-                
-    #             if ('DESANO' in attrName2):
-    #                 queText += "'"+' AND "DESANO" ' + "LIKE '"
-    #                 if('DESANO' in attrName):
-    #                     queText += i.attribute("DESANO")+"' "
-    #                 else:
-    #                     queText += i.attribute("desano")+"' "
-    #             else:
-    #                 queText += "'"+' AND "desano" ' + "LIKE '"
-    #                 if('DESANO' in attrName):
-    #                     queText += i.attribute("DESANO")+"' "
-    #                 else:
-    #                     queText += i.attribute("desano")
-                
-    #             queText += "' "
-                
-    #             que.clear()
-    #             que.setSql(queText)
-    #             que.accept()
-
-    #             if layer2.featureCount() > 0:
-    #                 if self.dlg.mergeCenterCheck.isChecked():
-    #                     for j in layer2.getFeatures():
-    #                         score = self.calcMapCurvesGeom(
-    #                             i.geometry(),
-    #                             self.translateCenterGeom(i.geometry(), j.geometry())
-    #                         )
-    #                         self.similarLayer.append([i.id(),j.id(), score])
-    #                 else:
-    #                     for j in layer2.getFeatures(): 
-    #                         score = self.calcMapCurvesGeom(
-    #                             i.geometry(), j.geometry()
-    #                         )
-    #                         if(score > -1):
-    #                             self.similarLayer.append([i.id(),j.id(), score])
-
-    #             que.clear()
-    #             que.accept()
-    #         except KeyError as identifier:
-    #             # show error message
-    #             warnDlg = self.simpleWarnDialogInit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required") 
-
-    # squential mechanism
-    # def calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
-    #     """
-    #         :param: layer QgsVectorLayer
-    #             First layer will be checked
-    #         :param: layer2 QgsVectorLayer
-    #             Second layer will be checked
-    #     """
-    #     # print("layer 1 count : "+str(layer.featureCount()))
-    #     # print("layer 2 count : "+str(layer2.featureCount()))
-    #     print("Squential Method")
-    #     for i in layer.getFeatures():
-    #         for j in layer2.getFeatures(i.geometry().boundingBox()):
-    #             self.calcMapCurves(i, j)
-
-    # # knn mechanism            
-    # def calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
-    #     """
-    #         :param: layer QgsVectorLayer
-    #             First layer will be checked
-    #         :param: layer2 QgsVectorLayer
-    #             Second layer will be checked
-    #     """
-
-    #     for i in layer.getFeatures() :
-    #         if(i.hasGeometry()):
-    #             # making bounding box
-    #             centroid = i.geometry().centroid().asQPointF()
-    #             bbFilter = QgsRectangle(
-    #                 centroid.x()-self.dlg.nnRadiusEdit.value(),
-    #                 centroid.y()-self.dlg.nnRadiusEdit.value(),
-    #                 centroid.x()+self.dlg.nnRadiusEdit.value(),
-    #                 centroid.y()+self.dlg.nnRadiusEdit.value()
-    #             )
-    #             # iterating in boundingbox only
-    #             for j in layer2.getFeatures(bbFilter):
-    #                 self.calcMapCurves(i, j)
-
-    # cloning layer (better performance on WK)
-    # def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
-    #     """
-    #         :param: currentLayer
-    #             The layer will be duplicated
-    #         :param: suffix str
-    #             Suffix name
-    #         :param: scoreName
-    #             Attribute name of score in attribute table
-    #     """
-    #     layername = str(currentLayer.name())+"_"+str(suffix)
-    #     layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
-    #                     layername,
-    #                     'memory')
-    #     layer.setCrs(
-    #         currentLayer.sourceCrs()
-    #     )
-    #     layer.dataProvider().addAttributes(
-    #         currentLayer.dataProvider().fields().toList()
-    #     )
-    #     # adding score attributes info
-    #     layer.dataProvider().addAttributes(
-    #         [
-    #             QgsField(scoreName, QVariant.Double),
-    #             QgsField('id', QVariant.Int),
-    #             QgsField('match', QVariant.Int)
-    #         ]
-    #     )
-    #     # update the fields
-    #     layer.updateFields()
-    #     layer.dataProvider().addFeatures(
-    #         [f for f in currentLayer.getFeatures()]
-    #     )
-
-    #     return layer
-
-     # def addScoreItem(self):
-    #     """save score item into the clone layer"""
-    #     self.layer.commitChanges()
-    #     self.layer2.commitChanges()
-
-    #     scoreFieldIndex = self.layer.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
-    #     scoreFieldIndex2 = self.layer2.dataProvider().fieldNameIndex(self.dlg.attrOutLineEdit.text())
-
-    #     idIndex = self.layer.dataProvider().fieldNameIndex('id')
-    #     idIndex2 = self.layer2.dataProvider().fieldNameIndex('id')
-
-    #     matchIndex = self.layer.dataProvider().fieldNameIndex('match')
-    #     matchIndex2 = self.layer2.dataProvider().fieldNameIndex('match')
-
-    #     self.layer.startEditing()
-    #     self.layer2.startEditing()
-
-    #     for sim in self.similarLayer:
-    #         self.layer.changeAttributeValue(sim[0], scoreFieldIndex, sim[2])
-    #         self.layer.changeAttributeValue(sim[0], idIndex, sim[0])
-    #         self.layer.changeAttributeValue(sim[0], matchIndex, sim[1])
-    #         self.layer2.changeAttributeValue(sim[1], scoreFieldIndex2, sim[2])
-    #         self.layer2.changeAttributeValue(sim[1], idIndex2, sim[1])
-    #         self.layer2.changeAttributeValue(sim[1], matchIndex2, sim[0])
-
-    #     self.layer.commitChanges()
-    #     self.layer2.commitChanges()  

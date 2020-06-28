@@ -75,7 +75,6 @@ class CalculationModule(QObject):
     def __init__(self):
         super().__init__()
 
-    # Set option for calculating
     def setTreshold(self, treshold:float):
         """Set the treshold attribute.
 
@@ -257,8 +256,6 @@ class CalculationModule(QObject):
             # print("not valid geom2")
             g2 = QgsGeometry(g2.makeValid())
 
-        # print(g.makeValid())
-        # print(g2.makeValid())
         inter = g.intersection(g2)
         # print("intersection created")
         if(inter.isEmpty()):
