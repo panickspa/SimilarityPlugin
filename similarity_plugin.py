@@ -336,7 +336,8 @@ class SimilarityPlugin:
             scoreLabel = "Score : " + str(round(self.similarLayer[self.previewLayer][2],3))
             
             # set cumulative score on preview
-            scoreLabel += " - Cumulative score : "+ str(self.calcTask.getCumulative(self.similarLayer[self.previewLayer]))
+            if(not self.calcTask.getTranslate()):
+                scoreLabel += " - Cumulative score : "+ str(self.calcTask.getCumulative(self.similarLayer[self.previewLayer]))
 
             # show distance if the layer merge centered (NN and WK only)
             if(self.dlg.methodComboBox.currentIndex() == 1 or self.dlg.methodComboBox.currentIndex() == 2 ) :
@@ -389,16 +390,16 @@ class SimilarityPlugin:
     def nextPreview(self):
         """Next preview signal for next button in preview section"""
         # f2 = open("engine/f2.txt", "w")
-        if(self.previewLayer+1 < len(self.similarLayer)
+        if(int(self.previewLayer+1) < len(self.similarLayer)
             ):
-            self.previewLayer = self.previewLayer+1
+            self.previewLayer = int(self.previewLayer)+1
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
 
     def previousPreview(self):
         """Previous preview signal"""
-        if(self.previewLayer-1 > -1):
-            self.previewLayer = self.previewLayer-1
+        if(int(self.previewLayer)-1 > -1):
+            self.previewLayer = int(self.previewLayer)-1
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
 
@@ -424,7 +425,9 @@ class SimilarityPlugin:
     def updateSimList(self, simList:list):
         """Updating similiarity result signal"""
         self.similarLayer.append(simList)
-        cText = "Number of Result: "+str(len(self.similarLayer))+" Mean Score : "+str(self.calcTask.getMeanCumulative())
+        cText = "Number of Result: "+str(len(self.similarLayer))
+        if not self.calcTask.getTranslate():
+            cText += " Mean Score : "+str(self.calcTask.getMeanCumulative())
         self.dlg.counterLabel.setText(cText)
 
     # thread signal
@@ -446,7 +449,9 @@ class SimilarityPlugin:
         # self.setLayers(self.calcTask.getLayersDup())
         self.calcThread.exit()
         self.calcTask.kill()
-        cText = "Number of Result: "+str(len(self.similarLayer))+" Mean Score : "+str(self.calcTask.getMeanCumulative())
+        cText = "Number of Result: "+str(len(self.similarLayer))
+        if not self.calcTask.getTranslate():
+            cText += " Mean Score : "+str(self.calcTask.getMeanCumulative())
         if len(self.similarLayer) > 0 :
             # self.addScoreItem()
             self.previewLayer = 0
