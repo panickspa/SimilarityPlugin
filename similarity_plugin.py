@@ -376,7 +376,7 @@ class SimilarityPlugin:
     def nextPreview(self):
         """Next preview signal for next button in preview section"""
         # f2 = open("engine/f2.txt", "w")
-        if(int(self.previewLayer+1) < len(self.similarLayer)
+        if(int(self.previewLayer)+1 < len(self.similarLayer)
             ):
             self.previewLayer = int(self.previewLayer)+1
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
