@@ -564,7 +564,7 @@ class SimilarityPlugin:
         # set help documentation
         self.dlg.helpTextBrowser.setSource(
             QUrl.fromLocalFile(
-                os.path.join(os.path.dirname(__file__), "help", "_build","index.html")
+                os.path.join(os.path.dirname(__file__), "help", "_build","html","index.html")
             )
         )
         self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)

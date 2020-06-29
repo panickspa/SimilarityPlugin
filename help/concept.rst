@@ -2,11 +2,11 @@
 Concept Algorithm
 ==================
 
-This plugin has four concept there are MapCurve, Squential, Nearest Neighbour, and Wilkersat. MapCurve method is used for similarity calculation. The other method is used for searching the matching feature on layer. User determine the treshold of similarity to make sure the map is similar in some confidence interval.
+This plugin has four concept there are Mapcurves, Squential, Nearest Neighbour, and Wilkersat. Mapcurves method is used for similarity calculation. The other method is used for searching the matching feature on layer. User determine the treshold of similarity to make sure the map is similar in some confidence interval.
 
-MapCurve (Hargrove et al. 2006)
+Mapcurves (Hargrove et al. 2006)
 -------------------------------
-MapCurves is algorithm for checking similarity between two maps. MapCurve Algorithm is developed by Hargrove et al. (2006). Mapcurves can calculate the similarity proportion. Mapcurve can be applied in vector maps. 
+Mapcurvess is algorithm for checking similarity between two maps. Mapcurves Algorithm is developed by Hargrove et al. (2006). Mapcurvess can calculate the similarity proportion. Mapcurves can be applied in vector maps. 
 
 .. image:: ./gof.png
     :width: 233
