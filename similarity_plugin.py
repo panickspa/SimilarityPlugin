@@ -31,25 +31,12 @@ from qgis.PyQt.QtWidgets import QAction, QTextEdit
 # importing qgis environment
 from qgis.core import (
     QgsProject, 
-    QgsVectorLayer, 
-    QgsMeshLayer, 
-    QgsPluginLayer, 
-    QgsRasterLayer, 
+    QgsVectorLayer,
     QgsGeometry, 
-    QgsFeature, 
-    QgsField, 
-    QgsRectangle, 
-    QgsProcessingContext,
-    QgsTaskManager,
-    QgsTask,
-    QgsProcessingAlgRunnerTask,
-    Qgis,
-    QgsProcessingFeedback,
-    QgsApplication,
-    QgsMessageLog
+    QgsFeature
 )
 
-from qgis.gui import QgsMapCanvas, QgsQueryBuilder, QgsMapToolPan
+from qgis.gui import QgsMapCanvas, QgsMapToolPan
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -58,9 +45,8 @@ from .resources import *
 from .similarity_plugin_dialog import SimilarityPluginDialog
 # Import additional dialog
 from .warn_plugin_dialog import WarnDialog
-from .CaculationModule import *
+from .CaculationModule import CalculationModule
 from .simple_warning_dialog import SimpleWarnDialog
-from .CaculationModule import *
 
 import sys, os
 from timeit import default_timer as timer
@@ -426,8 +412,6 @@ class SimilarityPlugin:
         """Updating similiarity result signal"""
         self.similarLayer.append(simList)
         cText = "Number of Result: "+str(len(self.similarLayer))
-        if not self.calcTask.getTranslate():
-            cText += " Mean Score : "+str(self.calcTask.getMeanCumulative())
         self.dlg.counterLabel.setText(cText)
 
     # thread signal
@@ -450,8 +434,6 @@ class SimilarityPlugin:
         self.calcThread.exit()
         self.calcTask.kill()
         cText = "Number of Result: "+str(len(self.similarLayer))
-        if not self.calcTask.getTranslate():
-            cText += " Mean Score : "+str(self.calcTask.getMeanCumulative())
         if len(self.similarLayer) > 0 :
             # self.addScoreItem()
             self.previewLayer = 0

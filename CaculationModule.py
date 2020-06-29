@@ -1,18 +1,11 @@
-from qgis.PyQt.QtCore import *
-from qgis.PyQt.QtGui import QIcon, QColor
-from qgis.PyQt.QtWidgets import QAction
+from qgis.PyQt.QtCore import QObject, pyqtSignal, QVariant
 
 from qgis.core import (
-    QgsProject, 
     QgsVectorLayer, 
     QgsGeometry, 
-    QgsFeature, 
-    QgsField, 
+    QgsFeature,
     QgsRectangle,
-    QgsTaskManager,
-    QgsTask,
-    QgsMessageLog,
-    Qgis
+    QgsField
 )
 
 from qgis.gui import QgsQueryBuilder
@@ -143,13 +136,6 @@ class CalculationModule(QObject):
         for i in self.layerResult2.getFeatures('"id" = '+str(similar[1])):
             scoreMatch = float(scoreMatch)+float(i.attribute(self.scoreName))
         return [round(score,3), round(scoreMatch, 3)]
-
-    def getMeanCumulative(self):
-        """Get cumulative score"""
-        if self.layer2Dup.featureCount() > 0:
-            return self.cumulative/self.layerDup.featureCount()
-        else:
-            return 0
 
     def getSimilarLayer(self):
         """Get the similar layer"""
