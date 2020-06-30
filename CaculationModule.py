@@ -597,7 +597,7 @@ class CalculationModule(QObject):
         # print("executed function sq")
         progress = 0
         # print("progress initialized")
-        for i in layer.getFeatures():
+        for i in layer.getFeatures(): #QgsFeature
             # print(i)
             # print(i.id())
             # print("Iteration i")
@@ -606,7 +606,7 @@ class CalculationModule(QObject):
                 # print("killed")
                 # print("task killed")
                 break
-            for j in layer2.getFeatures(i.geometry().boundingBox()):
+            for j in layer2.getFeatures(i.geometry().boundingBox()): # QgsVectorLayer.getFeatures()
                 # print(j)
                 # print(j.id())
                 # print("Iteration j")
