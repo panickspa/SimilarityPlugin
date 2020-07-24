@@ -24,7 +24,7 @@
 
 # importing PyQt environment
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QThread, QTranslator, QUrl
-from qgis.PyQt.QtGui import QIcon, QColor
+from qgis.PyQt.QtGui import QIcon, QColor, QStandardItemModel
 from qgis.PyQt.QtWidgets import QAction, QTextEdit
 
 
@@ -36,7 +36,10 @@ from qgis.core import (
     QgsFeature
 )
 
-from qgis.gui import QgsMapCanvas, QgsMapToolPan
+from qgis.gui import (
+    # QgsMapCanvas, 
+    QgsMapToolPan
+)
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -47,9 +50,10 @@ from .similarity_plugin_dialog import SimilarityPluginDialog
 from .warn_plugin_dialog import WarnDialog
 from .CaculationModule import CalculationModule
 from .simple_warning_dialog import SimpleWarnDialog
+# from .wilkerstat_pk_selector import PkSelector
 
-import sys, os
-from timeit import default_timer as timer
+import os
+# from timeit import default_timer as timer
 
 class SimilarityPlugin:
     """
@@ -251,18 +255,30 @@ class SimilarityPlugin:
     def methodChange(self):
         """Signal when method changed"""
         if self.dlg.methodComboBox.currentIndex() == 2:
-            self.dlg.mergeCenterCheck.setChecked(False)
+            # self.dlg.mergeCenterCheck.setChecked(False)
+            # self.dlg.setPKBtn.setVisible(True)
             self.dlg.mergeCenterCheck.setEnabled(True)
             self.dlg.lineEditTreshold.setEnabled(False)
             self.dlg.nnRadiusEdit.setEnabled(False)
+            # self.pkSelector.layerListWidget.clear()
+            # self.pkSelector.layerListWidget.addItems(
+            #     self.dlg.layerSel1.currentLayer().fields().names()
+            # )
+            # self.pkSelector.layer2ListWidget.clear()
+            # self.pkSelector.layer2ListWidget.addItems(
+            #     self.dlg.layerSel2.currentLayer().fields().names()
+            # )
+            # self.pkSelector.open()
         elif self.dlg.methodComboBox.currentIndex() == 0:
             self.dlg.mergeCenterCheck.setChecked(False)
             self.dlg.mergeCenterCheck.setEnabled(False)
+            # self.dlg.setPKBtn.setVisible(False)
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.nnRadiusEdit.setEnabled(False)
         elif self.dlg.methodComboBox.currentIndex() == 1:
             self.dlg.mergeCenterCheck.setChecked(True)
             self.dlg.mergeCenterCheck.setEnabled(False)
+            # self.dlg.setPKBtn.setVisible(False)
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.nnRadiusEdit.setEnabled(True)
 
@@ -376,7 +392,7 @@ class SimilarityPlugin:
     def nextPreview(self):
         """Next preview signal for next button in preview section"""
         # f2 = open("engine/f2.txt", "w")
-        if(int(self.previewLayer)+1 < len(self.similarLayer)
+        if(self.previewLayer < len(self.similarLayer)-1
             ):
             self.previewLayer = int(self.previewLayer)+1
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
@@ -384,7 +400,7 @@ class SimilarityPlugin:
 
     def previousPreview(self):
         """Previous preview signal"""
-        if(int(self.previewLayer)-1 > -1):
+        if(self.previewLayer > 0):
             self.previewLayer = int(self.previewLayer)-1
         # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
         self.refreshPreview()
@@ -490,6 +506,7 @@ class SimilarityPlugin:
             self.dlg.previewAttr_2.setText("")
             self.dlg.widgetCanvas.refresh()
             scoreLabel = "Score : 0"
+            self.dlg.counterLabel.setText("Number of Result: 0")
             self.dlg.labelScore.setText(scoreLabel)
             self.similarLayer = []
             
@@ -523,9 +540,7 @@ class SimilarityPlugin:
     # warning dialog for error or prevention
     def warnDialogInit(self, msg:str):
         """This dialog have Yes and No button.
-        
         :param msg: str Display the warning message 
-        
         """
 
         dialog = WarnDialog()
@@ -544,7 +559,22 @@ class SimilarityPlugin:
         # Set the message
         self.simpleDialog.msgLabel.setText(msg)
         self.simpleDialog.show()
+
+    # def pkSelectorAccepted(self):
+    #     if( len(self.pkSelector.layerListWidget.selectedItems()) > 0 and len(self.pkSelector.layer2ListWidget.selectedItems()) > 0 and
+    #             (len(self.pkSelector.layerListWidget.selectedItems()) == len(self.pkSelector.layer2ListWidget.selectedItems()))
+    #         ):
+    #         names = [j.text() for j in self.pkSelector.layerListWidget.selectedItems()]
+    #         names.sort()
+    #         names2 = [j.text() for j in self.pkSelector.layer2ListWidget.selectedItems()]
+    #         names2.sort() 
+    #         print(names)
+    #         print(names2)
+    #         self.pkSelector.accept()
+    #     else:
+    #         self.simpleWarnDialogInit("Primary Key must be same in length as key or not null")
         
+
     def run(self):
         """Run method that performs all the real work"""
         
@@ -560,52 +590,51 @@ class SimilarityPlugin:
             self.currentCheckLayer = [0,0]
             self.first_start = False
             self.dlg = SimilarityPluginDialog()
+            # self.dlg.setPKBtn.setVisible(False)
             self.simpleDialog = SimpleWarnDialog()
-        # set help documentation
-        self.dlg.helpTextBrowser.setSource(
-            QUrl.fromLocalFile(
-                os.path.join(os.path.dirname(__file__), "help", "_build","html","index.html")
+            # self.pkSelector = PkSelector()
+            # set help documentation
+            self.dlg.helpTextBrowser.setSource(
+                QUrl.fromLocalFile(
+                    os.path.join(os.path.dirname(__file__), "help", "_build","html","index.html")
+                )
             )
-        )
-        self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
-        self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.backward)
-        # filtering selection layer (empty layer not allowed)
-        self.dlg.layerSel1.setAllowEmptyLayer(False)
-        self.dlg.layerSel1.setAllowEmptyLayer(False)
+            self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
+            self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.backward)
+            # filtering selection layer (empty layer not allowed)
+            self.dlg.layerSel1.setAllowEmptyLayer(False)
+            self.dlg.layerSel1.setAllowEmptyLayer(False)
 
-        # method combobox initialiazation
-        self.dlg.methodComboBox.clear()
-        self.dlg.methodComboBox.addItems(
-            [
-                'Squential',
-                'Nearest Neightbour',
-                'Wilkerstat BPS'
-            ]
-        )
+            # self.pkSelector.okPushButton.clicked.connect(self.pkSelectorAccepted)
+            # self.dlg.setPKBtn.clicked.connect(self.pkSelector.open)
+            # method combobox initialiazation
+            self.dlg.methodComboBox.clear()
+            self.dlg.methodComboBox.addItems(
+                [
+                    'Squential',
+                    'Nearest Neightbour',
+                    'Wilkerstat BPS'
+                ]
+            )
 
-        # registering signal
+            # registering signal
 
-        self.dlg.methodComboBox.currentIndexChanged.connect(self.methodChange)
-        
-        self.dlg.nextBtn.clicked.connect(self.nextPreview)
-        self.dlg.previousBtn.clicked.connect(self.previousPreview)
+            self.dlg.methodComboBox.currentIndexChanged.connect(self.methodChange)
+            self.dlg.nextBtn.clicked.connect(self.nextPreview)
+            self.dlg.previousBtn.clicked.connect(self.previousPreview)
+            self.dlg.calcBtn.clicked.connect(self.calculateScore)
+            self.dlg.saveBtn.clicked.connect(self.registerToProject)
+            self.dlg.removeBtn.clicked.connect(self.rmWarn)
+            self.dlg.stopBtn.clicked.connect(self.stopCalcThread)
 
-        self.dlg.calcBtn.clicked.connect(self.calculateScore)
-
-        self.dlg.saveBtn.clicked.connect(self.registerToProject)
-
-        self.dlg.removeBtn.clicked.connect(self.rmWarn)
-
-        self.dlg.stopBtn.clicked.connect(self.stopCalcThread)
-
-        # intialize pan tool
-        panTool = QgsMapToolPan(self.dlg.widgetCanvas)
-        # set signal
-        panTool.setAction(self.actionPan)
-        # set map tool
-        self.dlg.widgetCanvas.setMapTool(panTool)
-        # set pan tool to be activate
-        panTool.activate()
+            # intialize pan tool
+            panTool = QgsMapToolPan(self.dlg.widgetCanvas)
+            # set signal
+            panTool.setAction(self.actionPan)
+            # set map tool
+            self.dlg.widgetCanvas.setMapTool(panTool)
+            # set pan tool to be activate
+            panTool.activate()
 
         # show the dialog
         self.dlg.show()

@@ -48,6 +48,8 @@ class CalculationModule(QObject):
         Translate status
     treshold : float
         Treshold for calculation
+    cumulative : float
+        Cumulative score each feature
 
     """
     killed = False
@@ -57,6 +59,8 @@ class CalculationModule(QObject):
     layer2 : QgsVectorLayer
     layer2Dup : QgsVectorLayer
     layerResult2 : QgsVectorLayer
+    primaryLayer: list
+    primaryLayer2: list
     method : int
     radius : float
     similarLayer = []
@@ -68,6 +72,10 @@ class CalculationModule(QObject):
     
     def __init__(self):
         super().__init__()
+
+    def setPrimaryKey(self, pkList:list):
+        self.primaryLayer = pkList[0]
+        self.primaryLayer2 = pkList[1]
 
     def setTreshold(self, treshold:float):
         """Set the treshold attribute.
@@ -126,7 +134,7 @@ class CalculationModule(QObject):
 
         """
         self.scoreName = scoreName
-
+    
     def getCumulative(self, similar:list):
         """Get Cumulative Score"""
         score = float(0)
@@ -301,7 +309,7 @@ class CalculationModule(QObject):
             # print("saved ...")
             self.progressSim.emit([feature.id(), feature2.id(), score])
             self.cumulative = float(self.cumulative)+score
-            print("calculated : "+str(self.cumulative)+" - "+str(score))
+            # print("calculated : "+str(self.cumulative)+" - "+str(score))
             # print("result emited")
 
     def __calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
@@ -356,41 +364,50 @@ class CalculationModule(QObject):
                         queText += '"PROVNO"' + " LIKE '"
                         # print(("PROVNO" in attrName))
                         queText += i.attribute("PROVNO")
+                        queText += "'"
                     elif "kdprov" in attrName :
                         queText += '"PROVNO"' + " LIKE '"
                         queText += i.attribute("kdprov")
                         # print("kdprov" in attrName)
+                        queText += "'"
                     else:
                         queText += '"PROVNO"' + " LIKE '"
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
+                        queText += "'"
                 elif("provno" in attrName2):
                     # print("provno" in attrName)
                     if("PROVNO" in attrName):
                         queText += '"provno"' + " LIKE '"
                         # print(("PROVNO" in attrName))
                         queText += i.attribute("PROVNO")
+                        queText += "'"
                     elif "kdprov" in attrName :
                         queText += '"provno"' + " LIKE '"
                         queText += i.attribute("kdprov")
                         # print("kdprov" in attrName)
+                        queText += "'"
                     else:
                         queText += '"provno"' + " LIKE '"
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
+                        queText += "'"
                 elif "kdprov" in attrName2:
                     if("PROVNO" in attrName):
                         # print(("PROVNO" in attrName))
                         queText += '"kdprov"' + " LIKE '"
                         queText += i.attribute("PROVNO")
+                        queText += "'"
                     elif "kdprov" in attrName :
                         queText += '"kdprov"' + " LIKE '"
                         queText += i.attribute("kdprov")
                         # print("kdprov" in attrName)
+                        queText += "'"
                     else:
                         queText += '"kdprov"' + " LIKE '"
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
+                        queText += "'"
                 else:
                     # show error message
                     self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, and/or DESANO is required")
@@ -401,162 +418,187 @@ class CalculationModule(QObject):
                 if ("KABKOTNO" in attrName2):
                     # print("kabkotno checked")
                     if ("KABKOTNO" in attrName):
-                        queText += "'"+' AND "KABKOTNO" ' + " LIKE '"
+                        queText += ' AND "KABKOTNO" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "KABKOTNO" ' + " LIKE '")
                         queText += i.attribute("KABKOTNO")
                         # print("query str build add KABKOTNO")
+                        queText += "'"
                     elif "kdkab" in attrName:
-                        queText += "'"+' AND "KABKOTNO" ' + " LIKE '"
+                        queText += ' AND "KABKOTNO" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "KABKOTNO" ' + " LIKE '")
                         queText += i.attribute("kdkab")
                         # print("query str build add kdkab")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "KABKOTNO" ' + " LIKE '"
+                        queText += ' AND "KABKOTNO" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "KABKOTNO" ' + " LIKE '")
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
+                        queText += "'"
                 elif("kabkotno" in attrName2):
                     # print("kabkotno checked")
                     if ("KABKOTNO" in attrName):
-                        queText += "'"+' AND "kabkotno" ' + " LIKE '"
+                        queText += ' AND "kabkotno" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "kabkotno" ' + " LIKE '")
                         queText += i.attribute("KABKOTNO")
                         # print("query str build add KABKOTNO")
                     elif "kdkab" in attrName:
-                        queText += "'"+' AND "kabkotno" ' + " LIKE '"
+                        queText += ' AND "kabkotno" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "kabkotno" ' + " LIKE '")
                         queText += i.attribute("kdkab")
                         # print("query str build add kdkab")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "kabkotno" ' + " LIKE '"
+                        queText += ' AND "kabkotno" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "kabkotno" ' + " LIKE '")
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
+                        queText += "'"
                 elif "kdkab" in attrName2:
                     if ("KABKOTNO" in attrName):
-                        queText += "'"+' AND "kdkab" ' + " LIKE '"
+                        queText += ' AND "kdkab" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "kdkab" ' + " LIKE '")
                         queText += i.attribute("KABKOTNO")
                         # print("query str build add KABKOTNO")
+                        queText += "'"
                     elif "kdkab" in attrName:
-                        queText += "'"+' AND "kdkab" ' + " LIKE '"
+                        queText += ' AND "kdkab" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "kdkab" ' + " LIKE '")
                         queText += i.attribute("kdkab")
                         # print("query str build add kdkab")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "kdkab" ' + " LIKE '"
+                        queText += ' AND "kdkab" ' + " LIKE '"
                         # print("query str build "+"'"+' AND "kdkab" ' + " LIKE '")
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
+                        queText += "'"
                 
                 if ("KECNO" in attrName2):
                     # print("KECNO cheked")
                     if ("KECNO" in attrName):
-                        queText += "'"+' AND "KECNO" ' + "LIKE '"
+                        queText += ' AND "KECNO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "KECNO" ' + "LIKE '")
                         queText += i.attribute("KECNO")
                         # print("query str build add KECNO")
+                        queText += "'"
                     elif ("kdkec" in attrName):
-                        queText += "'"+' AND "KECNO" ' + "LIKE '"
+                        queText += ' AND "KECNO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "KECNO" ' + "LIKE '")
                         queText += i.attribute("kdkec")
                         # print("query str build add kdkec")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "KECNO" ' + "LIKE '"
+                        queText += ' AND "KECNO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "KECNO" ' + "LIKE '")
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
+                        queText += "'"
                 elif("kecno" in attrName2):
                     # print("kecno cheked")
                     if ("KECNO" in attrName):
-                        queText += "'"+' AND "kecno" ' + "LIKE '"
+                        queText += ' AND "kecno" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                         queText += i.attribute("KECNO")
                         # print("query str build add KECNO")
+                        queText += "'"
                     elif ("kdkec" in attrName):
-                        queText += "'"+' AND "kecno" ' + "LIKE '"
+                        queText += ' AND "kecno" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                         queText += i.attribute("kdkec")
                         # print("query str build add kdkec")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "kecno" ' + "LIKE '"
+                        queText += ' AND "kecno" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
+                        queText += "'"
                 elif "kdkec" in attrName2:
                     if ("KECNO" in attrName):
                         # print("kdkec cheked")
-                        queText += "'"+' AND "kdkec" ' + "LIKE '"
+                        queText += ' AND "kdkec" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                         queText += i.attribute("KECNO")
                         # print("query str build add KECNO")
+                        queText += "'"
                     elif ("kdkec" in attrName):
                         # print("kdkec cheked")
-                        queText += "'"+' AND "kdkec" ' + "LIKE '"
+                        queText += ' AND "kdkec" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                         queText += i.attribute("kdkec")
                         # print("query str build add kdkec")
+                        queText += "'"
                     else:
                         # print("kdkec cheked")
-                        queText += "'"+' AND "kdkec" ' + "LIKE '"
+                        queText += ' AND "kdkec" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "kecno" ' + "LIKE '")
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
+                        queText += "'"
                 
                 if ('DESANO' in attrName2):
                     # print("DESANO cheked")
                     if('DESANO' in attrName):
-                        queText += "'"+' AND "DESANO" ' + "LIKE '"
+                        queText += ' AND "DESANO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "DESANO" ' + "LIKE '")
-                        queText += i.attribute("DESANO")+"' "
+                        queText += i.attribute("DESANO")
                         # print("query add DESANO")
+                        queText += "'"
                     elif 'kddesa' in attrName:
-                        queText += "'"+' AND "DESANO" ' + "LIKE '"
+                        queText += ' AND "DESANO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "DESANO" ' + "LIKE '")
-                        queText += i.attribute("kddesa")+"'"
+                        queText += i.attribute("kddesa")
                         # print("query add kddesa")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "DESANO" ' + "LIKE '"
+                        queText += ' AND "DESANO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "DESANO" ' + "LIKE '")
-                        queText += i.attribute("desano")+"' "
+                        queText += i.attribute("desano")
                         # print("query add desano")
-                elif("kddesa" in attrName2):
+                        queText += "'"
+                elif("desano" in attrName2):
                     # print("kddesa cheked")
                     if('DESANO' in attrName):
-                        queText += "'"+' AND "kddesa" ' + "LIKE '"
+                        queText += ' AND "desano" ' + "LIKE '"
                         # print("query build "+"'"+' AND "desano" ' + "LIKE '")
-                        queText += i.attribute("DESANO")+"' "
+                        queText += i.attribute("DESANO")
                         # print("query add DESANO")
+                        queText += "'"
                     elif 'kddesa' in attrName:
-                        queText += "'"+' AND "kddesa" ' + "LIKE '"
+                        queText += ' AND "desano" ' + "LIKE '"
                         # print("query build "+"'"+' AND "desano" ' + "LIKE '")
-                        queText += i.attribute("kddesa")+"'"
+                        queText += i.attribute("kddesa")
                         # print("query add kddesa")
+                        queText += "'"
                     else:
-                        queText += "'"+' AND "kddesa" ' + "LIKE '"
-                        # print("query build "+"'"+' AND "desano" ' + "LIKE '")
-                        queText += i.attribute("desano")+"' "
-                        # print("query add desano")
-                        # print("id checked")
-                elif("kddesa" in attrName2):
-                    if('DESANO' in attrName):
-                        queText += "'"+' AND "kddesa" ' + "LIKE '"
-                        # print("query build "+"'"+' AND "desano" ' + "LIKE '")
-                        queText += i.attribute("DESANO")+"' "
-                        # print("query add DESANO")
-                    elif 'kddesa' in attrName:
-                        queText += "'"+' AND "kddesa" ' + "LIKE '"
-                        # print("query build "+"'"+' AND "desano" ' + "LIKE '")
-                        queText += i.attribute("kddesa")+"'"
-                        # print("query add kddesa")
-                    else:
-                        queText += "'"+' AND "kddesa" ' + "LIKE '"
+                        queText += ' AND "desano" ' + "LIKE '"
                         # print("query build "+"'"+' AND "desano" ' + "LIKE '")
                         queText += i.attribute("desano")
                         # print("query add desano")
                         # print("id checked")
-                        queText += "' "
-                print(queText)
+                        queText += "'"
+                elif("kddesa" in attrName2):
+                    if('DESANO' in attrName):
+                        queText += ' AND "kddesa" ' + "LIKE '"
+                        # print("query build "+"'"+' AND "desano" ' + "LIKE '")
+                        queText += i.attribute("DESANO")
+                        # print("query add DESANO")
+                        queText += "'"
+                    elif 'kddesa' in attrName:
+                        queText += ' AND "kddesa" ' + "LIKE '"
+                        # print("query build "+"'"+' AND "desano" ' + "LIKE '")
+                        queText += i.attribute("kddesa")
+                        # print("query add kddesa")
+                        queText += "'"
+                    else:
+                        queText += ' AND "kddesa" ' + "LIKE '"
+                        # print("query build "+"'"+' AND "desano" ' + "LIKE '")
+                        queText += i.attribute("desano")
+                        # print("query add desano")
+                        # print("id checked")
+                        queText += "'"
+                # print(queText)
                 # print(len([j for j in layer2.getFeatures(queText)]))
                 for j in layer2.getFeatures(queText):
                     self.__calcMapCurves(i,j)

@@ -298,8 +298,8 @@
       <rect>
        <x>190</x>
        <y>240</y>
-       <width>241</width>
-       <height>17</height>
+       <width>91</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -312,8 +312,8 @@
     <widget class="QLabel" name="percentLabel">
      <property name="geometry">
       <rect>
-       <x>300</x>
-       <y>260</y>
+       <x>320</x>
+       <y>280</y>
        <width>21</width>
        <height>16</height>
       </rect>
@@ -326,7 +326,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>250</y>
+       <y>270</y>
        <width>91</width>
        <height>41</height>
       </rect>
@@ -339,7 +339,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>290</y>
+       <y>310</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -352,7 +352,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>290</y>
+       <y>310</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -365,7 +365,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>260</y>
+       <y>280</y>
        <width>121</width>
        <height>22</height>
       </rect>
@@ -387,7 +387,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>320</y>
+       <y>340</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -400,7 +400,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>320</y>
+       <y>340</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -447,7 +447,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>350</y>
+       <y>370</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -463,7 +463,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>350</y>
+       <y>370</y>
        <width>121</width>
        <height>22</height>
       </rect>

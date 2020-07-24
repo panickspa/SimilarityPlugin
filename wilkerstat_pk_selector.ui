@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>353</width>
+    <height>323</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>353</width>
+    <height>323</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>353</width>
+    <height>323</height>
+   </size>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::PreventContextMenu</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>131</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Attribute Layer 1</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>20</y>
+     <width>131</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Attribute Layer 2</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="layerListWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>71</y>
+     <width>151</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::MultiSelection</enum>
+   </property>
+   <property name="sortingEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="layer2ListWidget">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>71</y>
+     <width>151</width>
+     <height>151</height>
+    </rect>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::MultiSelection</enum>
+   </property>
+   <property name="sortingEnabled">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>270</y>
+     <width>141</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Use default Wilkerstat PK</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="okPushButton">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>290</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QgsFieldComboBox" name="layerFieldCombo">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>40</y>
+     <width>151</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QgsFieldComboBox" name="layer2FieldCombo">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>40</y>
+     <width>151</width>
+     <height>27</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="addBtn">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>230</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delBtn">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>230</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Delete</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
