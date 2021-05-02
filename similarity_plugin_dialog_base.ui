@@ -168,7 +168,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Input</string>
+      <string>Inputs</string>
      </property>
     </widget>
     <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -584,7 +584,7 @@
     <attribute name="title">
      <string>Help</string>
     </attribute>
-    <widget class="QTextBrowser" name="helpTextBrowser">
+    <widget class="QWebView" name="helpTextBrowser">
      <property name="geometry">
       <rect>
        <x>10</x>

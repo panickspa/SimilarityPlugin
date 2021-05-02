@@ -434,6 +434,7 @@ class SimilarityPlugin:
     def errorCalcThread(self, value:str):
         """Signal when an error occured"""
         print("error : ", value)
+        self.dlg.consoleTextEdit.append("error : "+value+"\n\n")
         self.simpleWarnDialogInit(value)
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
@@ -450,8 +451,10 @@ class SimilarityPlugin:
         self.calcThread.exit()
         self.calcTask.kill()
         cText = "Number of Result: "+str(len(self.similarLayer))
+        self.dlg.consoleTextEdit.append(cText+"\n\n")
         if len(self.similarLayer) > 0 :
             # self.addScoreItem()
+            self.dlg.consoleTextEdit.append("The 2 vector layer has been checked\n\n")
             self.previewLayer = 0
             self.dlg.saveBtn.setEnabled(True)
             self.dlg.counterLabel.setText(cText)
@@ -469,6 +472,7 @@ class SimilarityPlugin:
         self.calcTask.kill()
         if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
             cText = "Number of Result: "+str(len(self.similarLayer))
+            self.dlg.consoleTextEdit.append(cText+"\n\n")
             if len(self.similarLayer) > 0 :
                 # self.addScoreItem()
                 self.previewLayer = 0
@@ -594,13 +598,13 @@ class SimilarityPlugin:
             self.simpleDialog = SimpleWarnDialog()
             # self.pkSelector = PkSelector()
             # set help documentation
-            self.dlg.helpTextBrowser.setSource(
-                QUrl.fromLocalFile(
-                    os.path.join(os.path.dirname(__file__), "help", "_build","html","index.html")
+            self.dlg.helpTextBrowser.load(
+                QUrl(
+                    'https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide'
                 )
             )
             self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
-            self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.backward)
+            self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.back)
             # filtering selection layer (empty layer not allowed)
             self.dlg.layerSel1.setAllowEmptyLayer(False)
             self.dlg.layerSel1.setAllowEmptyLayer(False)
