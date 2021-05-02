@@ -1,18 +1,19 @@
-# Similarity Plugin
+# About Plugin
 
-Plugin ini dibuat untuk memeriksa kesamaan peta dengan metode GOF Mapcurves (Hargove et al., 2006) yang berbentuk vektor. Plugin dibuat oleh Pandu Wicaksono dan Takdir. Tidak ada *library* eksternal yang digunakan pada plugin ini kecuali **PyQGIS**. Penghitungan skor kesamaan peta mengimplementasi metode **GOF MapCurve** (Hargrove et. al. (2006) <[doi:10.1007/s10109-006-0025-x](https://doi.org/10.1007/s10109-006-0025-x)> ). Anda dapat mendistribusikan dan memodifikasi plugin ini secara bebas tetapi anda harus mencitasi jurnal Mapcurves dan plugin ini. Untuk informasi lebih lanjut dapat menghubungi Pandu pada email 16.9350@stis.ac.id atau panickspa@gmail.com. Untuk dokumentasi yang lebih lengkap dapat mengunjungi link [Wiki](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/home) di git project ini.
+This plugin is used for checking similarity between two maps with Mapcurves ( Hargrove et al., 2016 ). Plugin created by Pandu Wicaksono and Takdir. There is no external library included in this plugin except **PyQGIS**. Similarity score implementing **GOF Mapcurves** method (Hargrove et. al. (2006) <[doi:10.1007/s10109-006-0025-x](https://doi.org/10.1007/s10109-006-0025-x)> ). You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
 <div align="center">
 <img src="https://latex.codecogs.com/svg.latex?GOF_{Mapcurves}=\sum{\frac{C}{C+A}\times\frac{C}{C+B}}"/>
-![image](https://git.stis.ac.id/pandu1881/similarity-plugin/-/wikis/uploads/79e0483a7fa9a4ce311b13898bb876fa/image.png)
+<img src="https://github.com/panickspa/SimilarityPlugin/wiki/uploads/79e0483a7fa9a4ce311b13898bb876fa/image.png" />
 </div>
 
 ## Fitur plugin
 
-Plugin ini dapat memeriksa peta dengan tipe data vektor. Plugin memiliki 3 metode pemeriksaan yaitu:
-*  Squential : Membandingkan peta satu persatu
-*  Nearest Neighbour : Membandingkan peta dengan menggeser peta ke peta terdekat dengan radius tertentu
-*  Wilkerstat : Membandingkan peta dengan kode wilayah
+This plugin can only cheking similarity of map with vector data type. This plugin has 3 method there is:
+
+*  Squential : Checking the feature one by one. In this method, plugin not showing the feature with score below the threshold
+*  Nearest Neighbour : Checking the feature with translating the nearest map within desired radius.
+*  Wilkerstat : Checking the feature with area code. (see [Sistem Informasi Geografis BPS](https://sig.bps.go.id/))
   
 
 ## Install the plugin into QGIS directly
@@ -110,6 +111,8 @@ This plugin is open source. You can edit and distribute it freely but cite this 
     start "VisualStudioCode for QGIS" /B  "%VISUAL_STUDIO_CODE_PATH%\code.exe" %YOUR_PLUGIN_REPOSITORY% %*
 
 ```
+
+or you can configure with Anaconda. (Install QGIS in Anaconda first)
 
 Here some command for integrating terminal with PyQGIS and OSGeoW in Visual Studio Code
 
