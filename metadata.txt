@@ -12,8 +12,8 @@ email=16.9350@stis.ac.id
 
 about=This plugin use Mapcurves Algorithm (Hargrove et al. 2006) https://doi.org/10.1007/s10109-006-0025-x. This plugin have 3 method, there are Squential, Nearest Neighbour, and Wilkerstat. Wilkerstat Method using primary key on attribute table you can check the structure in https://sig.bps.go.id/. You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
-tracker=https://git.stis.ac.id/pandu1881/similarity-plugin/-/issues
-repository=https://git.stis.ac.id/pandu1881/similarity-plugin/-/tree/master
+tracker=https://github.com/panickspa/SimilarityPlugin/issues
+repository=https://github.com/panickspa/SimilarityPlugin.git
 # End of mandatory metadata
 
 # Recommended items:
@@ -25,7 +25,7 @@ hasProcessingProvider=Yes
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=https://git.stis.ac.id/pandu1881/similarity-plugin
+homepage=https://github.com/panickspa/SimilarityPlugin
 category=Vector
 icon=icon-24.png
 # experimental flag
