@@ -6,7 +6,7 @@
 name=Calculate Similarity Map
 qgisMinimumVersion=3.10
 description=Calculate score of similarity using GOF MapCurve
-version=0.1
+version=0.1.1
 author=Pandu Wicaksono and Takdir
 email=16.9350@stis.ac.id
 
