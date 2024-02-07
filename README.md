@@ -90,7 +90,9 @@ After you input all option, you can click calculation button. After calculation 
 After calculation excecuted you can preview the result in preview section also before save the result into project.
 
 <div align="center">
-![PreviewSection](https://github.com/panickspa/SimilarityPlugin/wiki/uploads/d82c3df65bb9d4937d450407167716b5/PreviewSection.png)
+  <div align="center">
+    <img src="https://github.com/panickspa/SimilarityPlugin/wiki/uploads/d82c3df65bb9d4937d450407167716b5/PreviewSection.png" />
+  </div>
 </div>
 
 ## How to build from source
