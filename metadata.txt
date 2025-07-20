@@ -4,11 +4,11 @@
 
 [general]
 name=Calculate Similarity Map
-qgisMinimumVersion=3.10
+qgisMinimumVersion=3.40
 description=Calculate score of similarity using GOF MapCurve
-version=0.1.1
+version=0.1.2
 author=Pandu Wicaksono and Takdir
-email=16.9350@stis.ac.id
+email=pandu.wicaksono@bps.go.id
 
 about=This plugin use Mapcurves Algorithm (Hargrove et al. 2006) https://doi.org/10.1007/s10109-006-0025-x. This plugin have 3 method, there are Squential, Nearest Neighbour, and Wilkerstat. Wilkerstat Method using primary key on attribute table you can check the structure in https://sig.bps.go.id/. You can distribute or modifying this plugin freely but you must cite MapCurve journals and this plugin. Further information you can contact Pandu at email 16.9350@stis.ac.id atau panickspa@gmail.com.
 
@@ -20,7 +20,7 @@ repository=https://github.com/panickspa/SimilarityPlugin.git
 
 hasProcessingProvider=Yes
 # Uncomment the following line and add your changelog:
-# changelog=
+# changelog=Add Raster Method for calculating similarity raster
 
 # Tags are comma separated with spaces allowed
 tags=python
@@ -40,7 +40,7 @@ deprecated=False
 # plugin_dependencies=
 
 Category of the plugin: Raster, Vector, Database or Web
-# category=Vector
+# category=Vector, Raster
 
 # If the plugin can run on QGIS Server.
 server=False

@@ -9,7 +9,7 @@
         begin                : 2020-03-20
         git sha              : $Format:%H$
         copyright            : (C) 2020 by STIS
-        email                : 16.9350@stis.ac.id
+        email                : pandu.wicaksono@bps.go.id
  ***************************************************************************/
 
 /***************************************************************************
@@ -50,7 +50,7 @@ from .similarity_plugin_dialog import SimilarityPluginDialog
 from .warn_plugin_dialog import WarnDialog
 from .CaculationModule import CalculationModule
 from .simple_warning_dialog import SimpleWarnDialog
-# from .wilkerstat_pk_selector import PkSelector
+from .CalculationRasterModule import CalculationRasterModule
 
 import os
 # from timeit import default_timer as timer
@@ -102,6 +102,7 @@ class SimilarityPlugin:
         """  """
         self.previewLayer = 0
         self.calcTask = CalculationModule()
+        self.calcRasterTask = CalculationRasterModule()
         # Save reference to the QGIS interface
         self.iface = iface
         
@@ -110,6 +111,12 @@ class SimilarityPlugin:
         self.calcTask.moveToThread(self.calcThread)
         self.calcThread.started.connect(self.calcTask.run)
         self.calcThread.setTerminationEnabled(True)
+
+        # Registering worker calculation for raster method
+        self.calcRasterThread = QThread(self.iface)
+        self.calcRasterTask.moveToThread(self.calcRasterThread)
+        self.calcRasterThread.started.connect(self.calcRasterTask.run)
+        self.calcRasterThread.setTerminationEnabled(True)
         
         # multithreading signal calculation      
         self.calcTask.progress.connect(self.updateCalcProgress)
@@ -117,6 +124,14 @@ class SimilarityPlugin:
         self.calcTask.finished.connect(self.finishedCalcThread)
         self.calcTask.error.connect(self.errorCalcThread)
         self.calcTask.eventTask.connect(self.eventCalcThread)
+
+        # multithreading signal calculation for raster method
+        self.calcRasterTask.progress.connect(self.updateCalcProgress)
+        # self.calcRasterTask.progressSim.connect(self.updateSimList)
+        self.calcRasterTask.finished.connect(self.finishedCalcRasterThread)
+        self.calcRasterTask.error.connect(self.errorCalcThread)
+        self.calcRasterTask.eventTask.connect(self.eventCalcThread)
+        self.calcRasterTask.currentProgress.connect(self.eventCurrentProgress)
 
         # pan event
         self.actionPan = QAction("Pan", self.iface)
@@ -281,6 +296,16 @@ class SimilarityPlugin:
             # self.dlg.setPKBtn.setVisible(False)
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.nnRadiusEdit.setEnabled(True)
+        elif self.dlg.methodComboBox.currentIndex() == 3:
+            self.dlg.mergeCenterCheck.setChecked(False)
+            self.dlg.mergeCenterCheck.setEnabled(False)
+            # self.dlg.setPKBtn.setVisible(False)
+            self.dlg.lineEditTreshold.setEnabled(False)
+            self.dlg.nnRadiusEdit.setEnabled(False)
+            self.dlg.previousBtn.setEnabled(False)
+            self.dlg.nextBtn.setEnabled(False)
+            self.dlg.saveBtn.setEnabled(False)
+            self.dlg.removeBtn.setEnabled(False)
 
     def resultPreview(self):
         """Activate preview section
@@ -325,7 +350,7 @@ class SimilarityPlugin:
 
     def refreshPreview(self):
         """refreshing canvas on preview"""
-        if len(self.similarLayer) > 0 :
+        if len(self.similarLayer) > 0 and self.dlg.methodComboBox != 3:
             # set the layer
             self.layerCanvas = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
             self.layer2Canvas = QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
@@ -391,19 +416,21 @@ class SimilarityPlugin:
 
     def nextPreview(self):
         """Next preview signal for next button in preview section"""
-        # f2 = open("engine/f2.txt", "w")
-        if(self.previewLayer < len(self.similarLayer)-1
-            ):
-            self.previewLayer = int(self.previewLayer)+1
-        # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
-        self.refreshPreview()
+        if(self.dlg.methodComboBox.currentIndex() != 3):
+            # f2 = open("engine/f2.txt", "w")
+            if(self.previewLayer < len(self.similarLayer)-1
+                ):
+                self.previewLayer = int(self.previewLayer)+1
+            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
+            self.refreshPreview()
 
     def previousPreview(self):
         """Previous preview signal"""
-        if(self.previewLayer > 0):
-            self.previewLayer = int(self.previewLayer)-1
-        # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
-        self.refreshPreview()
+        if(self.dlg.methodComboBox.currentIndex() != 3):
+            if(self.previewLayer > 0):
+                self.previewLayer = int(self.previewLayer)-1
+            # self.dlg.consoleTextEdit.setText(self.dlg.consoleTextEdit.toPlainText()+"\n\n Current Similar Layer Index : \n  "+str([self.similarLayer[self.previewLayer], self.previewLayer]))
+            self.refreshPreview()
 
     def rmFeatResult(self):
         """Removing similarity info current result"""
@@ -438,6 +465,22 @@ class SimilarityPlugin:
         self.simpleWarnDialogInit(value)
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
+        self.dlg.methodComboBox.setEnabled(True)
+
+    def finishedCalcRasterThread(self, itemVal:list):
+        """signal when calcRasterTask calculation is finished
+
+        :param itemVal list: the returned value emit
+        
+        """
+        self.calcRasterThread.exit()
+        self.calcRasterTask.kill()
+        cText = "Raster Similarity Calculation completed %1.3f" % itemVal[0]
+        self.dlg.labelScore.setText("Score : %1.3f" % itemVal[0])
+        self.dlg.consoleTextEdit.append(cText+"\n\n")
+        self.dlg.methodComboBox.setEnabled(True)
+        self.dlg.calcBtn.setEnabled(True)
+        self.dlg.stopBtn.setEnabled(False)
 
     def finishedCalcThread(self, itemVal:list):
         """signal when calcTask calculation is finished
@@ -464,26 +507,39 @@ class SimilarityPlugin:
             self.dlg.counterLabel.setText(cText)
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
+        self.dlg.methodComboBox.setEnabled(True)
 
+    def eventCurrentProgress(self, itemVal:list):
+        self.dlg.consoleTextEdit.append("%b\n\n" % (itemVal[0]))
+        self.dlg.consoleTextEdit.append("layer 1 %1.2f , %1.2f , %1.2f\n\n" % (itemVal[1][1],itemVal[1][2],itemVal[1][3]))
+        self.dlg.consoleTextEdit.append("layer 1 %1.2f , %1.2f , %1.2f\n\n" % (itemVal[2][1],itemVal[2][2],itemVal[2][3]))
+
+        
     def stopCalcThread(self):
         """Signal when calcTask is stopped """
-        self.calcThread.exit()
-        self.dlg.eventLabel.setText("Event: Stopped")
-        self.calcTask.kill()
-        if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
-            cText = "Number of Result: "+str(len(self.similarLayer))
-            self.dlg.consoleTextEdit.append(cText+"\n\n")
-            if len(self.similarLayer) > 0 :
-                # self.addScoreItem()
-                self.previewLayer = 0
-                self.dlg.saveBtn.setEnabled(True)
-                self.dlg.counterLabel.setText(cText)
-                self.resultPreview()
-            else:
-                self.previewLayer = 0
-                self.dlg.counterLabel.setText(cText)
+        if(self.dlg.methodComboBox.currentIndex() == 3):
+            self.calcRasterThread.exit()
+            self.calcRasterTask.kill()
             self.dlg.calcBtn.setEnabled(True)
             self.dlg.stopBtn.setEnabled(False)
+        else:
+            self.calcThread.exit()
+            self.dlg.eventLabel.setText("Event: Stopped")
+            self.calcTask.kill()
+            if(self.calcTask.getLayersDup()[0].featureCount() > 0 and self.calcTask.getLayersDup()[1].featureCount() > 0):
+                cText = "Number of Result: "+str(len(self.similarLayer))
+                self.dlg.consoleTextEdit.append(cText+"\n\n")
+                if len(self.similarLayer) > 0 :
+                    # self.addScoreItem()
+                    self.previewLayer = 0
+                    self.dlg.saveBtn.setEnabled(True)
+                    self.dlg.counterLabel.setText(cText)
+                    self.resultPreview()
+                else:
+                    self.previewLayer = 0
+                    self.dlg.counterLabel.setText(cText)
+                self.dlg.calcBtn.setEnabled(True)
+                self.dlg.stopBtn.setEnabled(False)
 
     def eventCalcThread(self, value:str):
         """Receiving signal event
@@ -496,45 +552,74 @@ class SimilarityPlugin:
     # executing calculation
     def calculateScore(self):
         """Signal for executing calculation for cheking maps"""
-        if(isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer) and isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer)):
-            # set plugin to initial condition
+        self.dlg.methodComboBox.setEnabled(False)
+        if self.dlg.methodComboBox.currentIndex() == 3:
             self.dlg.progressBar.setValue(0)
             self.dlg.saveBtn.setEnabled(False)
             self.dlg.nextBtn.setEnabled(False)
             self.dlg.previousBtn.setEnabled(False)
             self.dlg.removeBtn.setEnabled(False)
-            self.dlg.widgetCanvas.setLayers([
-                    QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
-                ])
-            self.dlg.previewAttr.setText("")
-            self.dlg.previewAttr_2.setText("")
-            self.dlg.widgetCanvas.refresh()
             scoreLabel = "Score : 0"
             self.dlg.counterLabel.setText("Number of Result: 0")
             self.dlg.labelScore.setText(scoreLabel)
             self.similarLayer = []
+            self.calcRasterTask.setLayers(self.dlg.layerSel1.currentLayer(), self.dlg.layerSel2.currentLayer())
             
-            # set input-output option
-            self.calcTask.setLayers(self.dlg.layerSel1.currentLayer(), self.dlg.layerSel2.currentLayer())
-            self.calcTask.setTreshold(self.dlg.lineEditTreshold.value())
-            self.calcTask.setMethod(int(self.dlg.methodComboBox.currentIndex()))
-            self.calcTask.setTranslate(self.dlg.mergeCenterCheck.isChecked())
-            self.calcTask.setRadius(self.dlg.nnRadiusEdit.value())
-            self.calcTask.setSuffix(str(self.dlg.sufLineEdit.text()))
-            self.calcTask.setScoreName(str(self.dlg.attrOutLineEdit.text()))
-            # print("input option set")
-            # activating task
-            self.calcTask.alive()
-            # print("task alive")
-            self.calcThread.start()
-            # print("thread started")
+            # self.calcTask.setTreshold(self.dlg.lineEditTreshold.value())
+            # self.calcTask.setMethod(int(self.dlg.methodComboBox.currentIndex()))
+            # self.calcTask.setTranslate(self.dlg.mergeCenterCheck.isChecked())
+            # self.calcTask.setRadius(self.dlg.nnRadiusEdit.value())
+            # self.calcTask.setSuffix(str(self.dlg.sufLineEdit.text()))
+            # self.calcTask.setScoreName(str(self.dlg.attrOutLineEdit.text()))
 
-            # set button
+            # activating task
+            self.calcRasterTask.alive()
+            # print("task alive")
+            self.calcRasterThread.start()
             self.dlg.calcBtn.setEnabled(False)
             self.dlg.stopBtn.setEnabled(True)
         else:
-            # prevention on QgsVectorLayer only
-            self.simpleWarnDialogInit("This plugin support Vector Layer only")
+            if(isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer) and isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer)):
+                # set plugin to initial condition
+                self.dlg.progressBar.setValue(0)
+                self.dlg.saveBtn.setEnabled(False)
+                self.dlg.nextBtn.setEnabled(False)
+                self.dlg.previousBtn.setEnabled(False)
+                self.dlg.removeBtn.setEnabled(False)
+                self.dlg.widgetCanvas.setLayers([
+                        QgsVectorLayer("Polygon?crs=ESPG:4326",'SimilarityLayer','memory')
+                    ])
+                self.dlg.previewAttr.setText("")
+                self.dlg.previewAttr_2.setText("")
+                self.dlg.widgetCanvas.refresh()
+                scoreLabel = "Score : 0"
+                self.dlg.counterLabel.setText("Number of Result: 0")
+                self.dlg.labelScore.setText(scoreLabel)
+                self.similarLayer = []
+                
+                # set input-output option
+                self.calcTask.setLayers(self.dlg.layerSel1.currentLayer(), self.dlg.layerSel2.currentLayer())
+                self.calcTask.setTreshold(self.dlg.lineEditTreshold.value())
+                self.calcTask.setMethod(int(self.dlg.methodComboBox.currentIndex()))
+                self.calcTask.setTranslate(self.dlg.mergeCenterCheck.isChecked())
+                self.calcTask.setRadius(self.dlg.nnRadiusEdit.value())
+                self.calcTask.setSuffix(str(self.dlg.sufLineEdit.text()))
+                self.calcTask.setScoreName(str(self.dlg.attrOutLineEdit.text()))
+                # print("input option set")
+                # activating task
+                self.calcTask.alive()
+                # print("task alive")
+                self.calcThread.start()
+                # print("thread started")
+
+                # set button
+                self.dlg.calcBtn.setEnabled(False)
+                self.dlg.stopBtn.setEnabled(True)
+            else:
+                # prevention on QgsVectorLayer only
+                self.simpleWarnDialogInit("This plugin support Vector Layer only")
+                self.dlg.calcBtn.setEnabled(True)
+                self.dlg.methodComboBox.setEnabled(True)
 
     # signal when saveBtn clicked
     def registerToProject(self):
@@ -617,7 +702,8 @@ class SimilarityPlugin:
                 [
                     'Squential',
                     'Nearest Neightbour',
-                    'Wilkerstat BPS'
+                    'Wilkerstat BPS',
+                    'Raster'
                 ]
             )
 

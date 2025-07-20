@@ -829,8 +829,8 @@ class CalculationModule(QObject):
                         # print("error emitted") 
                         # print(similar)
             except:
-                self.error.emit("Error when duplicating")
-                self.eventTask.emit("Eror Occured")
+                    self.error.emit("Error when duplicating")
+                    self.eventTask.emit("Eror Occured")
                 # print(isinstance(self.layer, QgsVectorLayer))
                 # print(isinstance(self.layer2, QgsVectorLayer))
             # print("cumulative score : "+str(self.getCumulative())+" feature count : "+str(self.layerDup.featureCount()))
