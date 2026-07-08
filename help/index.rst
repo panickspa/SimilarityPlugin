@@ -11,5 +11,6 @@ Welcome to Similarity Plugin's documentation!
 
    concept
    tutorial
+   raster_guide
    dialog_classes
    about
