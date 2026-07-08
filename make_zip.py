@@ -14,13 +14,25 @@ files_to_zip = [
 
 # Create the zip file
 with zipfile.ZipFile('similarity_plugin.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+# Add individual files
     for file in files_to_zip:
         if os.path.exists(file):
-            # Put the files inside a folder named 'similarity_plugin' inside the zip
             zip_path = os.path.join('similarity_plugin', file)
             zipf.write(file, zip_path)
             print(f"Added {file}")
         else:
             print(f"Warning: {file} not found")
+
+    # Recursively add the help directory (excluding .buildinfo)
+    if os.path.exists('help'):
+        for root, dirs, files in os.walk('help'):
+            for file in files:
+                # Exclude hidden files (starts with .) and batch files (.bat) to avoid security scan false positives
+                if file.startswith('.') or file.endswith('.bat') or file.endswith('.pyc') or 'Makefile' in file:
+                    continue
+                file_path = os.path.join(root, file)
+                zip_path = os.path.join('similarity_plugin', file_path)
+                zipf.write(file_path, zip_path)
+        print("Added help/ directory (excluding .buildinfo)")
 
 print("Created similarity_plugin.zip successfully!")
