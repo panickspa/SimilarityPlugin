@@ -30,6 +30,7 @@ from qgis.PyQt.QtWidgets import (
     QSizePolicy, QSpacerItem, QFrame
 )
 from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QFont
 
 from qgis.gui import QgsMapLayerComboBox, QgsMapCanvas
@@ -50,6 +51,8 @@ class SimilarityPluginDialog(QDialog):
         self.setWindowTitle("Calculate Similarity Map")
         self.setMinimumSize(880, 580)
         self.resize(1100, 680)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowMinMaxButtonsHint)
+        self.setSizeGripEnabled(True)
         self._build_ui()
 
     # ------------------------------------------------------------------
