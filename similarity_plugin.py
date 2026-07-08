@@ -34,13 +34,13 @@ from qgis.core import (
     QgsVectorLayer,
     QgsRasterLayer,
     QgsGeometry, 
-    QgsFeature
+    QgsFeature,
+    QgsMapLayerProxyModel
 )
 
 from qgis.gui import (
     # QgsMapCanvas, 
-    QgsMapToolPan,
-    QgsMapLayerProxyModel
+    QgsMapToolPan
 )
 
 # Initialize Qt resources from file resources.py
@@ -133,7 +133,7 @@ class SimilarityPlugin:
         self.calcRasterTask.finished.connect(self.finishedCalcRasterThread)
         self.calcRasterTask.error.connect(self.errorCalcThread)
         self.calcRasterTask.eventTask.connect(self.eventCalcThread)
-        self.calcRasterTask.currentProgress.connect(self.eventCurrentProgress)
+        # self.calcRasterTask.currentProgress.connect(self.eventCurrentProgress)
 
         # pan event
         self.actionPan = QAction("Pan", self.iface)
