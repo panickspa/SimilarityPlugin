@@ -812,13 +812,13 @@ class SimilarityPlugin:
             self.simpleDialog = SimpleWarnDialog()
             # self.pkSelector = PkSelector()
             # set help documentation
-            self.dlg.helpTextBrowser.load(
+            self.dlg.helpTextBrowser.setSource(
                 QUrl(
                     'https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide'
                 )
             )
             self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
-            self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.back)
+            self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.backward)
             # filtering selection layer (empty layer not allowed)
             self.dlg.layerSel1.setAllowEmptyLayer(False)
             self.dlg.layerSel1.setAllowEmptyLayer(False)
