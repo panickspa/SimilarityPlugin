@@ -54,10 +54,30 @@ class SimilarityPluginDialog(QDialog):
         self.setWindowFlags(self.windowFlags() | Qt.WindowMinMaxButtonsHint)
         self.setSizeGripEnabled(True)
         self._build_ui()
+        self._init_compat_labels()
 
     # ------------------------------------------------------------------
     #  UI Builder
     # ------------------------------------------------------------------
+
+    def _init_compat_labels(self):
+        """Create compatibility label references for similarity_plugin.py.
+
+        The old .ui-based dialog had explicit label widgets like labelOutOption_2,
+        labelOutOption_9, etc. The new layout-based dialog uses QFormLayout which
+        creates labels automatically. This method captures those labels so existing
+        signal handlers in similarity_plugin.py still work.
+        """
+        for gb in self.findChildren(QGroupBox):
+            if gb.title() == "Parameters":
+                fmt = gb.layout()
+                if isinstance(fmt, QFormLayout):
+                    # Map field widgets to their labels
+                    self.labelOutOption_2 = fmt.labelForField(self.lineEditTreshold)
+                    self.labelOutOption_9 = fmt.labelForField(self.attrOutLineEdit)
+                    self.labelOutOption_10 = fmt.labelForField(self.sufLineEdit)
+                    self.labelOutOption_11 = fmt.labelForField(self.nnRadiusEdit)
+                break
 
     def _build_ui(self):
         main_layout = QVBoxLayout(self)
