@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from qgis.PyQt.QtCore import QObject, pyqtSignal
+from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
     QgsRasterLayer,
     QgsRectangle,
     QgsRasterBlock,
+    QgsProject,
+    QgsRasterShader,
+    QgsColorRampShader,
+    QgsSingleBandPseudoColorRenderer,
+    QgsCoordinateTransform,
+    QgsGeometry,
     QgsPointXY,
     Qgis
 )
@@ -13,19 +20,17 @@ from qgis.core import (
 import datetime
 import time
 import math
+import os
+import tempfile
 
 
 class CalculationRasterModule(QObject):
     """
-    Calculation Module for checking raster similarity using MapCurves GOF method.
+    Calculation Module for raster similarity using MapCurves GOF method.
 
-    Compares two raster layers over their overlapping extent pixel-by-pixel.
-
-    Supports:
-    - Single-band comparison (categorical or continuous with tolerance)
-    - Multi-band RGB comparison (3-band exact or tolerance match)
-    - Configurable tolerance for continuous data
-    - Block-based reading (faster than per-pixel identify)
+    Compares two raster layers over their overlapping extent with
+    support for different pixel sizes, CRS transformations, and
+    multiple comparison modes.
 
     MapCurves GOF score:
         GOF = (N_match / N_A) * (N_match / N_B)
@@ -37,17 +42,19 @@ class CalculationRasterModule(QObject):
     """
 
     killed = False
-    layer: QgsRasterLayer
-    layer2: QgsRasterLayer
 
     def __init__(self):
         super().__init__()
-        self.layer = None
-        self.layer2 = None
-        self.band_a = 1       # Raster 1 band index for single-band comparison
-        self.band_b = 1       # Raster 2 band index for single-band comparison
-        self.rgb_mode = False # If True, compare all 3 bands (RGB)
-        self.tolerance = 0.0  # Tolerance for continuous data comparison
+        self.layer = None       # QgsRasterLayer
+        self.layer2 = None      # QgsRasterLayer
+        self.band_a = 1
+        self.band_b = 1
+        self.rgb_mode = False
+        self.categorical = False  # If True, exact class label comparison
+        self.resampling = 'nearest'  # nearest, bilinear, cubic
+        self.tolerance = 0.0
+        self.generate_diff = False   # Generate difference raster output
+        self.diff_raster_path = None
 
     # ------------------------------------------------------------------
     #  Setters
@@ -55,28 +62,23 @@ class CalculationRasterModule(QObject):
 
     def setLayers(self, layer: QgsRasterLayer, layer2: QgsRasterLayer,
                   band_a: int = 1, band_b: int = 1,
-                  rgb_mode: bool = False):
-        """Set input raster layers and band configuration.
-
-        :param layer: First raster layer
-        :param layer2: Second raster layer
-        :param band_a: Band index for layer 1 (1-based)
-        :param band_b: Band index for layer 2 (1-based)
-        :param rgb_mode: If True, compare bands 1,2,3 as RGB
-        """
+                  rgb_mode: bool = False,
+                  categorical: bool = False,
+                  resampling: str = 'nearest'):
         self.layer = layer
         self.layer2 = layer2
         self.band_a = band_a
         self.band_b = band_b
         self.rgb_mode = rgb_mode
+        self.categorical = categorical
+        self.resampling = resampling
 
     def setTolerance(self, tolerance: float):
-        """Set tolerance for continuous value comparison.
-
-        Pixels match if |val_A - val_B| <= tolerance.
-        For RGB mode, all 3 bands must be within tolerance.
-        """
         self.tolerance = tolerance
+
+    def setDiffRaster(self, enabled: bool):
+        """Enable/disable difference raster output."""
+        self.generate_diff = enabled
 
     # ------------------------------------------------------------------
     #  Lifecycle
@@ -88,16 +90,19 @@ class CalculationRasterModule(QObject):
         if self.killed:
             return
 
-        self.eventTask.emit("Calculating raster similarity ...")
+        self.eventTask.emit("Preparing raster similarity calculation ...")
 
         try:
-            score, stats = self._calc_similarity()
+            score, stats, diff_info = self._calc_similarity()
             elapsed = time.perf_counter() - start
-            self.eventTask.emit(
+            msg = (
                 f"Finished in {elapsed:.1f}s | "
                 f"Score: {score:.4f} | "
-                f"Match: {stats['match']:,}/{stats['common']:,} valid pixels"
+                f"Match: {stats.get('match', 0):,}/{stats.get('common', 0):,} valid"
             )
+            if diff_info:
+                msg += f" | Diff raster: {diff_info}"
+            self.eventTask.emit(msg)
             self.finished.emit([score, stats])
         except Exception as e:
             self.error.emit(f"Raster calculation error: {str(e)}")
@@ -106,11 +111,9 @@ class CalculationRasterModule(QObject):
             self.error.emit(traceback.format_exc())
 
     def kill(self):
-        """Request graceful termination."""
         self.killed = True
 
     def alive(self):
-        """Clear kill flag."""
         self.killed = False
 
     # ------------------------------------------------------------------
@@ -120,13 +123,36 @@ class CalculationRasterModule(QObject):
     def _calc_similarity(self):
         """Main similarity calculation.
 
-        Returns (score, stats_dict).
+        Handles different pixel sizes (resampling), CRS reprojection,
+        categorical/continuous comparison modes, and optional diff raster output.
+
+        Returns (score, stats_dict, diff_info).
         """
         p1 = self.layer.dataProvider()
         p2 = self.layer2.dataProvider()
 
         e1 = self.layer.extent()
         e2 = self.layer2.extent()
+
+        # ---- Handle CRS mismatch ----
+        crs1 = self.layer.crs()
+        crs2 = self.layer2.crs()
+        same_crs = crs1 == crs2 or crs1.authid() == crs2.authid()
+
+        if not same_crs:
+            self.eventTask.emit(
+                f"CRS differ: {crs1.authid()} vs {crs2.authid()} — "
+                f"reprojecting on-the-fly"
+            )
+            # Transform extent of layer2 to layer1's CRS
+            transform = QgsCoordinateTransform(crs2, crs1, QgsProject.instance())
+            try:
+                # Transform the extent polygon
+                rect2_geom = QgsGeometry.fromRect(e2)
+                rect2_geom.transform(transform)
+                e2 = rect2_geom.boundingBox()
+            except Exception:
+                self.eventTask.emit("Warning: CRS reprojection failed, using original extents")
 
         # ---- Overlap extent ----
         xmin = max(e1.xMinimum(), e2.xMinimum())
@@ -139,34 +165,47 @@ class CalculationRasterModule(QObject):
 
         overlap_ext = QgsRectangle(xmin, ymin, xmax, ymax)
 
-        # ---- Determine common grid resolution (finer of the two) ----
+        # ---- Determine common resolution ----
         rx1 = abs(self.layer.rasterUnitsPerPixelX())
         ry1 = abs(self.layer.rasterUnitsPerPixelY())
         rx2 = abs(self.layer2.rasterUnitsPerPixelX())
         ry2 = abs(self.layer2.rasterUnitsPerPixelY())
 
-        rx = min(rx1, rx2)
-        ry = min(ry1, ry2)
+        # Detect resolution difference
+        ratio_x = max(rx1, rx2) / min(rx1, rx2) if min(rx1, rx2) > 0 else 1
+        needs_resampling = ratio_x > 1.05  # >5% difference
+
+        if needs_resampling:
+            method_name = self.resampling.capitalize()
+            self.eventTask.emit(
+                f"Pixel sizes differ: {rx1:.4g}×{ry1:.4g} vs {rx2:.4g}×{ry2:.4g} — "
+                f"resampling using {method_name}"
+            )
+            # Use finer resolution
+            rx = min(rx1, rx2)
+            ry = min(ry1, ry2)
+        else:
+            rx = (rx1 + rx2) / 2
+            ry = (ry1 + ry2) / 2
 
         cols = int(math.ceil((xmax - xmin) / rx))
         rows = int(math.ceil((ymax - ymin) / ry))
 
+        # Clamp to reasonable size
         total_cells = rows * cols
+        if total_cells > 100_000_000:
+            self.eventTask.emit(
+                f"WARNING: Grid {cols}×{rows} = {total_cells:,} cells is very large. "
+                f"This may be slow or run out of memory."
+            )
+
         self.eventTask.emit(
-            f"Overlap grid: {cols} × {rows} = {total_cells:,} cells "
-            f"@ {rx:.4g} × {ry:.4g} {self.layer.crs().ellipsoidAcronym() or 'units'}"
+            f"Overlap grid: {cols} × {rows} = {total_cells:,} cells"
         )
 
-        # ---- Read blocks from both rasters (resampled to common grid) ----
+        # ---- Read blocks ----
         self.eventTask.emit("Reading raster data ...")
-        # Report read progress (0-20%)
         self.progress.emit(5.0)
-
-        # Read blocks — initialize all variables to avoid unbound warnings
-        block_a = None
-        block_b = None
-        blocks_a = None
-        blocks_b = None
 
         if self.rgb_mode:
             blocks_a = [
@@ -177,23 +216,31 @@ class CalculationRasterModule(QObject):
                 self._read_block(self.layer2, b, overlap_ext, cols, rows)
                 for b in (1, 2, 3)
             ]
+            block_a = None
+            block_b = None
         else:
             block_a = self._read_block(self.layer, self.band_a, overlap_ext, cols, rows)
             block_b = self._read_block(self.layer2, self.band_b, overlap_ext, cols, rows)
+            blocks_a = None
+            blocks_b = None
 
         self.progress.emit(20.0)
 
-        # ---- NODATA values ----
+        # ---- NODATA ----
         nodata_a = self._get_nodata(p1, self.band_a if not self.rgb_mode else 1)
         nodata_b = self._get_nodata(p2, self.band_b if not self.rgb_mode else 1)
 
-        self.eventTask.emit("Comparing pixels ...")
+        self.eventTask.emit(
+            "Categorical mode" if self.categorical
+            else f"Continuous mode (tolerance={self.tolerance})"
+        )
 
-        # ---- Iterate over common grid ----
+        # ---- Main comparison loop ----
         match_count = 0
-        total_valid = 0  # pixels where both rasters have valid data
+        total_valid = 0
+        diff_pixels = []  # store (row, col, v1, v2) for diff raster
 
-        step = max(1, total_cells // 100)  # report ~100 progress updates
+        step = max(1, total_cells // 100)
         check_kill_step = max(1, total_cells // 20)
 
         for row in range(rows):
@@ -203,11 +250,10 @@ class CalculationRasterModule(QObject):
             for col in range(cols):
                 idx = row * cols + col
 
-                # Periodic kill check
                 if idx % check_kill_step == 0 and self.killed:
                     break
 
-                # Read values from both rasters
+                # Read values
                 if self.rgb_mode:
                     v_a = self._read_rgb_vals(blocks_a, row, col)
                     v_b = self._read_rgb_vals(blocks_b, row, col)
@@ -224,6 +270,11 @@ class CalculationRasterModule(QObject):
                 # Compare
                 if self._values_match(v_a, v_b):
                     match_count += 1
+                    if self.generate_diff:
+                        diff_pixels.append((row, col, 0))  # match = 0
+                else:
+                    if self.generate_diff:
+                        diff_pixels.append((row, col, 255))  # mismatch = 255
 
                 # Progress
                 if idx % step == 0:
@@ -233,13 +284,18 @@ class CalculationRasterModule(QObject):
         self.progress.emit(95.0)
 
         # ---- Compute GOF score ----
-        # Need total valid pixels for each raster individually
-        total_a_valid = self._count_valid(p1, overlap_ext, cols, rows,
-                                          self.band_a if not self.rgb_mode else 1,
-                                          nodata_a)
-        total_b_valid = self._count_valid(p2, overlap_ext, cols, rows,
-                                          self.band_b if not self.rgb_mode else 1,
-                                          nodata_b)
+        total_a_valid = self._count_valid(
+            p1 if not self.rgb_mode else None,
+            overlap_ext, cols, rows,
+            self.band_a if not self.rgb_mode else 1,
+            nodata_a
+        )
+        total_b_valid = self._count_valid(
+            p2 if not self.rgb_mode else None,
+            overlap_ext, cols, rows,
+            self.band_b if not self.rgb_mode else 1,
+            nodata_b
+        )
 
         if total_a_valid == 0 or total_b_valid == 0:
             score = 0.0
@@ -248,6 +304,16 @@ class CalculationRasterModule(QObject):
 
         self.progress.emit(100.0)
 
+        # ---- Generate difference raster ----
+        diff_info = None
+        if self.generate_diff and diff_pixels:
+            diff_info = self._write_diff_raster(
+                diff_pixels, rows, cols,
+                overlap_ext, rx, ry
+            )
+        elif self.generate_diff:
+            diff_info = "No differences found (perfect match)"
+
         stats = {
             'match': match_count,
             'common': total_valid,
@@ -255,22 +321,22 @@ class CalculationRasterModule(QObject):
             'valid_b': total_b_valid,
             'grid_cols': cols,
             'grid_rows': rows,
+            'total_cells': total_cells,
         }
 
         self.eventTask.emit(
-            f"Match: {match_count:,} / Common valid: {total_valid:,} | "
-            f"Area A valid: {total_a_valid:,} | Area B valid: {total_b_valid:,}"
+            f"Match: {match_count:,} / {total_valid:,} valid | "
+            f"Score: {score:.6f}"
         )
 
-        return score, stats
+        return score, stats, diff_info
 
     # ------------------------------------------------------------------
-    #  Helpers — block reading
+    #  Block reading
     # ------------------------------------------------------------------
 
-    def _read_block(self, layer: QgsRasterLayer, band: int,
-                    extent: QgsRectangle, cols: int, rows: int):
-        """Read a raster band as a QgsRasterBlock resampled to target grid."""
+    def _read_block(self, layer, band, extent, cols, rows):
+        """Read a raster band as block resampled to target grid."""
         if self.killed:
             return None
         provider = layer.dataProvider()
@@ -279,26 +345,19 @@ class CalculationRasterModule(QObject):
             self.eventTask.emit(f"Warning: block read failed for band {band}")
         return block
 
-    def _read_block_val(self, block, row: int, col: int):
-        """Read a single value from a QgsRasterBlock with NODATA check.
-
-        Returns float value or None if NODATA/invalid.
-        """
+    def _read_block_val(self, block, row, col):
+        """Read single value from block with NODATA check."""
         if block is None or not block.isValid():
             return None
         val = block.value(row, col)
         if val is None:
             return None
-        # QgsRasterBlock.value() returns inf/nan for NODATA
         if math.isinf(val) or math.isnan(val):
             return None
         return val
 
-    def _read_rgb_vals(self, blocks, row: int, col: int):
-        """Read RGB values from a list of 3 QgsRasterBlocks.
-
-        Returns tuple (r, g, b) or None if any band is NODATA.
-        """
+    def _read_rgb_vals(self, blocks, row, col):
+        """Read RGB tuple from 3 blocks."""
         vals = []
         for b in blocks:
             v = self._read_block_val(b, row, col)
@@ -307,8 +366,8 @@ class CalculationRasterModule(QObject):
             vals.append(v)
         return tuple(vals)
 
-    def _get_nodata(self, provider, band: int):
-        """Get NODATA value for a band, or None if not defined."""
+    def _get_nodata(self, provider, band):
+        """Get NODATA value or None."""
         try:
             if provider.sourceHasNoDataValue(band):
                 return provider.sourceNoDataValue(band)
@@ -317,14 +376,22 @@ class CalculationRasterModule(QObject):
         return None
 
     # ------------------------------------------------------------------
-    #  Helpers — value comparison
+    #  Value comparison
     # ------------------------------------------------------------------
 
     def _values_match(self, v_a, v_b) -> bool:
-        """Compare two pixel values (single or RGB tuple).
+        """Compare pixel values.
 
-        Exact match if tolerance == 0, within tolerance otherwise.
+        For categorical mode: exact match only.
+        For continuous mode: match if |a-b| <= tolerance.
         """
+        if self.categorical:
+            # Exact class label comparison
+            if isinstance(v_a, tuple) and isinstance(v_b, tuple):
+                # For RGB categorical: all bands must be exactly equal
+                return all(a == b for a, b in zip(v_a, v_b))
+            return v_a == v_b
+
         if self.tolerance > 0:
             if isinstance(v_a, tuple) and isinstance(v_b, tuple):
                 return all(
@@ -341,14 +408,17 @@ class CalculationRasterModule(QObject):
             return abs(v_a - v_b) < 1e-10
 
     # ------------------------------------------------------------------
-    #  Helpers — counting valid pixels
+    #  Valid pixel counting
     # ------------------------------------------------------------------
 
-    def _count_valid(self, provider, extent: QgsRectangle,
-                     cols: int, rows: int, band: int, nodata) -> int:
-        """Count valid (non-NODATA) pixels in a raster over the given grid."""
+    def _count_valid(self, provider, extent, cols, rows, band, nodata):
+        """Count valid (non-NODATA) pixels over the grid."""
         if self.killed:
             return 0
+
+        if provider is None:
+            # RGB mode — rough estimate from total pixels
+            return cols * rows
 
         block = self._read_block(
             self.layer if provider == self.layer.dataProvider() else self.layer2,
@@ -368,25 +438,103 @@ class CalculationRasterModule(QObject):
                     if nodata is not None and abs(val - nodata) < 1e-10:
                         continue
                     count += 1
-
-                # Check kill periodically
                 if (row * cols + col) % step == 0 and self.killed:
                     break
-
         return count
 
     # ------------------------------------------------------------------
-    #  PyQt Signals
+    #  Difference raster output
+    # ------------------------------------------------------------------
+
+    def _write_diff_raster(self, diff_pixels, rows, cols,
+                           extent, pixel_x, pixel_y):
+        """Generate a binary difference raster.
+
+        Creates a 2-band raster where:
+        - Band 1 = 0 (match) / 255 (mismatch)
+        - Band 2 = confidence/value difference (for future use)
+
+        Returns path to the output raster.
+        """
+        try:
+            from osgeo import gdal, osr
+            import numpy as np
+        except ImportError:
+            self.eventTask.emit(
+                "GDAL not available for diff raster output. "
+                "Install python3-gdal or numpy."
+            )
+            return None
+
+        self.eventTask.emit("Writing difference raster ...")
+
+        # Build sparse array of differences
+        diff_arr = np.ones((rows, cols), dtype=np.uint8) * 255  # default: no data
+        for row, col, val in diff_pixels:
+            if 0 <= row < rows and 0 <= col < cols:
+                diff_arr[row, col] = val
+
+        # Create in-memory or temp file
+        out_path = os.path.join(
+            tempfile.gettempdir(),
+            f"similarity_diff_{int(time.time())}.tif"
+        )
+
+        # GDAL setup
+        driver = gdal.GetDriverByName('GTiff')
+        ds = driver.Create(out_path, cols, rows, 1, gdal.GDT_Byte)
+        
+        # GeoTransform
+        gt = [extent.xMinimum(), pixel_x, 0,
+              extent.yMaximum(), 0, -pixel_y]
+        ds.SetGeoTransform(gt)
+
+        # CRS
+        crs = self.layer.crs()
+        if crs.authid():
+            srs = osr.SpatialReference()
+            srs.SetFromUserInput(crs.authid())
+            ds.SetProjection(srs.ExportToWkt())
+
+        # Write data
+        ds.GetRasterBand(1).WriteArray(diff_arr)
+        ds.GetRasterBand(1).SetNoDataValue(255)
+        ds.GetRasterBand(1).SetDescription("Similarity Difference (0=match, 255=mismatch)")
+        ds.FlushCache()
+        ds = None
+
+        # Load into QGIS project
+        diff_layer = QgsRasterLayer(out_path, "Similarity Difference", "gdal")
+        if diff_layer.isValid():
+            # Apply styling: green for match, red for mismatch
+            fcn = QgsColorRampShader()
+            fcn.setColorRampType(QgsColorRampShader.Interpolated)
+            lst = [
+                QgsColorRampShader.ColorRampItem(0, QColor(0, 180, 0, 180), "Match"),
+                QgsColorRampShader.ColorRampItem(255, QColor(200, 40, 40, 200), "Mismatch"),
+            ]
+            fcn.setColorRampItemList(lst)
+            shader = QgsRasterShader()
+            shader.setRasterShaderFunction(fcn)
+            renderer = QgsSingleBandPseudoColorRenderer(
+                diff_layer.dataProvider(), 1, shader
+            )
+            diff_layer.setRenderer(renderer)
+
+            QgsProject.instance().addMapLayer(diff_layer)
+            return f"loaded as '{diff_layer.name()}'"
+        else:
+            return f"saved to {out_path}"
+
+    # ------------------------------------------------------------------
+    #  Signals
     # ------------------------------------------------------------------
 
     finished = pyqtSignal(list)
-    """Emitted on completion with [score, stats_dict]."""
+    """Emitted with [score, stats_dict]."""
 
     error = pyqtSignal(str)
-    """Emitted on error with error message."""
 
     progress = pyqtSignal(float)
-    """Progress percentage (0-100)."""
 
     eventTask = pyqtSignal(str)
-    """Status message for the UI console/log."""

@@ -311,12 +311,25 @@ class SimilarityPlugin:
             self.dlg.mergeCenterCheck.setEnabled(True)
             self.dlg.mergeCenterCheck.setText("RGB Mode")
 
+            # Enable categorical mode checkbox
+            self.dlg.categoricalModeCheck.setEnabled(True)
+            self.dlg.categoricalModeCheck.setToolTip(
+                "Exact class-label comparison. Uncheck for continuous/tolerance mode."
+            )
+
+            # Enable resampling combo
+            self.dlg.resamplingCombo.setEnabled(True)
+
+            # Enable difference raster checkbox
+            self.dlg.diffRasterCheck.setEnabled(True)
+
             # Repurpose threshold as tolerance
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.lineEditTreshold.setDecimals(4)
             self.dlg.lineEditTreshold.setSingleStep(0.1)
-            self.dlg.lineEditTreshold.setSuffix(" tol")
-            # Find and update the "Treshold" label to "Tolerance"
+            self.dlg.lineEditTreshold.setSuffix("")
+            self.dlg.lineEditTreshold.setToolTip("Tolerance for continuous data comparison")
+            self.dlg.percentLabel.setText("tol")
             self._update_label_text(self.dlg.labelOutOption_2, "Tolerance")
 
             # Hide vector-specific controls
@@ -329,7 +342,6 @@ class SimilarityPlugin:
             self.dlg.sufLineEdit.setEnabled(False)
             self.dlg.sufLineEdit.setVisible(False)
             self.dlg.labelOutOption_10.setVisible(False)
-            self.dlg.percentLabel.setVisible(False)
 
             # Disable preview (raster produces single score, not per-feature)
             self.dlg.previousBtn.setEnabled(False)
@@ -341,34 +353,44 @@ class SimilarityPlugin:
             self.dlg.layerSel1.setFilters(QgsMapLayerProxyModel.RasterLayer)
             self.dlg.layerSel2.setFilters(QgsMapLayerProxyModel.RasterLayer)
 
-            # Show band spinboxes
-            if hasattr(self.dlg, 'bandWidget1'):
-                self.dlg.bandWidget1.setVisible(True)
-            if hasattr(self.dlg, 'bandWidget2'):
-                self.dlg.bandWidget2.setVisible(True)
+            # Show band spinboxes (now in dialog directly)
+            self.dlg.bandLabel1.setVisible(True)
+            self.dlg.bandSpin1.setVisible(True)
+            self.dlg.bandLabel2.setVisible(True)
+            self.dlg.bandSpin2.setVisible(True)
 
         else:
             # Restore vector mode — reset UI
             self.dlg.mergeCenterCheck.setText("Merge Center")
-            self.dlg.lineEditTreshold.setSuffix("")
+            self.dlg.lineEditTreshold.setSuffix("%")
+            self.dlg.percentLabel.setText("%")
+            self.dlg.lineEditTreshold.setToolTip("Threshold (%) for similarity score")
             self._update_label_text(self.dlg.labelOutOption_2, "Treshold")
+
+            # Hide raster-specific controls
+            self.dlg.categoricalModeCheck.setEnabled(False)
+            self.dlg.categoricalModeCheck.setChecked(False)
+            self.dlg.resamplingCombo.setEnabled(False)
+            self.dlg.diffRasterCheck.setEnabled(False)
+            self.dlg.diffRasterCheck.setChecked(False)
+
+            # Show vector controls
             self.dlg.nnRadiusEdit.setVisible(True)
             self.dlg.labelOutOption_11.setVisible(True)
             self.dlg.attrOutLineEdit.setVisible(True)
             self.dlg.labelOutOption_9.setVisible(True)
             self.dlg.sufLineEdit.setVisible(True)
             self.dlg.labelOutOption_10.setVisible(True)
-            self.dlg.percentLabel.setVisible(True)
 
             # Reset layer filters to show vector layers
             self.dlg.layerSel1.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.dlg.layerSel2.setFilters(QgsMapLayerProxyModel.VectorLayer)
 
             # Hide band spinboxes
-            if hasattr(self.dlg, 'bandWidget1'):
-                self.dlg.bandWidget1.setVisible(False)
-            if hasattr(self.dlg, 'bandWidget2'):
-                self.dlg.bandWidget2.setVisible(False)
+            self.dlg.bandLabel1.setVisible(False)
+            self.dlg.bandSpin1.setVisible(False)
+            self.dlg.bandLabel2.setVisible(False)
+            self.dlg.bandSpin2.setVisible(False)
 
     def resultPreview(self):
         """Activate preview section
@@ -664,14 +686,22 @@ class SimilarityPlugin:
             # Get parameters
             tolerance = self.dlg.lineEditTreshold.value()
             rgb_mode = self.dlg.mergeCenterCheck.isChecked()
+            categorical = self.dlg.categoricalModeCheck.isChecked()
+            resampling = self.dlg.resamplingCombo.currentText().lower()
+            diff_raster = self.dlg.diffRasterCheck.isChecked()
 
-            band_a = getattr(self.dlg, 'bandSpin1', None)
-            band_b = getattr(self.dlg, 'bandSpin2', None)
-            b1 = band_a.value() if band_a else 1
-            b2 = band_b.value() if band_b else 1
+            b1 = self.dlg.bandSpin1.value()
+            b2 = self.dlg.bandSpin2.value()
 
-            self.calcRasterTask.setLayers(l1, l2, band_a=b1, band_b=b2, rgb_mode=rgb_mode)
+            self.calcRasterTask.setLayers(
+                l1, l2,
+                band_a=b1, band_b=b2,
+                rgb_mode=rgb_mode,
+                categorical=categorical,
+                resampling=resampling
+            )
             self.calcRasterTask.setTolerance(tolerance)
+            self.calcRasterTask.setDiffRaster(diff_raster)
 
             # activating task
             self.calcRasterTask.alive()
@@ -806,45 +836,6 @@ class SimilarityPlugin:
                     'Raster'
                 ]
             )
-
-            # ---- Create raster band spinboxes (hidden by default) ----
-            from qgis.PyQt.QtWidgets import QLabel, QSpinBox, QHBoxLayout, QWidget
-
-            # Band selector for Layer 1
-            bandWidget1 = QWidget(self.dlg.mainTab)
-            bandWidget1.setGeometry(190, 165, 251, 22)
-            bandLayout1 = QHBoxLayout(bandWidget1)
-            bandLayout1.setContentsMargins(0, 0, 0, 0)
-            bandLabel1 = QLabel("Band L1:")
-            bandSpin1 = QSpinBox()
-            bandSpin1.setMinimum(1)
-            bandSpin1.setMaximum(99)
-            bandSpin1.setValue(1)
-            bandLayout1.addWidget(bandLabel1)
-            bandLayout1.addWidget(bandSpin1)
-            bandWidget1.setVisible(False)
-
-            # Band selector for Layer 2
-            bandWidget2 = QWidget(self.dlg.mainTab)
-            bandWidget2.setGeometry(190, 190, 251, 22)
-            bandLayout2 = QHBoxLayout(bandWidget2)
-            bandLayout2.setContentsMargins(0, 0, 0, 0)
-            bandLabel2 = QLabel("Band L2:")
-            bandSpin2 = QSpinBox()
-            bandSpin2.setMinimum(1)
-            bandSpin2.setMaximum(99)
-            bandSpin2.setValue(1)
-            bandLayout2.addWidget(bandLabel2)
-            bandLayout2.addWidget(bandSpin2)
-            bandWidget2.setVisible(False)
-
-            # Store references on dlg so methodChange can access them
-            self.dlg.bandSpin1 = bandSpin1
-            self.dlg.bandLabel1 = bandLabel1
-            self.dlg.bandWidget1 = bandWidget1
-            self.dlg.bandSpin2 = bandSpin2
-            self.dlg.bandLabel2 = bandLabel2
-            self.dlg.bandWidget2 = bandWidget2
 
             # registering signal
 

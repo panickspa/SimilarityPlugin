@@ -46,7 +46,7 @@ PY_FILES = \
 	__init__.py \
 	similarity_plugin.py similarity_plugin_dialog.py
 
-UI_FILES = similarity_plugin_dialog_base.ui
+UI_FILES = warning_plugin_dialog_base.ui simple_warning_dialog.ui wilkerstat_pk_selector.ui wilkerstat_pk.ui
 
 EXTRAS = metadata.txt icon.png
 
