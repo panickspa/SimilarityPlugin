@@ -2,3 +2,4 @@ zip_build
 help_
 .venv
 *.bat
+*.zip
