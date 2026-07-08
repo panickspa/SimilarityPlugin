@@ -8,3 +8,5 @@ colorful_rasters
 realmap_rasters
 .DS_Store
 __MACOSX
+.env
+.env.prod
