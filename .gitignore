@@ -3,3 +3,6 @@ help_
 .venv
 *.bat
 *.zip
+test_rasters
+colorful_rasters
+realmap_rasters
