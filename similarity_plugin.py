@@ -32,13 +32,15 @@ from qgis.PyQt.QtWidgets import QAction, QTextEdit
 from qgis.core import (
     QgsProject, 
     QgsVectorLayer,
+    QgsRasterLayer,
     QgsGeometry, 
     QgsFeature
 )
 
 from qgis.gui import (
     # QgsMapCanvas, 
-    QgsMapToolPan
+    QgsMapToolPan,
+    QgsMapLayerProxyModel
 )
 
 # Initialize Qt resources from file resources.py
@@ -172,6 +174,16 @@ class SimilarityPlugin:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('SimilarityPlugin', message)
 
+    # ------------------------------------------------------------------
+    #  Helper — update QLabel text safely
+    # ------------------------------------------------------------------
+    def _update_label_text(self, label: QTextEdit, text: str):
+        """Update a QLabel (or QTextEdit) text with bounds checking."""
+        try:
+            label.setText(text)
+        except Exception:
+            pass
+
     def add_action(
         self,
         icon_path,
@@ -269,43 +281,94 @@ class SimilarityPlugin:
 
     def methodChange(self):
         """Signal when method changed"""
-        if self.dlg.methodComboBox.currentIndex() == 2:
-            # self.dlg.mergeCenterCheck.setChecked(False)
-            # self.dlg.setPKBtn.setVisible(True)
+        idx = self.dlg.methodComboBox.currentIndex()
+
+        # ---- Vector methods (0=Sequential, 1=Nearest Neighbour, 2=Wilkerstat) ----
+        if idx == 2:
             self.dlg.mergeCenterCheck.setEnabled(True)
             self.dlg.lineEditTreshold.setEnabled(False)
             self.dlg.nnRadiusEdit.setEnabled(False)
-            # self.pkSelector.layerListWidget.clear()
-            # self.pkSelector.layerListWidget.addItems(
-            #     self.dlg.layerSel1.currentLayer().fields().names()
-            # )
-            # self.pkSelector.layer2ListWidget.clear()
-            # self.pkSelector.layer2ListWidget.addItems(
-            #     self.dlg.layerSel2.currentLayer().fields().names()
-            # )
-            # self.pkSelector.open()
-        elif self.dlg.methodComboBox.currentIndex() == 0:
+            self.dlg.attrOutLineEdit.setEnabled(True)
+            self.dlg.sufLineEdit.setEnabled(True)
+        elif idx == 0:
             self.dlg.mergeCenterCheck.setChecked(False)
             self.dlg.mergeCenterCheck.setEnabled(False)
-            # self.dlg.setPKBtn.setVisible(False)
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.nnRadiusEdit.setEnabled(False)
-        elif self.dlg.methodComboBox.currentIndex() == 1:
+            self.dlg.attrOutLineEdit.setEnabled(True)
+            self.dlg.sufLineEdit.setEnabled(True)
+        elif idx == 1:
             self.dlg.mergeCenterCheck.setChecked(True)
             self.dlg.mergeCenterCheck.setEnabled(False)
-            # self.dlg.setPKBtn.setVisible(False)
             self.dlg.lineEditTreshold.setEnabled(True)
             self.dlg.nnRadiusEdit.setEnabled(True)
-        elif self.dlg.methodComboBox.currentIndex() == 3:
+            self.dlg.attrOutLineEdit.setEnabled(True)
+            self.dlg.sufLineEdit.setEnabled(True)
+
+        # ---- Raster method (index 3) ----
+        elif idx == 3:
             self.dlg.mergeCenterCheck.setChecked(False)
-            self.dlg.mergeCenterCheck.setEnabled(False)
-            # self.dlg.setPKBtn.setVisible(False)
-            self.dlg.lineEditTreshold.setEnabled(False)
+            self.dlg.mergeCenterCheck.setEnabled(True)
+            self.dlg.mergeCenterCheck.setText("RGB Mode")
+
+            # Repurpose threshold as tolerance
+            self.dlg.lineEditTreshold.setEnabled(True)
+            self.dlg.lineEditTreshold.setDecimals(4)
+            self.dlg.lineEditTreshold.setSingleStep(0.1)
+            self.dlg.lineEditTreshold.setSuffix(" tol")
+            # Find and update the "Treshold" label to "Tolerance"
+            self._update_label_text(self.dlg.labelOutOption_2, "Tolerance")
+
+            # Hide vector-specific controls
             self.dlg.nnRadiusEdit.setEnabled(False)
+            self.dlg.nnRadiusEdit.setVisible(False)
+            self.dlg.labelOutOption_11.setVisible(False)
+            self.dlg.attrOutLineEdit.setEnabled(False)
+            self.dlg.attrOutLineEdit.setVisible(False)
+            self.dlg.labelOutOption_9.setVisible(False)
+            self.dlg.sufLineEdit.setEnabled(False)
+            self.dlg.sufLineEdit.setVisible(False)
+            self.dlg.labelOutOption_10.setVisible(False)
+            self.dlg.percentLabel.setVisible(False)
+
+            # Disable preview (raster produces single score, not per-feature)
             self.dlg.previousBtn.setEnabled(False)
             self.dlg.nextBtn.setEnabled(False)
             self.dlg.saveBtn.setEnabled(False)
             self.dlg.removeBtn.setEnabled(False)
+
+            # Filter layer selectors to show only raster layers
+            self.dlg.layerSel1.setFilters(QgsMapLayerProxyModel.RasterLayer)
+            self.dlg.layerSel2.setFilters(QgsMapLayerProxyModel.RasterLayer)
+
+            # Show band spinboxes
+            if hasattr(self.dlg, 'bandWidget1'):
+                self.dlg.bandWidget1.setVisible(True)
+            if hasattr(self.dlg, 'bandWidget2'):
+                self.dlg.bandWidget2.setVisible(True)
+
+        else:
+            # Restore vector mode — reset UI
+            self.dlg.mergeCenterCheck.setText("Merge Center")
+            self.dlg.lineEditTreshold.setSuffix("")
+            self._update_label_text(self.dlg.labelOutOption_2, "Treshold")
+            self.dlg.nnRadiusEdit.setVisible(True)
+            self.dlg.labelOutOption_11.setVisible(True)
+            self.dlg.attrOutLineEdit.setVisible(True)
+            self.dlg.labelOutOption_9.setVisible(True)
+            self.dlg.sufLineEdit.setVisible(True)
+            self.dlg.labelOutOption_10.setVisible(True)
+            self.dlg.percentLabel.setVisible(True)
+
+            # Reset layer filters to show vector layers
+            self.dlg.layerSel1.setFilters(QgsMapLayerProxyModel.VectorLayer)
+            self.dlg.layerSel2.setFilters(QgsMapLayerProxyModel.VectorLayer)
+
+            # Hide band spinboxes
+            if hasattr(self.dlg, 'bandWidget1'):
+                self.dlg.bandWidget1.setVisible(False)
+            if hasattr(self.dlg, 'bandWidget2'):
+                self.dlg.bandWidget2.setVisible(False)
 
     def resultPreview(self):
         """Activate preview section
@@ -470,14 +533,39 @@ class SimilarityPlugin:
     def finishedCalcRasterThread(self, itemVal:list):
         """signal when calcRasterTask calculation is finished
 
-        :param itemVal list: the returned value emit
-        
+        :param itemVal list: [score, stats_dict] where stats_dict has
+            match, common, valid_a, valid_b, grid_cols, grid_rows
+
         """
         self.calcRasterThread.exit()
         self.calcRasterTask.kill()
-        cText = "Raster Similarity Calculation completed %1.3f" % itemVal[0]
-        self.dlg.labelScore.setText("Score : %1.3f" % itemVal[0])
-        self.dlg.consoleTextEdit.append(cText+"\n\n")
+
+        score = itemVal[0]
+        stats = itemVal[1] if len(itemVal) > 1 else {}
+
+        # Display score
+        self.dlg.labelScore.setText("Score : %1.4f" % score)
+
+        # Build detailed message
+        lines = [
+            "Raster Similarity Calculation completed",
+            "Score (GOF) : %1.4f" % score,
+        ]
+        if stats:
+            lines.append("Matching pixels : %s" % f"{stats.get('match', 0):,}")
+            lines.append("Valid overlap pixels : %s" % f"{stats.get('common', 0):,}")
+            lines.append("Valid pixels Raster 1 : %s" % f"{stats.get('valid_a', 0):,}")
+            lines.append("Valid pixels Raster 2 : %s" % f"{stats.get('valid_b', 0):,}")
+            lines.append("Grid size : %s × %s" % (stats.get('grid_cols', '?'), stats.get('grid_rows', '?')))
+            self.dlg.counterLabel.setText(
+                "Match: %s / %s valid" % (
+                    f"{stats.get('match', 0):,}",
+                    f"{stats.get('common', 0):,}"
+                )
+            )
+
+        cText = "\n".join(lines)
+        self.dlg.consoleTextEdit.append(cText + "\n\n")
         self.dlg.methodComboBox.setEnabled(True)
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
@@ -563,23 +651,35 @@ class SimilarityPlugin:
             self.dlg.counterLabel.setText("Number of Result: 0")
             self.dlg.labelScore.setText(scoreLabel)
             self.similarLayer = []
-            self.calcRasterTask.setLayers(self.dlg.layerSel1.currentLayer(), self.dlg.layerSel2.currentLayer())
-            
-            # self.calcTask.setTreshold(self.dlg.lineEditTreshold.value())
-            # self.calcTask.setMethod(int(self.dlg.methodComboBox.currentIndex()))
-            # self.calcTask.setTranslate(self.dlg.mergeCenterCheck.isChecked())
-            # self.calcTask.setRadius(self.dlg.nnRadiusEdit.value())
-            # self.calcTask.setSuffix(str(self.dlg.sufLineEdit.text()))
-            # self.calcTask.setScoreName(str(self.dlg.attrOutLineEdit.text()))
+
+            # Validate that selected layers are raster
+            l1 = self.dlg.layerSel1.currentLayer()
+            l2 = self.dlg.layerSel2.currentLayer()
+            if not isinstance(l1, QgsRasterLayer) or not isinstance(l2, QgsRasterLayer):
+                self.simpleWarnDialogInit("Raster method requires two raster layers")
+                self.dlg.calcBtn.setEnabled(True)
+                self.dlg.methodComboBox.setEnabled(True)
+                return
+
+            # Get parameters
+            tolerance = self.dlg.lineEditTreshold.value()
+            rgb_mode = self.dlg.mergeCenterCheck.isChecked()
+
+            band_a = getattr(self.dlg, 'bandSpin1', None)
+            band_b = getattr(self.dlg, 'bandSpin2', None)
+            b1 = band_a.value() if band_a else 1
+            b2 = band_b.value() if band_b else 1
+
+            self.calcRasterTask.setLayers(l1, l2, band_a=b1, band_b=b2, rgb_mode=rgb_mode)
+            self.calcRasterTask.setTolerance(tolerance)
 
             # activating task
             self.calcRasterTask.alive()
-            # print("task alive")
             self.calcRasterThread.start()
             self.dlg.calcBtn.setEnabled(False)
             self.dlg.stopBtn.setEnabled(True)
         else:
-            if(isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer) and isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer)):
+            if(isinstance(self.dlg.layerSel1.currentLayer(), QgsVectorLayer) and isinstance(self.dlg.layerSel2.currentLayer(), QgsVectorLayer)):
                 # set plugin to initial condition
                 self.dlg.progressBar.setValue(0)
                 self.dlg.saveBtn.setEnabled(False)
@@ -617,7 +717,7 @@ class SimilarityPlugin:
                 self.dlg.stopBtn.setEnabled(True)
             else:
                 # prevention on QgsVectorLayer only
-                self.simpleWarnDialogInit("This plugin support Vector Layer only")
+                self.simpleWarnDialogInit("This method supports Vector Layer only. Select Raster method for raster layers.")
                 self.dlg.calcBtn.setEnabled(True)
                 self.dlg.methodComboBox.setEnabled(True)
 
@@ -706,6 +806,45 @@ class SimilarityPlugin:
                     'Raster'
                 ]
             )
+
+            # ---- Create raster band spinboxes (hidden by default) ----
+            from qgis.PyQt.QtWidgets import QLabel, QSpinBox, QHBoxLayout, QWidget
+
+            # Band selector for Layer 1
+            bandWidget1 = QWidget(self.dlg.mainTab)
+            bandWidget1.setGeometry(190, 165, 251, 22)
+            bandLayout1 = QHBoxLayout(bandWidget1)
+            bandLayout1.setContentsMargins(0, 0, 0, 0)
+            bandLabel1 = QLabel("Band L1:")
+            bandSpin1 = QSpinBox()
+            bandSpin1.setMinimum(1)
+            bandSpin1.setMaximum(99)
+            bandSpin1.setValue(1)
+            bandLayout1.addWidget(bandLabel1)
+            bandLayout1.addWidget(bandSpin1)
+            bandWidget1.setVisible(False)
+
+            # Band selector for Layer 2
+            bandWidget2 = QWidget(self.dlg.mainTab)
+            bandWidget2.setGeometry(190, 190, 251, 22)
+            bandLayout2 = QHBoxLayout(bandWidget2)
+            bandLayout2.setContentsMargins(0, 0, 0, 0)
+            bandLabel2 = QLabel("Band L2:")
+            bandSpin2 = QSpinBox()
+            bandSpin2.setMinimum(1)
+            bandSpin2.setMaximum(99)
+            bandSpin2.setValue(1)
+            bandLayout2.addWidget(bandLabel2)
+            bandLayout2.addWidget(bandSpin2)
+            bandWidget2.setVisible(False)
+
+            # Store references on dlg so methodChange can access them
+            self.dlg.bandSpin1 = bandSpin1
+            self.dlg.bandLabel1 = bandLabel1
+            self.dlg.bandWidget1 = bandWidget1
+            self.dlg.bandSpin2 = bandSpin2
+            self.dlg.bandLabel2 = bandLabel2
+            self.dlg.bandWidget2 = bandWidget2
 
             # registering signal
 

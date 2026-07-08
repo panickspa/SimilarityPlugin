@@ -9,11 +9,19 @@ This plugin is used for checking similarity between two maps with Mapcurves ( Ha
 
 ## Fitur plugin
 
-This plugin can only cheking similarity of map with vector data type. This plugin has 3 method there is:
+This plugin can check similarity of maps for both **Vector** and **Raster** data types.
 
-*  Squential : Checking the feature one by one. In this method, plugin not showing the feature with score below the threshold
-*  Nearest Neighbour : Checking the feature with translating the nearest map within desired radius.
-*  Wilkerstat : Checking the feature with area code. (see [Sistem Informasi Geografis BPS](https://sig.bps.go.id/))
+### Vector Methods (3 methods):
+*  **Sequential** : Checking the feature one by one. Features with score below threshold are filtered out.
+*  **Nearest Neighbour** : Checking the feature with translating the nearest map within desired radius.
+*  **Wilkerstat** : Checking the feature with area code. (see [Sistem Informasi Geografis BPS](https://sig.bps.go.id/))
+
+### Raster Method (since v0.2.0):
+*  **Raster** : Pixel-by-pixel comparison using MapCurves GOF score.
+   - Supports single-band (categorical/continuous) and multi-band RGB modes
+   - Configurable tolerance for continuous data comparison
+   - Automatic band selection
+   - Proper NODATA handling
   
 
 ## Install the plugin into QGIS directly
