@@ -588,6 +588,28 @@ class SimilarityPlugin:
 
         cText = "\n".join(lines)
         self.dlg.consoleTextEdit.append(cText + "\n\n")
+
+        # --- Show preview in map canvas ---
+        try:
+            l1 = self.calcRasterTask.layer
+            l2 = self.calcRasterTask.layer2
+            if l1 and l2:
+                e1 = l1.extent()
+                e2 = l2.extent()
+                xmin = max(e1.xMinimum(), e2.xMinimum())
+                xmax = min(e1.xMaximum(), e2.xMaximum())
+                ymin = max(e1.yMinimum(), e2.yMinimum())
+                ymax = min(e1.yMaximum(), e2.yMaximum())
+                if xmin < xmax and ymin < ymax:
+                    from qgis.core import QgsRectangle
+                    overlap = QgsRectangle(xmin, ymin, xmax, ymax)
+                    self.dlg.widgetCanvas.setExtent(overlap)
+                    self.dlg.widgetCanvas.setLayers([l1, l2])
+                    self.dlg.widgetCanvas.setDestinationCrs(l1.crs())
+                    self.dlg.widgetCanvas.refresh()
+        except Exception as e:
+            self.dlg.consoleTextEdit.append("Preview error: %s\n\n" % str(e))
+
         self.dlg.methodComboBox.setEnabled(True)
         self.dlg.calcBtn.setEnabled(True)
         self.dlg.stopBtn.setEnabled(False)
