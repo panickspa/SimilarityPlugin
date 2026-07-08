@@ -24,8 +24,8 @@
 
 # importing PyQt environment
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QThread, QTranslator, QUrl
-from qgis.PyQt.QtGui import QAction, QIcon, QColor, QStandardItemModel
-from qgis.PyQt.QtWidgets import QTextEdit
+from qgis.PyQt.QtGui import QAction, QIcon, QColor, QStandardItemModel, QFont
+from qgis.PyQt.QtWidgets import QTextEdit, QTableWidgetItem
 from qgis.PyQt.QtGui import QDesktopServices
 
 
@@ -331,8 +331,7 @@ class SimilarityPlugin:
         # ---- Raster method (index 3) ----
         elif idx == 3:
             self.dlg.mergeCenterCheck.setChecked(False)
-            self.dlg.mergeCenterCheck.setEnabled(True)
-            self.dlg.mergeCenterCheck.setText("RGB Mode")
+            self.dlg.mergeCenterCheck.setEnabled(False)
 
             # Enable categorical mode checkbox
             self.dlg.categoricalModeCheck.setEnabled(True)
@@ -342,9 +341,6 @@ class SimilarityPlugin:
 
             # Enable resampling combo
             self.dlg.resamplingCombo.setEnabled(True)
-
-            # Enable difference raster checkbox
-            self.dlg.diffRasterCheck.setEnabled(True)
 
             # Repurpose threshold as tolerance
             self.dlg.lineEditTreshold.setEnabled(True)
@@ -366,21 +362,19 @@ class SimilarityPlugin:
             self.dlg.sufLineEdit.setVisible(False)
             self.dlg.labelOutOption_10.setVisible(False)
 
-            # Disable preview (raster produces single score, not per-feature)
+            # Disable preview (raster produces table, not per-feature)
             self.dlg.previousBtn.setEnabled(False)
             self.dlg.nextBtn.setEnabled(False)
             self.dlg.saveBtn.setEnabled(False)
             self.dlg.removeBtn.setEnabled(False)
 
+            # Show results table
+            self.dlg.resultsTable.setVisible(True)
+            self.dlg.saveCsvBtn.setVisible(True)
+
             # Filter layer selectors to show only raster layers
             self.dlg.layerSel1.setFilters(QgsMapLayerProxyModel.RasterLayer)
             self.dlg.layerSel2.setFilters(QgsMapLayerProxyModel.RasterLayer)
-
-            # Show band spinboxes (now in dialog directly)
-            self.dlg.bandLabel1.setVisible(True)
-            self.dlg.bandSpin1.setVisible(True)
-            self.dlg.bandLabel2.setVisible(True)
-            self.dlg.bandSpin2.setVisible(True)
 
         else:
             # Restore vector mode — reset UI
@@ -394,8 +388,12 @@ class SimilarityPlugin:
             self.dlg.categoricalModeCheck.setEnabled(False)
             self.dlg.categoricalModeCheck.setChecked(False)
             self.dlg.resamplingCombo.setEnabled(False)
-            self.dlg.diffRasterCheck.setEnabled(False)
-            self.dlg.diffRasterCheck.setChecked(False)
+
+            # Hide results table
+            self.dlg.resultsTable.setVisible(False)
+            self.dlg.resultsTable.setRowCount(0)
+            self.dlg.saveCsvBtn.setVisible(False)
+            self.dlg.saveCsvBtn.setEnabled(False)
 
             # Show vector controls
             self.dlg.nnRadiusEdit.setVisible(True)
@@ -408,12 +406,6 @@ class SimilarityPlugin:
             # Reset layer filters to show vector layers
             self.dlg.layerSel1.setFilters(QgsMapLayerProxyModel.VectorLayer)
             self.dlg.layerSel2.setFilters(QgsMapLayerProxyModel.VectorLayer)
-
-            # Hide band spinboxes
-            self.dlg.bandLabel1.setVisible(False)
-            self.dlg.bandSpin1.setVisible(False)
-            self.dlg.bandLabel2.setVisible(False)
-            self.dlg.bandSpin2.setVisible(False)
 
     def resultPreview(self):
         """Activate preview section
@@ -578,8 +570,8 @@ class SimilarityPlugin:
     def finishedCalcRasterThread(self, itemVal:list):
         """signal when calcRasterTask calculation is finished
 
-        :param itemVal list: [score, stats_dict] where stats_dict has
-            match, common, valid_a, valid_b, grid_cols, grid_rows
+        :param itemVal list: [avg_score, stats_dict] where stats_dict has
+            score_avg, band_count, per_bands, grid_cols, grid_rows
 
         """
         self.calcRasterThread.exit()
@@ -587,77 +579,83 @@ class SimilarityPlugin:
 
         score = itemVal[0]
         stats = itemVal[1] if len(itemVal) > 1 else {}
+        per_bands = stats.get('per_bands', [])
+        n_band = stats.get('band_count', 0)
 
         # Display score
         self.dlg.labelScore.setText("Score : %1.4f" % score)
 
-        # Build detailed message
+        # Build console message
         lines = [
             "Raster Similarity Calculation completed",
-            "Score (GOF) : %1.4f" % score,
+            "Average GOF : %1.4f  (%d band%s)" % (score, n_band, 's' if n_band > 1 else ''),
         ]
-        if stats:
-            lines.append("Matching pixels : %s" % f"{stats.get('match', 0):,}")
-            lines.append("Valid overlap pixels : %s" % f"{stats.get('common', 0):,}")
-            lines.append("Valid pixels Raster 1 : %s" % f"{stats.get('valid_a', 0):,}")
-            lines.append("Valid pixels Raster 2 : %s" % f"{stats.get('valid_b', 0):,}")
-            lines.append("Grid size : %s × %s" % (stats.get('grid_cols', '?'), stats.get('grid_rows', '?')))
-            self.dlg.counterLabel.setText(
-                "Match: %s / %s valid" % (
-                    f"{stats.get('match', 0):,}",
-                    f"{stats.get('common', 0):,}"
+        if per_bands:
+            for b in per_bands:
+                lines.append(
+                    "  Band %d: GOF=%1.4f  (match=%d/valid=%d)" 
+                    % (b['band'], b['gof'], b['match'], b['valid'])
                 )
-            )
+        lines.append("Grid: %s × %s" % (stats.get('grid_cols', '?'), stats.get('grid_rows', '?')))
 
         cText = "\n".join(lines)
         self.dlg.consoleTextEdit.append(cText + "\n\n")
 
-        # --- Show preview in map canvas ---
+        # --- Populate results table ---
+        table = self.dlg.resultsTable
+        table.setRowCount(0)
+        table.setVisible(True)
+        self.dlg.saveCsvBtn.setVisible(True)
+        self.dlg.saveCsvBtn.setEnabled(True)
+
+        if per_bands:
+            table.setRowCount(len(per_bands) + 1)  # +1 for average row
+            for i, b in enumerate(per_bands):
+                table.setItem(i, 0, QTableWidgetItem("Band %d" % b['band']))
+                table.setItem(i, 1, QTableWidgetItem(str(b['valid_a'])))
+                table.setItem(i, 2, QTableWidgetItem(str(b['valid_b'])))
+                table.setItem(i, 3, QTableWidgetItem(str(b['match'])))
+                item = QTableWidgetItem("%.4f" % b['gof'])
+                item.setFont(QFont("", 9, QFont.Bold))
+                table.setItem(i, 4, item)
+
+            # Average row
+            avg_row = len(per_bands)
+            table.setItem(avg_row, 0, QTableWidgetItem("AVERAGE"))
+            table.setItem(avg_row, 1, QTableWidgetItem(""))
+            table.setItem(avg_row, 2, QTableWidgetItem(""))
+            avg_matches = sum(b['match'] for b in per_bands)
+            avg_valid = sum(b['valid'] for b in per_bands)
+            table.setItem(avg_row, 3, QTableWidgetItem(str(avg_matches)))
+            item = QTableWidgetItem("%.4f" % score)
+            item.setFont(QFont("", 10, QFont.Bold))
+            table.setItem(avg_row, 4, item)
+        else:
+            table.setRowCount(1)
+            table.setItem(0, 0, QTableWidgetItem("No data"))
+            self.dlg.saveCsvBtn.setEnabled(False)
+
+        self.dlg.counterLabel.setText(
+            "Score: %.4f | %d band%s" % (score, n_band, 's' if n_band > 1 else '')
+        )
+
+        # --- Show input raster in preview canvas ---
         try:
             l1 = self.calcRasterTask.layer
             l2 = self.calcRasterTask.layer2
-            diff_layer = stats.get('diff_layer') if stats else None
             canvas_layers = []
-
-            if diff_layer and diff_layer.isValid():
-                # Preview: show diff raster (green=match, red=mismatch)
-                canvas_layers.append(diff_layer)
-                self.dlg.consoleTextEdit.append(
-                    "Preview: difference raster (green=match, red=mismatch)\n\n"
-                )
-            elif l1 and l2:
-                # No diff raster — show both input rasters + overlap polygon
-                from qgis.core import (
-                    QgsRectangle, QgsGeometry, QgsVectorLayer,
-                    QgsFeature, QgsFillSymbol, QgsSingleSymbolRenderer
-                )
-                from qgis.PyQt.QtGui import QColor
-
-                e1 = l1.extent()
-                e2 = l2.extent()
+            if l1 and l2:
+                from qgis.core import QgsRectangle
+                e1, e2 = l1.extent(), l2.extent()
                 xmin = max(e1.xMinimum(), e2.xMinimum())
                 xmax = min(e1.xMaximum(), e2.xMaximum())
                 ymin = max(e1.yMinimum(), e2.yMinimum())
                 ymax = min(e1.yMaximum(), e2.yMaximum())
                 if xmin < xmax and ymin < ymax:
                     overlap = QgsRectangle(xmin, ymin, xmax, ymax)
-                    ov = QgsVectorLayer(
-                        "Polygon?crs=" + l1.crs().authid(),
-                        "Overlap Area", "memory"
-                    )
-                    feat = QgsFeature()
-                    feat.setGeometry(QgsGeometry.fromRect(overlap))
-                    ov.dataProvider().addFeature(feat)
-                    sym = QgsFillSymbol.createSimple({
-                        'color': '70,255,70,40',
-                        'color_border': '220,40,40',
-                        'width_border': '1.5',
-                    })
-                    ov.setRenderer(QgsSingleSymbolRenderer(sym))
-                    canvas_layers = [l1, l2, ov]
+                    canvas_layers = [l1, l2]
                     self.dlg.widgetCanvas.setExtent(overlap)
                     self.dlg.widgetCanvas.setDestinationCrs(l1.crs())
-
             if canvas_layers:
                 self.dlg.widgetCanvas.setLayers(canvas_layers)
                 self.dlg.widgetCanvas.refresh()
@@ -761,23 +759,18 @@ class SimilarityPlugin:
 
             # Get parameters
             tolerance = self.dlg.lineEditTreshold.value()
-            rgb_mode = self.dlg.mergeCenterCheck.isChecked()
             categorical = self.dlg.categoricalModeCheck.isChecked()
             resampling = self.dlg.resamplingCombo.currentText().lower()
-            diff_raster = self.dlg.diffRasterCheck.isChecked()
-
-            b1 = self.dlg.bandSpin1.value()
-            b2 = self.dlg.bandSpin2.value()
 
             self.calcRasterTask.setLayers(
                 l1, l2,
-                band_a=b1, band_b=b2,
-                rgb_mode=rgb_mode,
                 categorical=categorical,
                 resampling=resampling
             )
             self.calcRasterTask.setTolerance(tolerance)
-            self.calcRasterTask.setDiffRaster(diff_raster)
+
+            # Clear previous results
+            self.dlg.resultsTable.setRowCount(0)
 
             # activating task
             self.calcRasterTask.alive()
