@@ -26,7 +26,7 @@ from qgis.PyQt.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox,
     QLabel, QComboBox, QSpinBox, QDoubleSpinBox, QCheckBox,
     QPushButton, QTextEdit, QProgressBar, QTabWidget, QWidget,
-    QLineEdit, QTextBrowser,
+    QLineEdit, QTextBrowser, QTableWidget, QHeaderView,
     QSizePolicy, QSpacerItem, QFrame
 )
 from qgis.PyQt.QtCore import QUrl
@@ -143,49 +143,23 @@ class SimilarityPluginDialog(QDialog):
         layout.addWidget(right, 3)  # 60%
 
     def _build_input_group(self, parent):
-        """Input Layers group — layer selectors + band spinboxes."""
+        """Input Layers group — layer selectors only (band auto-detected)."""
         gb = QGroupBox("Input Layers")
         fmt = QFormLayout(gb)
         fmt.setSpacing(4)
         fmt.setContentsMargins(8, 12, 8, 8)
 
-        # Layer 1 row
-        row1 = QHBoxLayout()
-        row1.setSpacing(4)
+        # Layer 1
         self.layerSel1 = QgsMapLayerComboBox()
         self.layerSel1.setAllowEmptyLayer(False)
         self.layerSel1.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        row1.addWidget(self.layerSel1, 1)
+        fmt.addRow("Layer 1:", self.layerSel1)
 
-        self.bandLabel1 = QLabel("Band:")
-        self.bandSpin1 = QSpinBox()
-        self.bandSpin1.setMinimum(1)
-        self.bandSpin1.setMaximum(99)
-        self.bandSpin1.setValue(1)
-        self.bandSpin1.setFixedWidth(55)
-        row1.addWidget(self.bandLabel1)
-        row1.addWidget(self.bandSpin1)
-
-        fmt.addRow("Layer 1:", row1)
-
-        # Layer 2 row
-        row2 = QHBoxLayout()
-        row2.setSpacing(4)
+        # Layer 2
         self.layerSel2 = QgsMapLayerComboBox()
         self.layerSel2.setAllowEmptyLayer(False)
         self.layerSel2.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        row2.addWidget(self.layerSel2, 1)
-
-        self.bandLabel2 = QLabel("Band:")
-        self.bandSpin2 = QSpinBox()
-        self.bandSpin2.setMinimum(1)
-        self.bandSpin2.setMaximum(99)
-        self.bandSpin2.setValue(1)
-        self.bandSpin2.setFixedWidth(55)
-        row2.addWidget(self.bandLabel2)
-        row2.addWidget(self.bandSpin2)
-
-        fmt.addRow("Layer 2:", row2)
+        fmt.addRow("Layer 2:", self.layerSel2)
 
         parent.addWidget(gb)
 
@@ -214,10 +188,6 @@ class SimilarityPluginDialog(QDialog):
         check_row = QHBoxLayout()
         check_row.setSpacing(12)
 
-        self.mergeCenterCheck = QCheckBox("Merge Center")
-        self.mergeCenterCheck.setEnabled(False)
-        check_row.addWidget(self.mergeCenterCheck)
-
         self.categoricalModeCheck = QCheckBox("Categorical Mode")
         self.categoricalModeCheck.setToolTip(
             "Exact class-label comparison (categorical data). "
@@ -225,6 +195,10 @@ class SimilarityPluginDialog(QDialog):
         )
         self.categoricalModeCheck.setEnabled(False)
         check_row.addWidget(self.categoricalModeCheck)
+
+        self.mergeCenterCheck = QCheckBox("Merge Center")
+        self.mergeCenterCheck.setEnabled(False)
+        check_row.addWidget(self.mergeCenterCheck)
 
         check_row.addStretch(1)
         vbox.addLayout(check_row)
@@ -278,14 +252,8 @@ class SimilarityPluginDialog(QDialog):
         self.sufLineEdit.setText("SIM_OUT")
         fmt.addRow("Suffix:", self.sufLineEdit)
 
-        # Checkboxes row
-        self.diffRasterCheck = QCheckBox("Generate difference raster")
-        self.diffRasterCheck.setToolTip(
-            "Output a raster showing where the two rasters differ "
-            "(raster method only)"
-        )
-        self.diffRasterCheck.setEnabled(False)
-        fmt.addRow("", self.diffRasterCheck)
+        # Checkboxes row — kept for future use but hidden for now
+        # (diff raster removed — output is via table)
 
         parent.addWidget(gb)
 
@@ -337,7 +305,7 @@ class SimilarityPluginDialog(QDialog):
     # ==================================================================
 
     def _build_preview_group(self, parent):
-        """Score display, map canvas, attribute table, nav buttons."""
+        """Score display, results table, map canvas, nav buttons."""
 
         # Score header
         score_row = QHBoxLayout()
@@ -349,37 +317,44 @@ class SimilarityPluginDialog(QDialog):
         score_row.addWidget(self.labelScore, 1)
         parent.addLayout(score_row)
 
-        # Attributes header
-        attr_header = QHBoxLayout()
-        attr_header.addWidget(QLabel("Attributes Value:"))
-        attr_header.addStretch(1)
-        l1_lbl = QLabel("Layer 1")
-        l1_lbl.setStyleSheet("font-weight: bold;")
-        l2_lbl = QLabel("Layer 2")
-        l2_lbl.setStyleSheet("font-weight: bold;")
-        attr_header.addWidget(l1_lbl)
-        attr_header.addSpacing(10)
-        attr_header.addWidget(l2_lbl)
-        parent.addLayout(attr_header)
+        # Results table (per-band GOF scores)
+        self.resultsTable = QTableWidget(0, 5)
+        self.resultsTable.setHorizontalHeaderLabels(
+            ["Band", "Raster 1", "Raster 2", "Match", "GOF"]
+        )
+        self.resultsTable.horizontalHeader().setStretchLastSection(True)
+        self.resultsTable.setMaximumHeight(130)
+        self.resultsTable.setAlternatingRowColors(True)
+        self.resultsTable.setVisible(False)  # hidden until results ready
+        parent.addWidget(self.resultsTable)
 
-        # Attribute text edits side by side
+        # Save CSV button (hidden until results)
+        csv_row = QHBoxLayout()
+        csv_row.addStretch(1)
+        self.saveCsvBtn = QPushButton("💾 Save CSV")
+        self.saveCsvBtn.setEnabled(False)
+        self.saveCsvBtn.setVisible(False)
+        csv_row.addWidget(self.saveCsvBtn)
+        parent.addLayout(csv_row)
+
+        # Attribute text edits (kept for vector preview compatibility)
         attr_row = QHBoxLayout()
         attr_row.setSpacing(6)
-
         self.previewAttr = QTextEdit()
         self.previewAttr.setReadOnly(True)
-        self.previewAttr.setMaximumHeight(100)
+        self.previewAttr.setMaximumHeight(60)
+        self.previewAttr.setVisible(False)
         attr_row.addWidget(self.previewAttr)
-
         self.previewAttr_2 = QTextEdit()
         self.previewAttr_2.setReadOnly(True)
-        self.previewAttr_2.setMaximumHeight(100)
+        self.previewAttr_2.setMaximumHeight(60)
+        self.previewAttr_2.setVisible(False)
         attr_row.addWidget(self.previewAttr_2)
         parent.addLayout(attr_row)
 
         # Map canvas
         self.widgetCanvas = QgsMapCanvas()
-        self.widgetCanvas.setMinimumHeight(200)
+        self.widgetCanvas.setMinimumHeight(180)
         self.widgetCanvas.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         parent.addWidget(self.widgetCanvas, 1)
 
