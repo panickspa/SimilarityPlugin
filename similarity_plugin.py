@@ -24,8 +24,9 @@
 
 # importing PyQt environment
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QThread, QTranslator, QUrl
-from qgis.PyQt.QtGui import QIcon, QColor, QStandardItemModel
-from qgis.PyQt.QtWidgets import QAction, QTextEdit
+from qgis.PyQt.QtGui import QAction, QIcon, QColor, QStandardItemModel
+from qgis.PyQt.QtWidgets import QTextEdit
+from qgis.PyQt.QtGui import QDesktopServices
 
 
 # importing qgis environment
@@ -811,14 +812,30 @@ class SimilarityPlugin:
             # self.dlg.setPKBtn.setVisible(False)
             self.simpleDialog = SimpleWarnDialog()
             # self.pkSelector = PkSelector()
-            # set help documentation
-            self.dlg.helpTextBrowser.setSource(
-                QUrl(
-                    'https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide'
+            # set help documentation — open in system browser (QTextBrowser can't load remote URLs)
+            self.dlg.helpTextBrowser.setHtml(
+                "<h2>Calculate Similarity Map</h2>"
+                "<p>Plugin untuk mengecek similarity antara dua map "
+                "menggunakan Mapcurves (Hargrove et al., 2006).</p>"
+                "<hr>"
+                "<p><b>User Guide:</b></p>"
+                "<p>Klik tombol <b>Next</b> atau <b>Previous</b> di bawah "
+                "untuk membuka panduan pengguna di browser sistem.</p>"
+                "<p>Atau buka manual: "
+                "<a href=\"https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide\">"
+                "github.com/panickspa/SimilarityPlugin/wiki/User-Guide</a></p>"
+                "<hr>"
+                "<p><b>Vector Methods:</b> Sequential, Nearest Neighbour, Wilkerstat</p>"
+                "<p><b>Raster Method (v0.2+):</b> Single-band, RGB, Categorical, Continuous</p>"
+            )
+            self.dlg.nextHelpBtn.setText("Open Guide ▶")
+            self.dlg.nextHelpBtn.clicked.disconnect()
+            self.dlg.nextHelpBtn.clicked.connect(
+                lambda: QDesktopServices.openUrl(
+                    QUrl('https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide')
                 )
             )
-            self.dlg.nextHelpBtn.clicked.connect(self.dlg.helpTextBrowser.forward)
-            self.dlg.previousHelpBtn.clicked.connect(self.dlg.helpTextBrowser.backward)
+            self.dlg.previousHelpBtn.setVisible(False)
             # filtering selection layer (empty layer not allowed)
             self.dlg.layerSel1.setAllowEmptyLayer(False)
             self.dlg.layerSel1.setAllowEmptyLayer(False)
