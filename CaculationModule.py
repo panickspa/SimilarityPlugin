@@ -1,21 +1,20 @@
 from qgis.PyQt.QtCore import QObject, pyqtSignal, QVariant
 
 from qgis.core import (
-    QgsVectorLayer, 
-    QgsGeometry, 
+    QgsVectorLayer,
+    QgsGeometry,
     QgsFeature,
     QgsRectangle,
     QgsField
 )
 
-from qgis.gui import QgsQueryBuilder
-import datetime
 import time
+
 
 class CalculationModule(QObject):
     """
     Calculation Module for checking the similarity
-    
+
     ..
 
     Attribute
@@ -53,89 +52,89 @@ class CalculationModule(QObject):
 
     """
     killed = False
-    layer : QgsVectorLayer
-    layerDup : QgsVectorLayer
-    layerResult : QgsVectorLayer
-    layer2 : QgsVectorLayer
-    layer2Dup : QgsVectorLayer
-    layerResult2 : QgsVectorLayer
+    layer: QgsVectorLayer
+    layerDup: QgsVectorLayer
+    layerResult: QgsVectorLayer
+    layer2: QgsVectorLayer
+    layer2Dup: QgsVectorLayer
+    layerResult2: QgsVectorLayer
     primaryLayer: list
     primaryLayer2: list
-    method : int
-    radius : float
+    method: int
+    radius: float
     similarLayer = []
     suffix: str
     scoreName: str
-    translate : bool
-    treshold : float
+    translate: bool
+    treshold: float
     cumulative: float
-    
+
     def __init__(self):
         super().__init__()
 
-    def setPrimaryKey(self, pkList:list):
+    def setPrimaryKey(self, pkList: list):
         self.primaryLayer = pkList[0]
         self.primaryLayer2 = pkList[1]
 
-    def setTreshold(self, treshold:float):
+    def setTreshold(self, treshold: float):
         """Set the treshold attribute.
 
         :param treshold float :Determined treshold from user
 
         """
         self.treshold = treshold
-    
-    def setLayers(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+
+    def setLayers(self, layer: QgsVectorLayer, layer2: QgsVectorLayer):
         """Set the original layers.
 
         :param layer QgsVectorLayer: The first layer
         :param layer2 QgsVectorLayer: The second layer
-        
+
         """
         self.layer = layer
         self.layer2 = layer2
-    
-    def setMethod(self, method:int):
+
+    def setMethod(self, method: int):
         """Set the choosen method.
 
         :param method int: The index of choosen method (determined by user)
-        
+
         """
         self.method = method
-    
-    def setTranslate(self, translate:bool):
+
+    def setTranslate(self, translate: bool):
         """Set translate status.
 
         :param translate bool: Translate status
-        
+
         """
         self.translate = translate
-    
-    def setRadius(self, radius:float):
+
+    def setRadius(self, radius: float):
         """Set radius.
 
         :param radius float: Set the radius
-        
+
         """
         self.radius = radius
-    
-    def setSuffix(self, suffix:str):
+
+    def setSuffix(self, suffix: str):
         """Set suffix name suffix cloned layer's.
 
         :param suffix str: Suffix value
-        
+
         """
         self.suffix = suffix
-    
-    def setScoreName(self, scoreName:str):
+
+    def setScoreName(self, scoreName: str):
         """Set score name attribute cloned layer's.
 
         :param scoreName str: Score name value
 
         """
         self.scoreName = scoreName
-    
-    def getCumulative(self, similar:list):
+
+    def getCumulative(self, similar: list):
         """Get Cumulative Score"""
         score = float(0)
         scoreMatch = float(0)
@@ -143,7 +142,7 @@ class CalculationModule(QObject):
             score = float(score)+float(i.attribute(self.scoreName))
         for i in self.layerResult2.getFeatures('"id" = '+str(similar[1])):
             scoreMatch = float(scoreMatch)+float(i.attribute(self.scoreName))
-        return [round(score,3), round(scoreMatch, 3)]
+        return [round(score, 3), round(scoreMatch, 3)]
 
     def getSimilarLayer(self):
         """Get the similar layer"""
@@ -161,29 +160,25 @@ class CalculationModule(QObject):
         """Get the results"""
         return [self.layerResult, self.layerResult2]
 
-    def getSimilarLayer(self):
-        """get list of the similar layer"""
-        return self.similarLayer
-
     def getTranslate(self):
         """get translate status"""
         return self.translate
 
-    def duplicateLayer(self, currentLayer:QgsVectorLayer, suffix:str, scoreName:str):
+    def duplicateLayer(self, currentLayer: QgsVectorLayer, suffix: str, scoreName: str):
         """Duplicate original Layer.
-        
+
         :param currentLayer QgsVectorLayer:The layer will be duplicated
         :param suffix str: Suffix name
         :param scoreName str: Attribute name of score in attribute table
-        
+
         """
         # print(currentLayer)
         # print(suffix)
         # print(scoreName)
         layername = str(currentLayer.name())+"_"+str(suffix)
         layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
-                        layername,
-                        'memory')
+                               layername,
+                               'memory')
         # print("layer created")
         layer.setCrs(
             currentLayer.sourceCrs()
@@ -212,10 +207,10 @@ class CalculationModule(QObject):
         # print("features updated")
         return layer
 
-    def duplicateEmptyLayer(self, currentLayer:QgsVectorLayer):
+    def duplicateEmptyLayer(self, currentLayer: QgsVectorLayer):
         layer = QgsVectorLayer("Polygon?crs=ESPG:4326",
-                        currentLayer.name(),
-                        'memory')
+                               currentLayer.name(),
+                               'memory')
         # print("layer created")
         layer.setCrs(
             currentLayer.sourceCrs()
@@ -229,9 +224,9 @@ class CalculationModule(QObject):
 
         return layer
 
-    def translateCenterGeom(self, g:QgsGeometry, target:QgsGeometry):
+    def translateCenterGeom(self, g: QgsGeometry, target: QgsGeometry):
         """Translate a geometry to the center another geometry
-        
+
         :param g QgsGeometry: Geometry that be translated
         :param target QgsGeometry: The target geometry
 
@@ -254,23 +249,23 @@ class CalculationModule(QObject):
         # print("g translated")
         return g
 
-    def __calcMapCurvesGeom(self, g:QgsGeometry, g2:QgsGeometry):
+    def __calcMapCurvesGeom(self, g: QgsGeometry, g2: QgsGeometry):
         """Calculating MapCurve using geometry.
-        
+
         :param g QgsGeometry: First geometry for calculation
         :param g2 QgsGeometry: Second geometry for calculation
 
         """
-        if(not g.isGeosValid()):
+        if (not g.isGeosValid()):
             # print("not valid geom")
             g = QgsGeometry(g.makeValid())
-        if(not g2.isGeosValid()):
+        if (not g2.isGeosValid()):
             # print("not valid geom2")
             g2 = QgsGeometry(g2.makeValid())
 
         inter = g.intersection(g2)
         # print("intersection created")
-        if(inter.isEmpty()):
+        if (inter.isEmpty()):
             # print("empty geom")
             return 0
         else:
@@ -278,13 +273,13 @@ class CalculationModule(QObject):
             score = (inter.area()/g.area())*(inter.area()/g2.area())
             # print("score calculated")
             return round(score, 4)
- 
-    def __calcMapCurves(self, feature:QgsFeature, feature2:QgsFeature):
+
+    def __calcMapCurves(self, feature: QgsFeature, feature2: QgsFeature):
         """Calculation MapCurve using feature.
-        
+
         :param feature QgsFeature: The first feature
         :param feature2 QgsFeature: The second feature
-        
+
         """
         treshold = self.treshold/100
         # print("treshold hold converted")
@@ -292,13 +287,15 @@ class CalculationModule(QObject):
         if self.translate:
             # print("calculating with translate")
             score = self.__calcMapCurvesGeom(
-                        feature.geometry(),
-                        self.translateCenterGeom(feature2.geometry(),feature.geometry()) 
-                    )
+                feature.geometry(),
+                self.translateCenterGeom(
+                    feature2.geometry(), feature.geometry())
+            )
             # print("calculated")
         else:
             # print("calculating without translate")
-            score = self.__calcMapCurvesGeom(feature.geometry(), feature2.geometry())
+            score = self.__calcMapCurvesGeom(
+                feature.geometry(), feature2.geometry())
             # print("calculated")
 
         if (score >= treshold and score > 0) or self.method == 2:
@@ -312,22 +309,21 @@ class CalculationModule(QObject):
             # print("calculated : "+str(self.cumulative)+" - "+str(score))
             # print("result emited")
 
-    def __calculateWK(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, translate=False):
+    def __calculateWK(self, layer: QgsVectorLayer, layer2: QgsVectorLayer, translate=False):
         """MapCurve calculation using Wilkerstat method.
-        
+
         :param layer QgsVectorLayer: The First layer
         :param layer2 QgsVevtorLayer: The Second Layer
         :param translate bool: calculate with translating the geometry
-        
+
         """
         # print("executed function wk")
         progress = 0
-        # print("progress initialized") 
+        # print("progress initialized")
         attrName = layer.dataProvider().fields().names()
         # print("attrnName initialized")
         attrName2 = layer2.dataProvider().fields().names()
         # print("attrnName initialized")
-        score = float(0)
         for i in layer.getFeatures():
             # Querying for matching attribute
             # print(self.killed)
@@ -358,14 +354,14 @@ class CalculationModule(QObject):
             queText = ""
             try:
                 # print("trying..")
-                if("PROVNO" in attrName2):
+                if ("PROVNO" in attrName2):
                     # print("PROVNO passed")
-                    if("PROVNO" in attrName):
+                    if ("PROVNO" in attrName):
                         queText += '"PROVNO"' + " LIKE '"
                         # print(("PROVNO" in attrName))
                         queText += i.attribute("PROVNO")
                         queText += "'"
-                    elif "kdprov" in attrName :
+                    elif "kdprov" in attrName:
                         queText += '"PROVNO"' + " LIKE '"
                         queText += i.attribute("kdprov")
                         # print("kdprov" in attrName)
@@ -375,14 +371,14 @@ class CalculationModule(QObject):
                         # print("provno" in attrName)
                         queText += i.attribute("provno")
                         queText += "'"
-                elif("provno" in attrName2):
+                elif ("provno" in attrName2):
                     # print("provno" in attrName)
-                    if("PROVNO" in attrName):
+                    if ("PROVNO" in attrName):
                         queText += '"provno"' + " LIKE '"
                         # print(("PROVNO" in attrName))
                         queText += i.attribute("PROVNO")
                         queText += "'"
-                    elif "kdprov" in attrName :
+                    elif "kdprov" in attrName:
                         queText += '"provno"' + " LIKE '"
                         queText += i.attribute("kdprov")
                         # print("kdprov" in attrName)
@@ -393,12 +389,12 @@ class CalculationModule(QObject):
                         queText += i.attribute("provno")
                         queText += "'"
                 elif "kdprov" in attrName2:
-                    if("PROVNO" in attrName):
+                    if ("PROVNO" in attrName):
                         # print(("PROVNO" in attrName))
                         queText += '"kdprov"' + " LIKE '"
                         queText += i.attribute("PROVNO")
                         queText += "'"
-                    elif "kdprov" in attrName :
+                    elif "kdprov" in attrName:
                         queText += '"kdprov"' + " LIKE '"
                         queText += i.attribute("kdprov")
                         # print("kdprov" in attrName)
@@ -410,7 +406,8 @@ class CalculationModule(QObject):
                         queText += "'"
                 else:
                     # show error message
-                    self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, and/or DESANO is required")
+                    self.error.emit(
+                        "It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, and/or DESANO is required")
                     # print("error emit")
                     self.kill()
                     # print("kill task")
@@ -435,7 +432,7 @@ class CalculationModule(QObject):
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
                         queText += "'"
-                elif("kabkotno" in attrName2):
+                elif ("kabkotno" in attrName2):
                     # print("kabkotno checked")
                     if ("KABKOTNO" in attrName):
                         queText += ' AND "kabkotno" ' + " LIKE '"
@@ -473,7 +470,7 @@ class CalculationModule(QObject):
                         queText += i.attribute("kabkotno")
                         # print("query str build kabkotno")
                         queText += "'"
-                
+
                 if ("KECNO" in attrName2):
                     # print("KECNO cheked")
                     if ("KECNO" in attrName):
@@ -494,7 +491,7 @@ class CalculationModule(QObject):
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
                         queText += "'"
-                elif("kecno" in attrName2):
+                elif ("kecno" in attrName2):
                     # print("kecno cheked")
                     if ("KECNO" in attrName):
                         queText += ' AND "kecno" ' + "LIKE '"
@@ -536,10 +533,10 @@ class CalculationModule(QObject):
                         queText += i.attribute("kecno")
                         # print("query str build add kecno")
                         queText += "'"
-                
+
                 if ('DESANO' in attrName2):
                     # print("DESANO cheked")
-                    if('DESANO' in attrName):
+                    if ('DESANO' in attrName):
                         queText += ' AND "DESANO" ' + "LIKE '"
                         # print("query str build "+"'"+' AND "DESANO" ' + "LIKE '")
                         queText += i.attribute("DESANO")
@@ -557,9 +554,9 @@ class CalculationModule(QObject):
                         queText += i.attribute("desano")
                         # print("query add desano")
                         queText += "'"
-                elif("desano" in attrName2):
+                elif ("desano" in attrName2):
                     # print("kddesa cheked")
-                    if('DESANO' in attrName):
+                    if ('DESANO' in attrName):
                         queText += ' AND "desano" ' + "LIKE '"
                         # print("query build "+"'"+' AND "desano" ' + "LIKE '")
                         queText += i.attribute("DESANO")
@@ -578,8 +575,8 @@ class CalculationModule(QObject):
                         # print("query add desano")
                         # print("id checked")
                         queText += "'"
-                elif("kddesa" in attrName2):
-                    if('DESANO' in attrName):
+                elif ("kddesa" in attrName2):
+                    if ('DESANO' in attrName):
                         queText += ' AND "kddesa" ' + "LIKE '"
                         # print("query build "+"'"+' AND "desano" ' + "LIKE '")
                         queText += i.attribute("DESANO")
@@ -601,20 +598,21 @@ class CalculationModule(QObject):
                 # print(queText)
                 # print(len([j for j in layer2.getFeatures(queText)]))
                 for j in layer2.getFeatures(queText):
-                    self.__calcMapCurves(i,j)
-            except KeyError as identifier:
+                    self.__calcMapCurves(i, j)
+            except KeyError:
                 # show error message
-                self.error.emit("It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required")
+                self.error.emit(
+                    "It might be not Wilkerstat, PROVNO, KABKOTNO, KECNO, DESANO is required")
                 print("error emit")
                 self.kill()
                 # print("kill task")
-            except ValueError as identifier:
+            except ValueError:
                 # show error message
                 self.error.emit("Value error")
                 print("error emit")
                 self.kill()
                 # print("kill task")
-            except:
+            except Exception:
                 self.error.emit("Unexpected error")
                 # print("error emit")
                 self.kill()
@@ -625,21 +623,21 @@ class CalculationModule(QObject):
             # print(iterL)
             # print("progress "+str(progress))
             self.progress.emit(progress)
-            
+
             # print("progress emitted")
         return self.similarLayer
 
-    def __calculateSq(self, layer:QgsVectorLayer, layer2:QgsVectorLayer):
+    def __calculateSq(self, layer: QgsVectorLayer, layer2: QgsVectorLayer):
         """MapCurve calculation using Squential method.
-        
+
         :param layer QgsVectorLayer: The First layer
         :param layer2 QgsVevtorLayer: The Second Layer
-        
+
         """
         # print("executed function sq")
         progress = 0
         # print("progress initialized")
-        for i in layer.getFeatures(): #QgsFeature
+        for i in layer.getFeatures():  # QgsFeature
             # print(i)
             # print(i.id())
             # print("Iteration i")
@@ -648,11 +646,12 @@ class CalculationModule(QObject):
                 # print("killed")
                 # print("task killed")
                 break
-            for j in layer2.getFeatures(i.geometry().boundingBox()): # QgsVectorLayer.getFeatures()
+            # QgsVectorLayer.getFeatures()
+            for j in layer2.getFeatures(i.geometry().boundingBox()):
                 # print(j)
                 # print(j.id())
                 # print("Iteration j")
-                if(i.hasGeometry()):
+                if (i.hasGeometry()):
                     # print("Checking")
                     self.__calcMapCurves(i, j)
                     # print("checked")
@@ -663,17 +662,17 @@ class CalculationModule(QObject):
 
         return self.similarLayer
 
-    def __calculateKNN(self, layer:QgsVectorLayer, layer2:QgsVectorLayer, radius:float):
+    def __calculateKNN(self, layer: QgsVectorLayer, layer2: QgsVectorLayer, radius: float):
         """MapCurve calculation using Nearest Neighbour method.
-        
+
         :param layer QgsVectorLayer: The First layer
         :param layer2 QgsVevtorLayer: The Second Layer
-        
+
         """
         # print("executed function nn")
         progress = 0
         # print("progress initialzed")
-        for i in layer.getFeatures() :
+        for i in layer.getFeatures():
             # print(i)
             # print(i.id())
             # print("Iteration i")
@@ -681,7 +680,7 @@ class CalculationModule(QObject):
                 # kill request received, exit loop early
                 # print("killed")
                 break
-            if(i.hasGeometry()):
+            if (i.hasGeometry()):
                 # print("has geometry")
                 centroid = i.geometry().centroid().asQPointF()
                 # print("centroid created")
@@ -705,9 +704,9 @@ class CalculationModule(QObject):
 
         return self.similarLayer
 
-    def __addFeatureResult(self, feature:QgsFeature, feature2:QgsFeature, score:float):
+    def __addFeatureResult(self, feature: QgsFeature, feature2: QgsFeature, score: float):
         """Add result feature to result layer.
-        
+
             :param feature QgsFeature: The feature will be added on first layer result
             :param feature QgsFeature: The feature will be added on second layer result
             :param score float: the feature score result
@@ -724,7 +723,7 @@ class CalculationModule(QObject):
         # print("id 1 set")
         featDup.setAttribute(feature.fields().indexOf("match"), feature2.id())
         # print("match 1 set")
-        
+
         featDup2 = QgsFeature()
         featDup2.setGeometry(feature2.geometry())
         featDup2.setFields(feature2.fields())
@@ -749,7 +748,7 @@ class CalculationModule(QObject):
     def run(self):
         """Run the object"""
         start = time.perf_counter()
-        if self.killed is False :
+        if self.killed is False:
             self.cumulative = 0
             self.similarLayer = []
             # print("duplicatingg")
@@ -759,19 +758,21 @@ class CalculationModule(QObject):
             # print("score name : "+ self.scoreName)
             try:
                 self.eventTask.emit("Duplicating ....")
-                self.layerDup = self.duplicateLayer(self.layer, self.suffix, self.scoreName)
+                self.layerDup = self.duplicateLayer(
+                    self.layer, self.suffix, self.scoreName)
                 # print(self.layerDup.featureCount())
                 # print("duplicated 1")
                 self.layerResult = self.duplicateEmptyLayer(self.layerDup)
                 # print("duplicate layer result")
-                self.layer2Dup = self.duplicateLayer(self.layer2, self.suffix, self.scoreName)
+                self.layer2Dup = self.duplicateLayer(
+                    self.layer2, self.suffix, self.scoreName)
                 # print(self.layer2Dup.featureCount())
                 # print("duplicated 2")
                 self.layerResult2 = self.duplicateEmptyLayer(self.layer2Dup)
                 # print("duplicate layer result2")
                 # print("duplicated 2")
                 self.eventTask.emit("Calculating ....")
-                if(self.method == 0):
+                if (self.method == 0):
                     # print("sq method")
                     try:
                         self.__calculateSq(self.layerDup, self.layer2Dup)
@@ -781,35 +782,36 @@ class CalculationModule(QObject):
                         self.finished.emit(self.similarLayer)
                         self.eventTask.emit("Finished !!")
                         # print(self.similarLayer)
-                    except NameError as ex:
+                    except NameError:
                         # print("error")
                         self.error.emit("Not executed")
                         self.eventTask.emit("Eror Occured")
                         # print("error emitted")
-                    except:
+                    except Exception:
                         # print("error")
                         self.error.emit("Not executed")
-                        self.eventTask.emit("Eror Occured")  
-                        # print("error emitted")     
+                        self.eventTask.emit("Eror Occured")
+                        # print("error emitted")
                 elif (self.method == 1):
                     try:
                         # print("is translated : "+str(self.translate))
                         # print("nn method")
-                        self.__calculateKNN(self.layerDup, self.layer2Dup, self.radius)
+                        self.__calculateKNN(
+                            self.layerDup, self.layer2Dup, self.radius)
                         # print("similar checked")
                         # self.eventTask.emit("Add score to layer")
                         # print("score item added")
                         self.finished.emit(self.similarLayer)
-                        # print("finished emitted")   
-                    except NameError as ex:
+                        # print("finished emitted")
+                    except NameError:
                         self.error.emit("Not executed")
                         self.eventTask.emit("Eror Occured")
-                        # print("error emitted")   
-                    except:
+                        # print("error emitted")
+                    except Exception:
                         # print("error")
                         self.error.emit("Not executed")
                         self.eventTask.emit("Eror Occured")
-                        # print("error emitted") 
+                        # print("error emitted")
                 elif (self.method == 2):
                     print("wk method")
                     try:
@@ -817,20 +819,20 @@ class CalculationModule(QObject):
                         # print("similar checked")
                         # print("score item added")
                         self.finished.emit(self.similarLayer)
-                        # print("finished emitted") 
+                        # print("finished emitted")
                     except NameError as ex:
                         self.error.emit(str(ex))
                         self.eventTask.emit("Eror Occured")
-                        # print("error emitted") 
-                    except:
+                        # print("error emitted")
+                    except Exception:
                         # print("error")
                         self.error.emit("Not executed")
                         self.eventTask.emit("Eror Occured")
-                        # print("error emitted") 
+                        # print("error emitted")
                         # print(similar)
-            except:
-                    self.error.emit("Error when duplicating")
-                    self.eventTask.emit("Eror Occured")
+            except Exception:
+                self.error.emit("Error when duplicating")
+                self.eventTask.emit("Eror Occured")
                 # print(isinstance(self.layer, QgsVectorLayer))
                 # print(isinstance(self.layer2, QgsVectorLayer))
             # print("cumulative score : "+str(self.getCumulative())+" feature count : "+str(self.layerDup.featureCount()))
