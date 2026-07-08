@@ -6,3 +6,5 @@ help_
 test_rasters
 colorful_rasters
 realmap_rasters
+.DS_Store
+__MACOSX

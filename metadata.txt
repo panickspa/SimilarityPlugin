@@ -6,7 +6,7 @@
 name=Calculate Similarity Map
 qgisMinimumVersion=3.40
 description=Calculate score of similarity using GOF MapCurve (Vector & Raster)
-version=0.2.0
+version=0.2.1
 author=Pandu Wicaksono and Takdir
 email=pandu.wicaksono@bps.go.id
 
@@ -20,7 +20,7 @@ repository=https://github.com/panickspa/SimilarityPlugin.git
 
 hasProcessingProvider=Yes
 # Uncomment the following line and add your changelog:
-changelog=Version 0.2.0: Improved raster module with block-based reading, band selection, tolerance, RGB mode, and proper NODATA handling
+changelog=Version 0.2.1: improving quality code check
 
 # Tags are comma separated with spaces allowed
 tags=python, raster, similarity, mapcurves
