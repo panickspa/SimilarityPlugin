@@ -279,6 +279,29 @@ class SimilarityPlugin:
                 action)
             self.iface.removeToolBarIcon(action)
 
+    # ------------------------------------------------------------------
+    #  Auto-switch method based on layer type
+    # ------------------------------------------------------------------
+    def onLayerChanged(self):
+        """Auto-switch between Vector and Raster method based on layer types."""
+        try:
+            l1 = self.dlg.layerSel1.currentLayer()
+            l2 = self.dlg.layerSel2.currentLayer()
+            if l1 is None or l2 is None:
+                return
+
+            from qgis.core import QgsRasterLayer, QgsVectorLayer
+            is_raster = isinstance(l1, QgsRasterLayer) and isinstance(l2, QgsRasterLayer)
+            is_vector = isinstance(l1, QgsVectorLayer) and isinstance(l2, QgsVectorLayer)
+            current = self.dlg.methodComboBox.currentIndex()
+
+            if is_raster and current != 3:
+                self.dlg.methodComboBox.setCurrentIndex(3)
+            elif is_vector and current == 3:
+                self.dlg.methodComboBox.setCurrentIndex(0)
+        except Exception:
+            pass
+
     def methodChange(self):
         """Signal when method changed"""
         idx = self.dlg.methodComboBox.currentIndex()
@@ -957,6 +980,10 @@ class SimilarityPlugin:
             self.dlg.saveBtn.clicked.connect(self.registerToProject)
             self.dlg.removeBtn.clicked.connect(self.rmWarn)
             self.dlg.stopBtn.clicked.connect(self.stopCalcThread)
+
+            # Auto-switch method when layer type changes
+            self.dlg.layerSel1.layerChanged.connect(self.onLayerChanged)
+            self.dlg.layerSel2.layerChanged.connect(self.onLayerChanged)
 
             # intialize pan tool
             panTool = QgsMapToolPan(self.dlg.widgetCanvas)
