@@ -306,8 +306,9 @@ class CalculationRasterModule(QObject):
 
         # ---- Generate difference raster ----
         diff_info = None
+        diff_layer = None
         if self.generate_diff and diff_pixels:
-            diff_info = self._write_diff_raster(
+            diff_info, diff_layer = self._write_diff_raster(
                 diff_pixels, rows, cols,
                 overlap_ext, rx, ry
             )
@@ -322,6 +323,7 @@ class CalculationRasterModule(QObject):
             'grid_cols': cols,
             'grid_rows': rows,
             'total_cells': total_cells,
+            'diff_layer': diff_layer,
         }
 
         self.eventTask.emit(
@@ -522,9 +524,9 @@ class CalculationRasterModule(QObject):
             diff_layer.setRenderer(renderer)
 
             QgsProject.instance().addMapLayer(diff_layer)
-            return f"loaded as '{diff_layer.name()}'"
+            return f"loaded as '{diff_layer.name()}'", diff_layer
         else:
-            return f"saved to {out_path}"
+            return f"saved to {out_path}", None
 
     # ------------------------------------------------------------------
     #  Signals
