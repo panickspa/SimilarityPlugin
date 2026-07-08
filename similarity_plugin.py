@@ -813,27 +813,69 @@ class SimilarityPlugin:
             self.simpleDialog = SimpleWarnDialog()
             # self.pkSelector = PkSelector()
             # set help documentation — open in system browser (QTextBrowser can't load remote URLs)
+            wiki_url = 'https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide'
             self.dlg.helpTextBrowser.setHtml(
+                "<style>"
+                "body { font-family: 'Segoe UI', sans-serif; padding: 10px; }"
+                "h2 { color: #2c6b2f; }"
+                "h3 { color: #2c6b2f; margin-top: 16px; }"
+                "hr { border: 0; border-top: 1px solid #ccc; }"
+                "code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }"
+                "ul { margin: 4px 0; }"
+                "</style>"
                 "<h2>Calculate Similarity Map</h2>"
-                "<p>Plugin untuk mengecek similarity antara dua map "
-                "menggunakan Mapcurves (Hargrove et al., 2006).</p>"
+                "<p>Plugin Mapcurves GOF — Hargrove et al. (2006)</p>"
                 "<hr>"
-                "<p><b>User Guide:</b></p>"
-                "<p>Klik tombol <b>Next</b> atau <b>Previous</b> di bawah "
-                "untuk membuka panduan pengguna di browser sistem.</p>"
-                "<p>Atau buka manual: "
-                "<a href=\"https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide\">"
-                "github.com/panickspa/SimilarityPlugin/wiki/User-Guide</a></p>"
+                
+                "<h3>📐 Vector Methods</h3>"
+                "<ul>"
+                "<li><b>Sequential</b> — Cek 1 per 1 fitur, filter threshold</li>"
+                "<li><b>Nearest Neighbour</b> — Translasi geometri + radius KNN</li>"
+                "<li><b>Wilkerstat BPS</b> — Cocokkan kode area (PROVNO/KABKOTNO/KECNO/DESANO)</li>"
+                "</ul>"
+                
+                "<h3>🖼️ Raster Method (v0.2+)</h3>"
+                "<p>Perbandingan pixel-by-pixel di area overlap kedua raster. "
+                "Skor dihitung dengan formula MapCurves GOF.</p>"
+                
+                "<h4>Parameter</h4>"
+                "<ul>"
+                "<li><b>Band L1 / L2</b> — Pilih band yang mau dibandingkan (default=1)</li>"
+                "<li><b>RGB Mode</b> — Compare 3 band (R,G,B) sekaligus. Cocok buat citra RGB.</li>"
+                "<li><b>Categorical Mode</b> — Exact class label comparison. "
+                "Cocok buat raster klasifikasi (land cover, ZNT, dll). "
+                "Matikan untuk continuous data (DEM, NDVI, suhu).</li>"
+                "<li><b>Tolerance</b> — Toleransi selisih nilai untuk data continuous. "
+                "Nilai 0 = exact match. Contoh: tolerance=5 berarti |v1-v2| ≤ 5 dianggap match.</li>"
+                "<li><b>Resampling</b> — Metode resampling kalo ukuran pixel raster berbeda. "
+                "<code>Nearest</code> untuk kategorikal, <code>Bilinear</code>/<code>Cubic</code> "
+                "untuk continuous.</li>"
+                "<li><b>Generate diff raster</b> — Output GeoTIFF perbedaan (0=hijau=match, "
+                "255=merah=mismatch), auto-load ke QGIS.</li>"
+                "</ul>"
+                
+                "<h4>Skenario Test</h4>"
+                "<table border='1' cellpadding='4' style='border-collapse:collapse; width:100%'>"
+                "<tr><th>Test</th><th>Raster</th><th>Setting</th><th>Hasil</th></tr>"
+                "<tr><td>Identical</td><td>identical_a + _b</td><td>default</td><td>Score ≈ 1.0</td></tr>"
+                "<tr><td>Categorical</td><td>categorical_a + _b</td><td>Categorical ON</td><td>Score ≈ 0.56</td></tr>"
+                "<tr><td>Continuous</td><td>continuous_a + _b</td><td>Tolerance=5</td><td>Score tinggi</td></tr>"
+                "<tr><td>RGB</td><td>rgb_a + _b</td><td>RGB ON</td><td>Score ≈ 0.83</td></tr>"
+                "<tr><td>Resampling</td><td>resample_coarse + _fine</td><td>Resampling=Nearest</td><td>Score ≈ 0.50</td></tr>"
+                "</table>"
+                
                 "<hr>"
-                "<p><b>Vector Methods:</b> Sequential, Nearest Neighbour, Wilkerstat</p>"
-                "<p><b>Raster Method (v0.2+):</b> Single-band, RGB, Categorical, Continuous</p>"
+                "<p><b>User Guide lengkap:</b><br>"
+                "Klik tombol <b>Open Guide ▶</b> di bawah atau buka "
+                "<a href='" + wiki_url + "'>" + wiki_url + "</a></p>"
             )
             self.dlg.nextHelpBtn.setText("Open Guide ▶")
-            self.dlg.nextHelpBtn.clicked.disconnect()
+            try:
+                self.dlg.nextHelpBtn.clicked.disconnect()
+            except TypeError:
+                pass
             self.dlg.nextHelpBtn.clicked.connect(
-                lambda: QDesktopServices.openUrl(
-                    QUrl('https://github.com/panickspa/SimilarityPlugin/wiki/User-Guide')
-                )
+                lambda: QDesktopServices.openUrl(QUrl(wiki_url))
             )
             self.dlg.previousHelpBtn.setVisible(False)
             # filtering selection layer (empty layer not allowed)
