@@ -133,7 +133,6 @@ class SimilarityPlugin:
         self.calcRasterTask.finished.connect(self.finishedCalcRasterThread)
         self.calcRasterTask.error.connect(self.errorCalcThread)
         self.calcRasterTask.eventTask.connect(self.eventCalcThread)
-        # self.calcRasterTask.currentProgress.connect(self.eventCurrentProgress)
 
         # pan event
         self.actionPan = QAction("Pan", self.iface)
