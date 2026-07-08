@@ -601,12 +601,45 @@ class SimilarityPlugin:
                 ymin = max(e1.yMinimum(), e2.yMinimum())
                 ymax = min(e1.yMaximum(), e2.yMaximum())
                 if xmin < xmax and ymin < ymax:
-                    from qgis.core import QgsRectangle
+                    from qgis.core import (
+                        QgsRectangle, QgsGeometry, QgsVectorLayer,
+                        QgsFeature, QgsProject, QgsFillSymbol,
+                        QgsSingleSymbolRenderer, QgsMarkerSymbol
+                    )
+                    from qgis.PyQt.QtGui import QColor
+
                     overlap = QgsRectangle(xmin, ymin, xmax, ymax)
+
+                    # Create overlap polygon layer
+                    overlap_layer = QgsVectorLayer(
+                        "Polygon?crs=" + l1.crs().authid(),
+                        "Overlap Area", "memory"
+                    )
+                    feat = QgsFeature()
+                    geom = QgsGeometry.fromRect(overlap)
+                    feat.setGeometry(geom)
+                    overlap_layer.dataProvider().addFeature(feat)
+
+                    # Style: green semi-transparent fill, red bold outline
+                    symbol = QgsFillSymbol.createSimple({
+                        'color': '70,255,70,40',
+                        'color_border': '220,40,40',
+                        'width_border': '1.5',
+                        'style': 'solid',
+                        'style_border': 'solid',
+                    })
+                    overlap_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
+                    overlap_layer.triggerRepaint()
+
+                    # Set canvas
                     self.dlg.widgetCanvas.setExtent(overlap)
-                    self.dlg.widgetCanvas.setLayers([l1, l2])
+                    self.dlg.widgetCanvas.setLayers([l1, l2, overlap_layer])
                     self.dlg.widgetCanvas.setDestinationCrs(l1.crs())
                     self.dlg.widgetCanvas.refresh()
+
+                    self.dlg.consoleTextEdit.append(
+                        "Overlap area shown in preview (%s)\n\n" % geom.area()
+                    )
         except Exception as e:
             self.dlg.consoleTextEdit.append("Preview error: %s\n\n" % str(e))
 
