@@ -1,4 +1,14 @@
-from qgis.PyQt.QtCore import QObject, pyqtSignal, QVariant
+from qgis.PyQt.QtCore import QObject, pyqtSignal
+
+# Qt6 compatibility: QVariant removed in PyQt6
+try:
+    from qgis.PyQt.QtCore import QVariant
+    FIELD_DOUBLE = QVariant.Double
+    FIELD_INT = QVariant.Int
+except ImportError:
+    from qgis.PyQt.QtCore import QMetaType
+    FIELD_DOUBLE = QMetaType.Double
+    FIELD_INT = QMetaType.Int
 
 from qgis.core import (
     QgsVectorLayer, 
@@ -196,9 +206,9 @@ class CalculationModule(QObject):
         # adding score attributes info
         layer.dataProvider().addAttributes(
             [
-                QgsField(scoreName, QVariant.Double),
-                QgsField('id', QVariant.Int),
-                QgsField('match', QVariant.Int)
+                QgsField(scoreName, FIELD_DOUBLE),
+                QgsField('id', FIELD_INT),
+                QgsField('match', FIELD_INT)
             ]
         )
         # print("field updated")

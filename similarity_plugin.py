@@ -24,8 +24,8 @@
 
 # importing PyQt environment
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QThread, QTranslator, QUrl
-from qgis.PyQt.QtGui import QIcon, QColor, QStandardItemModel
-from qgis.PyQt.QtWidgets import QAction, QTextEdit
+from qgis.PyQt.QtGui import QAction, QIcon, QColor, QStandardItemModel
+from qgis.PyQt.QtWidgets import QTextEdit
 
 
 # importing qgis environment
